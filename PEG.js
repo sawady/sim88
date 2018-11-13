@@ -91,12 +91,12 @@ DECIMAL "decimal"
 
 ENDLINE "end of line"
   = "\n"
-  
+
 END
   = "END"i
 
 _ "whitespace"
   = [ \t\n\r]*
-  
+
 __ ""
   = [ \t]*

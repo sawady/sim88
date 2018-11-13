@@ -4,8 +4,10 @@
   "private": true,
   "dependencies": {
     "nw-react-scripts": "1.0.11",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1"
+    "react": "16.4.1",
+    "react-dom": "16.4.1",
+    "react-redux": "5.1.1",
+    "redux": "4.0.1"
   },
   "scripts": {
     "start": "nw-react-scripts start",
@@ -17,13 +19,13 @@
   "nwBuilder": {
     "//": "https://github.com/nwjs-community/nw-builder",
     "platforms": [
+      "linux64",
       "osx64",
-      "win32",
       "win64"
     ],
     "version": "latest",
     "buildDir": "./build",
     "cacheDir": "./cache",
-    "macIcns": "./src/logo.icns"
+    "macIcns": "./src/images/logo.icns"
   }
 }
