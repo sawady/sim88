@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "mdi-react": "5.0.0",
     "nw-react-scripts": "1.0.11",
     "react": "16.4.1",
+    "react-ace": "6.2.0",
     "react-dom": "16.4.1",
     "react-redux": "5.1.1",
     "redux": "4.0.1"
@@ -27,5 +29,12 @@
     "buildDir": "./build",
     "cacheDir": "./cache",
     "macIcns": "./src/images/logo.icns"
+  },
+  "window": {
+    "position": "center",
+    "width": 800,
+    "height": 600,
+    "min-width": 400,
+    "min-height": 400
   }
 }

@@ -1,0 +1,4 @@
+.editor {
+  width: 100% !important;
+  height: calc(100% - 26px) !important;
+}
