@@ -4,6 +4,11 @@
   overflow: hidden;
 }
 
+.Below {
+  height: 100%;
+  display: flex;
+}
+
 button {
   background: transparent;
   border: transparent;

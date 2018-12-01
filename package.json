@@ -5,6 +5,7 @@
   "dependencies": {
     "mdi-react": "5.0.0",
     "nw-react-scripts": "1.0.11",
+    "pegjs": "0.10.0",
     "react": "16.4.1",
     "react-ace": "6.2.0",
     "react-dom": "16.4.1",

@@ -11,13 +11,21 @@ import fs from 'fs';
 import gui from 'nw.gui';
 
 import { changeText } from '../actions/text'
+import { run } from '../actions/result'
 
 import '../styles/Toolbar.css';
+
+const DEFAULT_FILE_NAME = 'newfile.asm'
 
 class Toolbar extends PureComponent {
 
   state = {
     filepath: ''
+  }
+
+  changeFilePath = (name) => {
+    this.setState({ filepath: name });
+    gui.Window.title = name || DEFAULT_FILE_NAME
   }
 
   newFile = () => {
@@ -51,11 +59,15 @@ class Toolbar extends PureComponent {
     this.setState({ filepath: path }, this.writeFile);
   }
 
+  run = () => {
+    this.props.run(this.props.text);
+  }
+
   render() {
     return (
       <div className="toolbar">
         <input style={{ display: 'none' }} ref="openfile" type="file" onChange={this.readFile} accept=".txt,.asm" />
-        <input style={{ display: 'none' }} ref="saveNewFile" type="file" nwsaveas={this.state.filepath || 'newfile.asm'} onChange={this.writeNewFile} accept=".txt,.asm" />
+        <input style={{ display: 'none' }} ref="saveNewFile" type="file" nwsaveas={this.state.filepath || DEFAULT_FILE_NAME} onChange={this.writeNewFile} accept=".txt,.asm" />
         <button onClick={this.newFile}>
           <FileIcon size={24} />
           Nuevo
@@ -72,7 +84,7 @@ class Toolbar extends PureComponent {
           <ContentSaveIcon size={24} />
           Guardar como...
         </button>
-        <button>
+        <button onClick={this.run}>
           <PlayIcon size={24} />
           Ejecutar
         </button>
@@ -90,6 +102,7 @@ export default connect(
     text: state.text.text,
   }),
   dispatch => ({
-    changeText: text => dispatch(changeText(text))
+    changeText: text => dispatch(changeText(text)),
+    run: text => dispatch(run(text))
   })
 )(Toolbar)

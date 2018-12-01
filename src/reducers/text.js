@@ -1,5 +1,5 @@
 
-export default (state = { text: 'hello' }, action) => {
+export default (state = { text: '' }, action) => {
   switch (action.type) {
     case 'CHANGE_TEXT':
       return {

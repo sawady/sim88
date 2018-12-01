@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import AceEditor from 'react-ace';
+import AceEditor from 'react-ace'
 
 import 'brace/mode/assembly_x86'
-import 'brace/theme/monokai';
+import 'brace/theme/monokai'
 
 import '../styles/Editor.css'
 
