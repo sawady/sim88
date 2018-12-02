@@ -1,13 +1,9 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
 import '../styles/Memory.css'
 
-export default class Memory extends PureComponent {
-  static propTypes = {
-    memory: PropTypes.array,
-    active: PropTypes.number
-  }
+class Memory extends Component {
 
   render() {
     return (
@@ -17,19 +13,10 @@ export default class Memory extends PureComponent {
         </div>
         {
           this.props.memory.map(
-            (content, i) =>
-              <div key={i} className={i === this.props.active ? "cell active" : "cell"}>
-                <div>{content}</div>
-                <div>00</div>
-              </div>
-          )
-        }
-        {
-          this.props.memory.map(
-            (content, i) =>
-              <div key={i} className={i === this.props.active ? "cell active" : "cell"}>
-                <div>{content}</div>
-                <div>00</div>
+            cell =>
+              <div key={cell.dir} className={cell.dir === this.props.IP.L + this.props.IP.H ? "cell active" : "cell"}>
+                <div className="dir">{cell.dir}</div>
+                <div className="value">{cell.value}</div>
               </div>
           )
         }
@@ -37,3 +24,10 @@ export default class Memory extends PureComponent {
     )
   }
 }
+
+export default connect(
+  state => ({
+    memory: state.machine.memory,
+    IP: state.machine.IP
+  })
+)(Memory)

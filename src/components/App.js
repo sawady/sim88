@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 
 import Editor from './Editor';
 import Machine from './Machine';
@@ -12,7 +11,7 @@ class App extends Component {
     return (
       <div className="app">
         <Toolbar />
-        <div className="below">
+        <div className="main">
           <Editor />
           <Machine />
         </div>

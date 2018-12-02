@@ -1,19 +1,19 @@
 import parser from '../grammar'
 
-export default (state = { result: '' }, action) => {
+export default (state = { ast: '' }, action) => {
   switch (action.type) {
     case 'RUN':
       try {
-        const result = parser.parse(action.text);
+        const ast = parser.parse(action.text);
         return {
           ...state,
           error: undefined,
-          result: result,
+          ast: ast,
         }
       } catch (e) {
         return {
           ...state,
-          result: 'error',
+          ast: 'error',
           error: e.message
         }
       }

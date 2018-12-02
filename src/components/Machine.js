@@ -11,14 +11,14 @@ class Result extends Component {
   render() {
     return (
       <div className="machine">
-        <div className="top">
+        <div className="layout">
           <CPU />
-          <Memory memory={['11FC', '1FFD', '1FFE', '1FFF', '2000', '2001', '2002', '2003', '2004']} active={3} />
+          <Memory />
         </div>
-        <div className="bottom">
+        <div className="layout">
         <div>
           RESULTADO:
-          {JSON.stringify(this.props.result)}
+          {JSON.stringify(this.props.ast)}
         </div>
         <div>
           ERROR:
@@ -32,7 +32,7 @@ class Result extends Component {
 
 export default connect(
   state => ({
-    result: state.result.result,
-    error: state.result.error
+    ast: state.ast.ast,
+    error: state.ast.error
   })
 )(Result)

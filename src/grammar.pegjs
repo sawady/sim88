@@ -84,7 +84,7 @@ PARAM "param"
   = HEXA / DECIMAL / REG
 
 REG "register"
-  = reg:("AX"i / "BX"i / "CX"i / "DX"i) { return { type: 'reg', value: reg } } 
+  = reg:("AX"i / "BX"i / "CX"i / "DX"i / "AL"i / "AH"i / "BL"i / "BH"i / "CL"i / "CH"i / "DL"i / "DH"i) { return { type: 'reg', value: reg } } 
 
 HEXA "hexadecimal"
   = negs:("-"*) ns:([0-9]+) "H"i { return { type: 'hexadecimal', value: makeInteger(ns, negs, true) } }

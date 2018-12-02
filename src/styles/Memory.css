@@ -1,12 +1,7 @@
 .memory {
   width: 80px;
   font-size: 17px;
-  height: 350px;
   overflow-y: auto;
-}
-
-.memory .title {
-  margin-top: 5px;
 }
 
 .memory::-webkit-scrollbar { 
@@ -17,10 +12,24 @@
   background-color: saddlebrown;
   padding: 3px 5px;
   min-height: 20px;
-  width: 65px;
-  margin-top: 5px;
+  width: 70px;
+  margin-bottom: 5px;
   display: flex;
   justify-content: space-between;
+  border-radius: 4px;
+}
+
+.memory .cell .dir {
+  font-style: italic;
+}
+
+.memory .cell .value {
+  background-color: darkred;
+  padding: 0 2px;
+}
+
+.memory .cell:last-child {
+  margin-bottom: 0;
 }
 
 .memory .cell.active {

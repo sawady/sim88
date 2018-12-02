@@ -1,7 +1,9 @@
 import text from './text';
-import result from './result';
+import ast from './ast';
+import machine from './machine';
 
 export default {
   text,
-  result
+  ast,
+  machine
 };

@@ -1,37 +1,124 @@
 .cpu {
-  height: 350px;
-  width: 280px;
+  width: 60%;
+  justify-content: space-around;
 }
 
-.cpu .top {
-  display: flex;
-  width: 230px;
-}
-
-.cpu .title {
-  position: relative;
-  top: 5px;
-  right: 5px;
-  align-self: flex-end;
-  margin-bottom: 15px;
+.cpu .layout {
+  width: 90% !important;
 }
 
 .cpu .register {
   display: flex;
   justify-content: space-between;
   border: 1px white solid;
-  width: 75px;
+  width: 83px;
   margin-bottom: 5px;
+  background-color: royalblue;
 }
 
 .cpu .register .name {
   background-color: black;
+  font-style: italic;
   padding: 0px 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 25px;
 }
 
 .cpu .register .values {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 0px 5px;
   width: 100%;
+}
+
+.cpu .register.ir {
+  height: 18px;
+  margin-top: 10px;
+  align-self: flex-end;
+}
+
+.cpu .pointers {
+  margin-top: 10px;
+}
+
+.cpu .redbox {
+  background-color: darkred;
+  font-size: 13px;
+  margin-top: 10px;
+  border: 1px solid white;
+  border-radius: 4px;
+}
+
+.cpu .redbox .title {
+  top: unset;
+  right: unset;
+  margin-bottom: 5px;
+}
+
+.cpu .redbox.orders {
+  height: 18px;
+  display: flex;
+  align-self: flex-end;
+  align-items: center;
+  padding: 0px 2px;
+}
+
+.cpu .redbox.decoder {
+  padding: 5px;
+}
+
+.cpu .redbox.sequencer {
+  padding: 5px;
+  width: 100%;
+}
+
+.cpu .redbox.sequencer .title {
+  margin: 5px 0;
+}
+
+.cpu .bluebox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: royalblue;
+  padding: 5px;
+  border: 1px solid white;
+  border-radius: 4px;
+}
+
+.cpu .bluebox .register:last-child {
+  margin-bottom: 0;
+}
+
+.alu {
+  font-size: 15px;
+  width: 40%;
+}
+
+.alu .register .name {
+  width: 25px;
+}
+
+.flags {
+  display: flex;
+  justify-content: space-between;
+  width: 122px;
+  margin-top: 10px;
+}
+
+.flags .flag {
+  border: 1px solid white;
+  width: 100%;
+}
+
+.flags .flag.on {
+  background-color: tomato;
+}
+
+.flags .flag.off {
+  background-color: gray;
 }
