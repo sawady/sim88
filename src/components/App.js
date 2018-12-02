@@ -2,23 +2,19 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import Editor from './Editor';
-import Result from './Result';
+import Machine from './Machine';
+
 import '../styles/App.css'
 import Toolbar from './Toolbar';
 
 class App extends Component {
-  static propTypes = {
-    changeText: PropTypes.func.isRequired,
-    text: PropTypes.string.isRequired,
-  }
-
   render() {
     return (
-      <div className="App">
+      <div className="app">
         <Toolbar />
-        <div className="Below">
+        <div className="below">
           <Editor />
-          <Result />
+          <Machine />
         </div>
       </div>
     );

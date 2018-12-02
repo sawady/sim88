@@ -14,7 +14,7 @@ import { changeText } from '../actions/text'
 class Editor extends Component {
   static propTypes = {
     changeText: PropTypes.func.isRequired,
-    text: PropTypes.string.isRequired,
+    text: PropTypes.string,
   }
 
   render() {

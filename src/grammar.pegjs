@@ -15,14 +15,17 @@
 }
 
 PROGRAM
-  = sts:(_ STATEMENT __ ENDLINE _)+ END .* 
-    { return sts.map(function(x) { return x[1] }) }
+  = sts:(_ STATEMENT __ COMMENT* __ ENDLINE _)+ END .* 
+    { return sts.map(function(x) { return x[1] }).filter(function(x) { return x !== null; } ) }
 
 STATEMENT =
   op:BINOP _ p1:PARAM _ "," _ p2:PARAM  { return { type: op, p1: p1, p2: p2 } }
   / op:UNOP _ p1:PARAM { return { type: op, p1: p1 } }
   / op:ZOP { return { type: op } }
   / op:JMP _ label:LABEL { return { type: op, label: label } }
+  / COMMENT { return null }
+
+COMMENT = ';' ([^\n]*)
 
 BINOP
   = op:(

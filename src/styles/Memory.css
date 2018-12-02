@@ -1,0 +1,24 @@
+.memory {
+  width: 80px;
+  font-size: 17px;
+  height: 350px;
+  overflow-y: auto;
+}
+
+.memory::-webkit-scrollbar { 
+  display: none; 
+}
+
+.memory .cell {
+  background-color: saddlebrown;
+  padding: 3px 5px;
+  min-height: 20px;
+  width: 65px;
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.memory .cell.active {
+  background-color: tomato !important;
+}
