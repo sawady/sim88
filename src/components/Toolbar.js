@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import PlayIcon from 'mdi-react/PlayIcon';
@@ -8,7 +8,6 @@ import FolderOpenIcon from 'mdi-react/FolderOpenIcon';
 import ContentSaveIcon from 'mdi-react/ContentSaveIcon';
 
 import fs from 'fs';
-import gui from 'nw.gui';
 
 import { changeText } from '../actions/text'
 import { run } from '../actions/result'
@@ -17,20 +16,28 @@ import '../styles/Toolbar.css';
 
 const DEFAULT_FILE_NAME = 'newfile.asm'
 
-class Toolbar extends PureComponent {
+function setTitle(title) {
+  document.title = `${title} - SIM88`
+}
+
+class Toolbar extends Component {
+
+  componentDidMount() {
+    setTitle(DEFAULT_FILE_NAME);
+  }
 
   state = {
     filepath: ''
   }
 
-  changeFilePath = (name) => {
-    this.setState({ filepath: name });
-    gui.Window.title = name || DEFAULT_FILE_NAME
+  changeFilePath = (name, cb) => {
+    this.setState({ filepath: name }, cb);
+    setTitle(name || DEFAULT_FILE_NAME);
   }
 
   newFile = () => {
     this.props.changeText('');
-    this.setState({ filepath: undefined });
+    this.changeFilePath(undefined);
   }
 
   readFile = (ev) => {
@@ -38,7 +45,7 @@ class Toolbar extends PureComponent {
     ev.target.value = '';
     fs.readFile(path, 'utf8', (err, data) => {
       console.log(path);
-      this.setState({ filepath: path });
+      this.changeFilePath(path);
       this.props.changeText(data);
     });
   }
@@ -56,7 +63,7 @@ class Toolbar extends PureComponent {
   writeNewFile = (ev) => {
     const path = ev.target.value;
     ev.target.value = '';
-    this.setState({ filepath: path }, this.writeFile);
+    this.changeFilePath(path, this.writeFile);
   }
 
   run = () => {
