@@ -11,7 +11,7 @@ export default class Memory extends PureComponent {
 
   render() {
     return (
-      <div className="frame memory">
+      <div className="memory frame">
         <div className="title">
           Memoria
         </div>

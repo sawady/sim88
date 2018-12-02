@@ -1,20 +1,18 @@
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
 
-import '../styles/Registers.css'
+import '../styles/ALU.css'
 
-export default class Memory extends PureComponent {
-  static propTypes = {
-    registers: PropTypes.array,
-  }
-
+export default class ALU extends PureComponent {
   render() {
     return (
-      <div className="registers">
+      <div className="alu">
+        <div className="title">
+          ALU
+        </div>
         {
           Object.keys(this.props.registers).map(
             (k, i) =>
-              <div key={i} className="register">
+              <div key={i} className={k === "res" ? "res register" : "op register"}>
                 <div className="name">{k}</div>
                 <div className="values">
                   <div className="value">{this.props.registers[k][0]}</div>
