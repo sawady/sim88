@@ -1,0 +1,19 @@
+.flags {
+  display: flex;
+  justify-content: space-between;
+  width: 120px;
+  margin-top: 10px;
+}
+
+.flags .flag {
+  border: 1px solid white;
+  width: 100%;
+}
+
+.flags .flag.on {
+  background-color: tomato;
+}
+
+.flags .flag.off {
+  background-color: gray;
+}
