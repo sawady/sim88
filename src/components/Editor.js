@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 
 import AceEditor from 'react-ace'
 
@@ -9,13 +8,9 @@ import 'brace/theme/monokai'
 
 import '../styles/Editor.css'
 
-import { changeText } from '../actions/text'
+import { changeText } from '../actions/editor'
 
 class Editor extends Component {
-  static propTypes = {
-    changeText: PropTypes.func.isRequired,
-    text: PropTypes.string,
-  }
 
   render() {
     return (
@@ -40,7 +35,7 @@ class Editor extends Component {
 
 export default connect(
   state => ({
-    text: state.text.text
+    text: state.editor.text
   }),
   dispatch => ({
     changeText: text => dispatch(changeText(text))

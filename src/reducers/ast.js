@@ -2,7 +2,7 @@ import parser from '../grammar'
 
 export default (state = { ast: '' }, action) => {
   switch (action.type) {
-    case 'RUN':
+    case 'EXECUTE':
       try {
         const ast = parser.parse(action.text);
         return {

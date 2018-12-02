@@ -1,9 +1,9 @@
-import text from './text';
+import editor from './editor';
 import ast from './ast';
 import machine from './machine';
 
 export default {
-  text,
+  editor,
   ast,
   machine
 };
