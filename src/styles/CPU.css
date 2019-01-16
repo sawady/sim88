@@ -11,7 +11,7 @@
   display: flex;
   justify-content: space-between;
   border: 1px white solid;
-  width: 83px;
+  width: 90px;
   margin-bottom: 5px;
   background-color: royalblue;
 }
@@ -82,7 +82,6 @@
 .cpu .bluebox {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   background-color: royalblue;
   padding: 5px;

@@ -5,15 +5,18 @@ import '../styles/CPU.css'
 
 class CPU extends Component {
 
-  renderRegister = reg => (
-    <div key={reg.name} className="register">
-      <div className="name">{reg.name}</div>
-      <div className="values">
-        <div className="value">{reg.value.L}</div>
-        <div className="value">{reg.value.H}</div>
+  renderRegister = reg => {
+    const r = reg.render();
+    return (
+      <div key={reg.name} className="register">
+        <div className="name">{r.name}</div>
+        <div className="values">
+          <div className="value">{r.L}</div>
+          <div className="value">{r.H}</div>
+        </div>
       </div>
-    </div>
-  )
+    );
+  }
 
   renderALU = () => (
     <div className="alu bluebox">
@@ -49,25 +52,9 @@ class CPU extends Component {
     </div>
   )
 
-  renderIP = () => (
-    <div className="register">
-      <div className="name">IP</div>
-      <div className="values">
-        <div className="value">{this.props.IP.L}</div>
-        <div className="value">{this.props.IP.H}</div>
-      </div>
-    </div>
-  );
+  renderIP = () => this.renderRegister(this.props.IP)
 
-  renderSP = () => (
-    <div className="register">
-      <div className="name">SP</div>
-      <div className="values">
-        <div className="value">{this.props.SP.L}</div>
-        <div className="value">{this.props.SP.H}</div>
-      </div>
-    </div>
-  )
+  renderSP = () => this.renderRegister(this.props.SP)
 
   renderIR = () => (
     <div className="register ir">
