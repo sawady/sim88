@@ -8,7 +8,7 @@ const scrollWithOffset = (value) => value < 5 ? value : value - 5;
 class Memory extends Component {
 
   componentDidMount() {
-    document.getElementById(`cell-${scrollWithOffset(this.props.IP.value)}`).scrollIntoView();
+    this.refs.cell.scrollIntoView(false);
   }
 
   render() {
@@ -22,7 +22,7 @@ class Memory extends Component {
         {
           memory.cells.map(
             cell =>
-              <div key={cell.dir} id={`cell-${cell.dir}`} className={cell.dir === IP.value ? "cell active" : "cell"}>
+              <div key={cell.dir} ref={scrollWithOffset(cell.dir) === this.props.IP.value ? 'cell' : undefined} className={cell.dir === IP.value ? "cell active" : "cell"}>
                 <div className="dir">{cell.renderDir()}</div>
                 <div className="value">{cell.renderValue()}</div>
               </div>
