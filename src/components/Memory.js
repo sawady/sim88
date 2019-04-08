@@ -16,13 +16,17 @@ class Memory extends Component {
 
     return (
       <div className="memory frame">
-          <div className="title">
-            <span>Memoria</span>
+        <div className="title">
+          <span>Memoria</span>
         </div>
         {
-          memory.cells.map(
+          memory.map(
             cell =>
-              <div key={cell.dir} ref={scrollWithOffset(cell.dir) === this.props.IP.value ? 'cell' : undefined} className={cell.dir === IP.value ? "cell active" : "cell"}>
+              <div
+                key={cell.dir}
+                ref={scrollWithOffset(cell.dir) === this.props.IP.value ? 'cell' : undefined}
+                className={cell.dir === IP.value ? "cell active" : "cell"}
+              >
                 <div className="dir">{cell.renderDir()}</div>
                 <div className="value">{cell.renderValue()}</div>
               </div>

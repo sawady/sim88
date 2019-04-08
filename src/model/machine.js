@@ -1,5 +1,5 @@
-import Memory from './memory';
-import { toReg } from './conversions'
+import Cell from './cell'
+import { toReg, fromReg } from './conversions'
 
 import update from 'immutability-helper';
 import _find from 'lodash/find';
@@ -18,16 +18,24 @@ const addReg = (res, reg) => {
   return res;
 }
 
-export const renderRegister = (x) => toReg(x.name, x.value);
+export const renderRegister = (x) => fromReg(x.name, x.value);
 
-const changeValue = (value) => ({ value: { $set: value } })
+const changeValue = (data) => ({ value: { $set: toReg(data.type, data.value) } })
 
-export const changeRegister = (machine, reg, value) => {
+export const changeRegister = (machine, reg, data) => {
   return update(machine, {
     registers: {
-      [reg]: changeValue(value)
+      [reg]: changeValue(data)
     }
   });
+}
+
+const generateMemory = (size) => {
+  const memory = [];
+  for (let i = 0; i <= size; i++) {
+    memory.push(new Cell(i, 0));
+  }
+  return memory;
 }
 
 export const createMachine = () => ({
@@ -38,5 +46,5 @@ export const createMachine = () => ({
   IP: createReg('IP', DEFAULT_IP),
   SP: createReg('SP', DEFAULT_SP),
   decoder: '????',
-  memory: new Memory(MEMORY_SIZE),
+  memory: generateMemory(MEMORY_SIZE),
 });

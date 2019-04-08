@@ -3,6 +3,17 @@ import { setInterval, clearTimeout } from 'timers';
 
 let t;
 
+const changeEditor = (line, instruction) => ({
+  type: 'EXECUTE',
+  line: line,
+  ast: instruction,
+})
+
+const executeInstruction = (instruction) => ({
+  type: `I-${instruction.type.toUpperCase()}`,
+  instruction: instruction,
+})
+
 export const execute = (text, editor) => (dispatch, getState) => {
   dispatch(stop());
   const ast = parser.parse(text);
@@ -10,15 +21,8 @@ export const execute = (text, editor) => (dispatch, getState) => {
   t = setInterval(
     () => {
       if (i < ast.length) {
-        dispatch({
-          type: 'EXECUTE',
-          line: i + 1,
-          ast: ast[i],
-        });
-        dispatch({
-          type: `I-${ast[i].type.toUpperCase()}`,
-          instruction: ast[i],
-        });
+        dispatch(changeEditor(i + 1, ast[i]));
+        dispatch(executeInstruction(ast[i]));
         i++;
       } else {
         clearTimeout(t)

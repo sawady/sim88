@@ -1497,7 +1497,7 @@ function peg$parse(input, options) {
 
     function makeInteger(ns, negs, hexa) {
       var n = parseInt(ns.join(""), 10);
-      if(hexa && n >= 10000) expected('number < 9999H')
+      if(hexa && n >= 10000) expected('number < 9999H') // TODO: change to FFFFH?
       if(!hexa && n >= 65536) expected('number < 65536')
       return n * sign(negs);
     }

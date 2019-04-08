@@ -8,7 +8,7 @@ export default (machine = defaultState, action) => {
       return changeRegister(
         machine,
         action.instruction.p1.value,
-        action.instruction.p2.value
+        action.instruction.p2
       );
     default:
       return machine;

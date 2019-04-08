@@ -21,13 +21,21 @@ class Editor extends Component {
     if (this.props.line && prevProps.line !== this.props.line) {
       this.changeLine();
     }
+    if (!this.props.line) {
+      this.focus();
+    }
   }
 
   changeLine = () => {
     const editor = this.refs.aceEditor.editor;
     editor.gotoLine(this.props.line);
     editor.focus();
-  }  
+  }
+
+  focus = () => {
+    const editor = this.refs.aceEditor.editor;    
+    editor.focus();    
+  }
 
   render() {
     return (
