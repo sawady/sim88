@@ -16,6 +16,10 @@
   background-color: royalblue;
 }
 
+.cpu .register.active {
+  background-color: tomato;
+}
+
 .cpu .register .name {
   background-color: black;
   font-style: italic;

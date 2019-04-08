@@ -2,7 +2,6 @@ import Cell from './cell'
 import { toReg, fromReg } from './conversions'
 
 import update from 'immutability-helper';
-import _find from 'lodash/find';
 
 const MEMORY_SIZE = 200
 const DEFAULT_IP = 150
@@ -20,10 +19,12 @@ const addReg = (res, reg) => {
 
 export const renderRegister = (x) => fromReg(x.name, x.value);
 
-const changeValue = (data) => ({ value: { $set: toReg(data.type, data.value) } })
+const changeValue = (data) => ({ value: { $set: toReg(data.type, data.value) } });
 
-export const changeRegister = (machine, reg, data) => {
+export const moveToRegister = (machine, reg, data) => {
   return update(machine, {
+    activeComponent: { $set: reg },
+    decoder: { $set: 'MOV' },
     registers: {
       [reg]: changeValue(data)
     }
@@ -54,6 +55,7 @@ export const stop = (machine) => {
   return update(machine, {
     state: { $set: 'STOPPED' },
     activeComponent: { $set: null },
+    decoder: { $set: '????' },
   });
 }
 

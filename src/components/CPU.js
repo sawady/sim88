@@ -1,16 +1,23 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
+import classNames from 'classnames';
+
 import { renderRegister } from '../model/machine';
 
 import '../styles/CPU.css'
 
 class CPU extends Component {
 
+  registerClass = (activeComponent, reg) => classNames('register', {
+    active: activeComponent === reg,
+  })
+
   renderRegister = (reg) => {
+    const { activeComponent } = this.props;
     const r = renderRegister(reg);
     return (
-      <div key={reg.name} className="register">
+      <div key={reg.name} className={this.registerClass(activeComponent, reg.name)}>
         <div className="name">{r.name}</div>
         <div className="values">
           <div className="value">{r.L}</div>
@@ -20,12 +27,16 @@ class CPU extends Component {
     );
   }
 
+  flagsClass = (flag) => classNames('flag', {
+    on: flag.value,
+  })
+
   renderFlags = () => (
     <div className="flags">
       {
         this.props.flags.map(
           flag =>
-            <div key={flag.name} className={flag.value ? "on flag" : "off flag"}>
+            <div key={flag.name} className={this.flagsClass(flag)}>
               {
                 flag.name
               }
@@ -135,5 +146,6 @@ export default connect(
     SP: state.machine.SP,
     IR: state.machine.IR,
     decoder: state.machine.decoder,
+    activeComponent: state.machine.activeComponent,
   })
 )(CPU)

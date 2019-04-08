@@ -29,6 +29,12 @@ export default (state = defaultState, action) => {
         filepath: action.filepath,
       }
     case 'STOP':
+      return {
+        ...state,
+        error: undefined,
+        ast: '',
+        line: undefined,
+      }
     case 'RESET':
       return {
         ...state,

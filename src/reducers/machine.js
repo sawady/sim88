@@ -1,4 +1,4 @@
-import { createMachine, changeRegister, start, stop, pause } from '../model/machine';
+import { createMachine, moveToRegister, start, stop, pause } from '../model/machine';
 
 export default (machine = createMachine(), action) => {
   switch (action.type) {
@@ -10,7 +10,7 @@ export default (machine = createMachine(), action) => {
     case 'PAUSE':
       return pause(machine);
     case 'I-MOV':
-      return changeRegister(
+      return moveToRegister(
         machine,
         action.instruction.p1.value,
         action.instruction.p2
