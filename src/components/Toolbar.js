@@ -37,7 +37,7 @@ export default class Toolbar extends Component {
           <PlayIcon size={24} />
           Ejecutar
         </button>
-        <button>
+        <button onClick={this.props.stop}>
           <StopIcon size={24} />
           Detener
         </button>

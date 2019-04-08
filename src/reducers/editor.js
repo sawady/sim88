@@ -3,6 +3,9 @@ import { DEFAULT_FILE_NAME } from '../actions/editor'
 
 const defaultText = 
 `MOV AX, 1000h
+MOV AX, 1001h
+MOV AX, 1002h
+MOV AX, 1003h
 END`
 
 const defaultState = {
@@ -21,6 +24,11 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         filepath: action.filepath,
+      }
+    case 'STOP':
+      return {
+        ...state,
+        text: defaultText,
       }
     default:
       return state

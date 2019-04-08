@@ -1,14 +1,14 @@
-import parser from '../grammar'
+const initialState = { error: undefined, ast: '', line: undefined };
 
-export default (state = { ast: '' }, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
     case 'EXECUTE':
       try {
-        const ast = parser.parse(action.text);
         return {
           ...state,
           error: undefined,
-          ast: ast,
+          ast: action.ast,
+          line: action.line,
         }
       } catch (e) {
         return {
@@ -17,7 +17,9 @@ export default (state = { ast: '' }, action) => {
           error: e.message
         }
       }
+    case 'STOP':
+      return initialState;
     default:
-      return state
+      return state;
   }
 };

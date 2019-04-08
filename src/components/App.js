@@ -8,7 +8,7 @@ import Editor from './Editor';
 import Machine from './Machine';
 
 import { DEFAULT_FILE_NAME, setTitle, newFile, readFile, writeFile, writeNewFile } from '../actions/editor'
-import { execute } from '../actions/execute'
+import { execute, stop } from '../actions/execute'
 
 import '../styles/App.css'
 
@@ -65,8 +65,12 @@ class App extends Component {
     this.props.writeNewFile(path, this.props.text);
   }
 
+  stop = () => {
+    this.props.stop();
+  }
+
   execute = () => {
-    this.props.execute(this.props.text);
+    this.props.execute(this.props.text, this.editor);
   }
 
   render() {
@@ -80,6 +84,7 @@ class App extends Component {
             writeFile={this.writeFile}
             writeNewFile={this.writeNewFile}
             execute={this.execute}
+            stop={this.stop}
             filepath={this.props.filepath}
             text={this.props.text}
           />
@@ -103,6 +108,7 @@ export default connect(
     readFile: path => dispatch(readFile(path)),
     writeFile: (path, text) => dispatch(writeFile(path, text)),
     writeNewFile: (path, text) => dispatch(writeNewFile(path, text)),
-    execute: text => dispatch(execute(text))
+    execute: text => dispatch(execute(text)),
+    stop: () => dispatch(stop()),
   })
 )(App)
