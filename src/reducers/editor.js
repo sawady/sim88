@@ -2,10 +2,12 @@
 import { DEFAULT_FILE_NAME } from '../actions/editor'
 
 const defaultText =
-  `MOV AX, 1000h
-MOV AX, 1001h
-MOV AX, 1002h
-MOV AX, 1003h
+`MOV AH, 11
+MOV AL, 11
+MOV AX, 1010H
+MOV BX, 50H
+MOV BL, 10
+MOV BH, 10
 END`
 
 const defaultState = {

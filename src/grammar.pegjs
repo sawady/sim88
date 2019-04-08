@@ -7,8 +7,10 @@
   }
 
   function makeInteger(ns, negs, hexa) {
-    var n = parseInt(ns.join(""), 10);
-    if(hexa && n >= 10000) expected('number < 9999H')
+    var n = hexa ?
+       parseInt(ns.join(""), 16) :
+       parseInt(ns.join(""), 10);
+    if(hexa && n >= 65536) expected('number < FFFFH')
     if(!hexa && n >= 65536) expected('number < 65536')
     return n * sign(negs);
   }
@@ -19,8 +21,8 @@ PROGRAM
     { return sts.map(function(x) { return x[1] }).filter(function(x) { return x !== null; } ) }
 
 STATEMENT =
-  op:BINOP _ p1:PARAM _ "," _ p2:PARAM  { return { type: op, p1: p1, p2: p2 } }
-  / op:UNOP _ p1:PARAM { return { type: op, p1: p1 } }
+  op:BINOP _ p1:PARAM1 _ "," _ p2:PARAM2  { return { type: op, p1: p1, p2: p2 } }
+  / op:UNOP _ p1:PARAM1 { return { type: op, p1: p1 } }
   / op:ZOP { return { type: op } }
   / op:JMP _ label:LABEL { return { type: op, label: label } }
   / COMMENT { return null }
@@ -29,7 +31,7 @@ COMMENT = ';' ([^\n]*)
 
 BINOP
   = op:(
-      "MOV"i 
+      "MOV"i
     / "ADD"i
     / "ADC"i
     / "SUB"i
@@ -80,14 +82,20 @@ JMP
 LABEL
   = ":" label:([a-z]+) { return label.join('') }
 
-PARAM "param"
-  = HEXA / DECIMAL / REG
+PARAM1 "param1"
+  = REG / VAR
+
+PARAM2 "param2"
+  = HEXA / DECIMAL / REG / VAR
+
+VAR "variable"
+  = v:([a-z]+) { return { type: 'variable', name: v.join('')} }
 
 REG "register"
-  = reg:("AX"i / "BX"i / "CX"i / "DX"i / "AL"i / "AH"i / "BL"i / "BH"i / "CL"i / "CH"i / "DL"i / "DH"i) { return { type: 'reg', value: reg } } 
+  = reg:("AX"i / "BX"i / "[BX]"i / "CX"i / "DX"i / "AL"i / "AH"i / "BL"i / "BH"i / "CL"i / "CH"i / "DL"i / "DH"i) { return { type: 'register', value: reg } } 
 
 HEXA "hexadecimal"
-  = negs:("-"*) ns:([0-9]+) "H"i { return { type: 'hexadecimal', value: makeInteger(ns, negs, true) } }
+  = negs:("-"*) ns:([0-9A-Fa-f]+) "H"i { return { type: 'hexadecimal', value: makeInteger(ns, negs, true) } }
 
 DECIMAL "decimal"
   = negs:("-"*) ns:([0-9]+) { return { type: 'decimal', value: makeInteger(ns, negs, false) } }

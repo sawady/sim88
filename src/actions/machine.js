@@ -11,7 +11,7 @@ const changeLine = (line, instruction) => ({
 
 const executeInstruction = (instruction) => ({
   type: `I-${instruction.type.toUpperCase()}`,
-  instruction: instruction,
+  instruction,
 })
 
 const execute = (dispatch, getState, text) => {
