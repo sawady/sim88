@@ -1,5 +1,3 @@
-import { toReg } from './conversions'
-
 export default class Flag {
 
   constructor(name, value) {

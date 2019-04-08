@@ -7,7 +7,7 @@ import Toolbar from './Toolbar';
 import Editor from './Editor';
 import Machine from './Machine';
 
-import { DEFAULT_FILE_NAME, setTitle, changeText, newFile, readFile, writeFile, writeNewFile } from '../actions/editor'
+import { DEFAULT_FILE_NAME, setTitle, newFile, readFile, writeFile, writeNewFile } from '../actions/editor'
 import { execute } from '../actions/execute'
 
 import '../styles/App.css'
