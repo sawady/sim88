@@ -8,7 +8,7 @@ import Editor from './Editor';
 import Machine from './Machine';
 
 import { DEFAULT_FILE_NAME, setTitle, newFile, readFile, writeFile, writeNewFile } from '../actions/editor'
-import { execute, stop } from '../actions/machine'
+import { start, stop, pause, reset, resume } from '../actions/machine'
 
 import '../styles/App.css'
 
@@ -19,7 +19,7 @@ class App extends Component {
     open: 'ctrl+o',
     save: ['ctrl+s', 'ctrl+g'],
     saveAs: ['shift+ctrl+s', 'shift+ctrl+g'],
-    execute: 'f5',
+    start: 'f5',
     pause: 'f6',
     stop: 'f7',
     help: 'f1',
@@ -30,7 +30,7 @@ class App extends Component {
     open: (event) => this.refs.toolbar.refs.openfile.click(),
     save: (event) => this.writeFile(this.refs.toolbar.refs.saveNewFile)(),
     saveAs: (event) => this.refs.toolbar.refs.saveNewFile.click(),
-    execute: (event) => this.execute(),
+    start: (event) => this.start(),
     pause: (event) => console.log('Pause hotkey called!'),
     stop: (event) => console.log('Stop hotkey called!'),
     help: (event) => console.log('Help hotkey called!'),
@@ -68,8 +68,20 @@ class App extends Component {
     this.props.stop();
   }
 
-  execute = () => {
-    this.props.execute(this.props.text, this.editor);
+  start = () => {
+    this.props.start(this.props.text, this.editor);
+  }
+  
+  reset = () => {
+    this.props.reset();
+  }
+
+  pause = () => {
+    this.props.pause();
+  }
+
+  resume = () => {
+    this.props.resume();
   }
 
   render() {
@@ -82,10 +94,14 @@ class App extends Component {
             readFile={this.readFile}
             writeFile={this.writeFile}
             writeNewFile={this.writeNewFile}
-            execute={this.execute}
+            start={this.start}
             stop={this.stop}
+            reset={this.reset}
+            pause={this.pause}
+            resume={this.resume}
             filepath={this.props.filepath}
             text={this.props.text}
+            machineState={this.props.machineState}
           />
           <div className="main">
             <Editor />
@@ -101,13 +117,17 @@ export default connect(
   state => ({
     filepath: state.editor.filepath,
     text: state.editor.text,
+    machineState: state.machine.state,
   }),
   dispatch => ({
     newFile: () => dispatch(newFile()),
     readFile: path => dispatch(readFile(path)),
     writeFile: (path, text) => dispatch(writeFile(path, text)),
     writeNewFile: (path, text) => dispatch(writeNewFile(path, text)),
-    execute: text => dispatch(execute(text)),
+    start: text => dispatch(start(text)),
     stop: () => dispatch(stop()),
+    pause: () => dispatch(pause()),
+    reset: () => dispatch(reset()),
+    resume: () => dispatch(resume()),
   })
 )(App)

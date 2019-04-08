@@ -29,6 +29,7 @@ export default (state = defaultState, action) => {
         filepath: action.filepath,
       }
     case 'STOP':
+    case 'RESET':
       return {
         ...state,
         text: defaultText,
@@ -36,7 +37,7 @@ export default (state = defaultState, action) => {
         ast: '',
         line: undefined,
       }
-    case 'EXECUTE':
+    case 'CHANGE_LINE':
       try {
         return {
           ...state,

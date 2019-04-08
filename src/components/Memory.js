@@ -11,6 +11,16 @@ class Memory extends Component {
     this.refs.cell.scrollIntoView(false);
   }
 
+  renderCell = (IP) => cell =>
+    <div
+      key={cell.dir}
+      ref={scrollWithOffset(cell.dir) === this.props.IP.value ? 'cell' : undefined}
+      className={cell.dir === IP.value ? "cell active" : "cell"}
+    >
+      <div className="dir">{cell.renderDir()}</div>
+      <div className="value">{cell.renderValue()}</div>
+    </div>
+
   render() {
     const { memory, IP } = this.props;
 
@@ -20,17 +30,7 @@ class Memory extends Component {
           <span>Memoria</span>
         </div>
         {
-          memory.map(
-            cell =>
-              <div
-                key={cell.dir}
-                ref={scrollWithOffset(cell.dir) === this.props.IP.value ? 'cell' : undefined}
-                className={cell.dir === IP.value ? "cell active" : "cell"}
-              >
-                <div className="dir">{cell.renderDir()}</div>
-                <div className="value">{cell.renderValue()}</div>
-              </div>
-          )
+          memory.map(this.renderCell(IP))
         }
       </div>
     )

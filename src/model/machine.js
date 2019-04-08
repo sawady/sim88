@@ -38,6 +38,25 @@ const generateMemory = (size) => {
   return memory;
 }
 
+export const start = (machine) => {
+  return update(machine, {
+    state: { $set: 'RUNNING' },
+  });
+}
+
+export const pause = (machine) => {
+  return update(machine, {
+    state: { $set: 'PAUSED' },
+  });
+}
+
+export const stop = (machine) => {
+  return update(machine, {
+    state: { $set: 'STOPPED' },
+    activeComponent: { $set: null },
+  });
+}
+
 export const createMachine = () => ({
   registers: REGISTERS.reduce(addReg, {}),
   ALU: ALU_REGISTERS.reduce(addReg, {}),
@@ -47,4 +66,6 @@ export const createMachine = () => ({
   SP: createReg('SP', DEFAULT_SP),
   decoder: '????',
   memory: generateMemory(MEMORY_SIZE),
+  state: 'STOPPED',
+  activeComponent: null,
 });
