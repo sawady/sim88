@@ -1,18 +1,9 @@
 import { toReg } from './conversions'
 
-export default class Register {
+const create = (name, value) => ({ name, value });
 
-  constructor(name, value) {
-    this.name  = name;
-    this.value = value;
-  }
-
-  setValue(value) {
-    this.value = value;
-  }
-
-  render() {
-    return toReg(this.name, this.value);
-  }
-
+export default {
+  create,
+  setValue: (reg, value) => create(reg.name, value),
+  render: reg => toReg(reg.name, reg.value),
 }

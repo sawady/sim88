@@ -16,14 +16,14 @@ class Result extends Component {
           <Memory />
         </div>
         <div className="layout">
-        <div>
-          RESULTADO:
-          {JSON.stringify(this.props.ast)}
-        </div>
-        <div>
-          ERROR:
-          {this.props.error}
-        </div>
+          <div>
+            <span>RESULTADO:</span>
+            {JSON.stringify(this.props.ast)}
+          </div>
+          <div>
+            <span>ERROR:</span>
+            {this.props.error}
+          </div>
         </div>
       </div>
     )
@@ -32,7 +32,7 @@ class Result extends Component {
 
 export default connect(
   state => ({
-    ast: state.ast.ast,
-    error: state.ast.error
+    ast: state.editor.ast,
+    error: state.editor.error
   })
 )(Result)

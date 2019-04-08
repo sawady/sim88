@@ -1,12 +1,16 @@
-import Machine from '../model/machine';
+import { createMachine, changeRegister } from '../model/machine';
 
-const defaultState = new Machine();
+const defaultState = createMachine();
 
-export default (state = defaultState, action) => {
+export default (machine = defaultState, action) => {
   switch (action.type) {
-    case 'MOV':
-      return state;
+    case 'I-MOV':
+      return changeRegister(
+        machine,
+        action.instruction.p1.value,
+        action.instruction.p2.value
+      );
     default:
-      return state;
+      return machine;
   }
 };

@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
+import { renderRegister } from '../model/machine';
+
 import '../styles/CPU.css'
 
 class CPU extends Component {
 
-  renderRegister = reg => {
-    const r = reg.render();
+  renderRegister = (reg) => {
+    const r = renderRegister(reg);
     return (
       <div key={reg.name} className="register">
         <div className="name">{r.name}</div>
@@ -17,17 +19,6 @@ class CPU extends Component {
       </div>
     );
   }
-
-  renderALU = () => (
-    <div className="alu bluebox">
-      <div className="title">
-        ALU
-    </div>
-      {
-        this.props.ALU.map(this.renderRegister)
-      }
-    </div>
-  )
 
   renderFlags = () => (
     <div className="flags">
@@ -44,10 +35,23 @@ class CPU extends Component {
     </div>
   )
 
-  renderRegisters = () => (
+  renderRegisters = (registers) => Object.keys(registers).map(k => this.renderRegister(registers[k]))
+
+  renderALU = () => (
+    <div className="alu bluebox">
+      <div className="title">
+        <span>ALU</span>
+      </div>
+      {
+        this.renderRegisters(this.props.ALU)
+      }
+    </div>
+  )
+
+  renderCPURegisters = () => (
     <div className="bluebox">
       {
-        this.props.registers.map(this.renderRegister)
+        this.renderRegisters(this.props.registers)
       }
     </div>
   )
@@ -75,7 +79,7 @@ class CPU extends Component {
     <div className="redbox decoder">
       <div className="title">
         DECODIFICADOR
-    </div>
+      </div>
       <div className="value">
         {this.props.decoder}
       </div>
@@ -98,7 +102,7 @@ class CPU extends Component {
         </div>
         <div className="layout">
           {this.renderALU()}
-          {this.renderRegisters()}
+          {this.renderCPURegisters()}
         </div>
         <div className="layout">
           {this.renderFlags()}

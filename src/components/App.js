@@ -8,7 +8,7 @@ import Editor from './Editor';
 import Machine from './Machine';
 
 import { DEFAULT_FILE_NAME, setTitle, newFile, readFile, writeFile, writeNewFile } from '../actions/editor'
-import { execute, stop } from '../actions/execute'
+import { execute, stop } from '../actions/machine'
 
 import '../styles/App.css'
 
@@ -51,7 +51,6 @@ class App extends Component {
   }
 
   writeFile = (ref) => () => {
-    console.log(this.props.filepath);
     if (!this.props.filepath) {
       ref.click();
     } else {

@@ -8,7 +8,7 @@ export default class Cell {
   }
 
   setValue(value) {
-    this.value = value;
+    return new Cell(this.dir, value);
   }
 
   renderDir() {

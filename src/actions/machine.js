@@ -7,15 +7,17 @@ export const execute = (text, editor) => (dispatch, getState) => {
   dispatch(stop());
   const ast = parser.parse(text);
   let i = 0;
-  console.log(ast);
   t = setInterval(
     () => {
       if (i < ast.length) {
-        console.log('execute', ast[i]);
         dispatch({
           type: 'EXECUTE',
           line: i + 1,
           ast: ast[i],
+        });
+        dispatch({
+          type: `I-${ast[i].type.toUpperCase()}`,
+          instruction: ast[i],
         });
         i++;
       } else {

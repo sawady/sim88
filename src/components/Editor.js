@@ -58,7 +58,7 @@ class Editor extends Component {
 export default connect(
   state => ({
     text: state.editor.text,
-    line: state.ast.line,
+    line: state.editor.line,
   }),
   dispatch => ({
     changeText: text => dispatch(changeText(text))

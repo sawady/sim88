@@ -26,7 +26,6 @@ export const newFile = () => (dispatch) => {
 
 export const readFile = (path) => (dispatch) => {
   fs.readFile(path, 'utf8', (err, data) => {
-    console.log(path);
     dispatch(changeFilePath(path));
     dispatch(changeText(data));
   });
