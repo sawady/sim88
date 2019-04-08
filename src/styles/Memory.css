@@ -4,8 +4,17 @@
   overflow-y: auto;
 }
 
+.memory.frame {
+  padding-top: 0;
+}
+
 .memory::-webkit-scrollbar { 
   display: none; 
+}
+
+.memory .title {
+  position: fixed !important;
+  padding: 0px 14px !important;
 }
 
 .memory .cell {
@@ -26,6 +35,10 @@
 .memory .cell .value {
   background-color: darkred;
   padding: 0 2px;
+}
+
+.memory .cell:nth-child(2) {
+  margin-top: 25px;
 }
 
 .memory .cell:last-child {

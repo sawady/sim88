@@ -16,8 +16,8 @@ class Memory extends Component {
 
     return (
       <div className="memory frame">
-        <div className="title">
-          Memoria
+          <div className="title">
+            <span>Memoria</span>
         </div>
         {
           memory.cells.map(
