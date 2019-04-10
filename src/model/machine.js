@@ -6,7 +6,7 @@ import update from 'immutability-helper';
 const INITIAL_VELOCITY = 800; // ms
 const MIN_VELOCITY = 10000; // ms
 const MAX_VELOCITY = 10; // ms
-const MEMORY_SIZE = 8000
+const MEMORY_SIZE = 1000 // 8000
 const DEFAULT_IP = readHex(2000)
 const DEFAULT_SP = MEMORY_SIZE + 1
 const REGISTERS = ['AX', 'BX', 'CX', 'DX']

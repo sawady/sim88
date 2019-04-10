@@ -1,4 +1,4 @@
-import { toHex8, toHex16 } from '../model/conversions'
+import { printHex8, printHex16 } from '../model/conversions'
 
 export default class Cell {
 
@@ -12,11 +12,11 @@ export default class Cell {
   }
 
   renderDir() {
-    return toHex16(this.dir);
+    return printHex16(this.dir);
   }
 
   renderValue() {
-    return toHex8(this.value);
+    return printHex8(this.value);
   }
 
 }

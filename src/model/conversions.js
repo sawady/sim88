@@ -1,6 +1,42 @@
-export const toHex16 = (number) => ('0000' + Number(number).toString(16).toUpperCase()).slice(-4);
+// black magin
+const createToInt = (size) => {
+  if (size < 2) {
+    throw new Error('Minimum size is 2');
+  }
+  else if (size > 64) {
+    throw new Error('Maximum size is 64');
+  }
+  // Determine value range
+  const maxValue = (1 << (size - 1)) - 1;
+  const minValue = -maxValue - 1;
+  return (value) => {
+    if (value < 0) {
+      return (1 << size) + value;
+    }
+    else {
+      return value;
+    }
+  };
+}
 
-export const toHex8 = (number) => ('00' + Number(number).toString(16).toUpperCase()).slice(-2);
+const toInt8 = createToInt(8);
+const toInt16 = createToInt(16);
+
+export const toHex8 = (number) => (
+  printHex8(toInt8(number))
+);
+
+export const toHex16 = (number) => (
+  printHex16(toInt16(number))
+);
+
+export const printHex8 = (number) => (
+  number.toString(16).padStart(2, '0').toUpperCase()
+)
+
+export const printHex16 = (number) => (
+  number.toString(16).padStart(4, '0').toUpperCase()
+)
 
 export const fromReg = (name, hex) => {
   const value = toHex16(hex);

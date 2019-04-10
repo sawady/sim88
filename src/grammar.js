@@ -255,17 +255,17 @@ export default /*
         peg$c111 = peg$literalExpectation("DH", true),
         peg$c112 = function(reg) { return { type: 'register', value: reg } },
         peg$c113 = peg$otherExpectation("hexadecimal"),
-        peg$c114 = "-",
-        peg$c115 = peg$literalExpectation("-", false),
-        peg$c116 = /^[0-9A-Fa-f]/,
-        peg$c117 = peg$classExpectation([["0", "9"], ["A", "F"], ["a", "f"]], false, false),
-        peg$c118 = "h",
-        peg$c119 = peg$literalExpectation("H", true),
-        peg$c120 = function(negs, ns) { return { type: 'hexadecimal', value: makeInteger(ns, negs, true) } },
-        peg$c121 = peg$otherExpectation("decimal"),
+        peg$c114 = /^[0-9A-Fa-f]/,
+        peg$c115 = peg$classExpectation([["0", "9"], ["A", "F"], ["a", "f"]], false, false),
+        peg$c116 = "h",
+        peg$c117 = peg$literalExpectation("H", true),
+        peg$c118 = function(ns) { return { type: 'hexadecimal', value: makeInteger(ns, "", true) } },
+        peg$c119 = peg$otherExpectation("decimal"),
+        peg$c120 = "-",
+        peg$c121 = peg$literalExpectation("-", false),
         peg$c122 = /^[0-9]/,
         peg$c123 = peg$classExpectation([["0", "9"]], false, false),
-        peg$c124 = function(negs, ns) { return { type: 'decimal', value: makeInteger(ns, negs, false) } },
+        peg$c124 = function(neg, ns) { return { type: 'decimal', value: makeInteger(ns, neg, false) } },
         peg$c125 = peg$otherExpectation("end of line"),
         peg$c126 = "\n",
         peg$c127 = peg$literalExpectation("\n", false),
@@ -1326,67 +1326,44 @@ export default /*
     }
 
     function peg$parseHEXA() {
-      var s0, s1, s2, s3;
+      var s0, s1, s2;
 
       peg$silentFails++;
       s0 = peg$currPos;
       s1 = [];
-      if (input.charCodeAt(peg$currPos) === 45) {
-        s2 = peg$c114;
+      if (peg$c114.test(input.charAt(peg$currPos))) {
+        s2 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
         if (peg$silentFails === 0) { peg$fail(peg$c115); }
       }
-      while (s2 !== peg$FAILED) {
-        s1.push(s2);
-        if (input.charCodeAt(peg$currPos) === 45) {
-          s2 = peg$c114;
-          peg$currPos++;
-        } else {
-          s2 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c115); }
-        }
-      }
-      if (s1 !== peg$FAILED) {
-        s2 = [];
-        if (peg$c116.test(input.charAt(peg$currPos))) {
-          s3 = input.charAt(peg$currPos);
-          peg$currPos++;
-        } else {
-          s3 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c117); }
-        }
-        if (s3 !== peg$FAILED) {
-          while (s3 !== peg$FAILED) {
-            s2.push(s3);
-            if (peg$c116.test(input.charAt(peg$currPos))) {
-              s3 = input.charAt(peg$currPos);
-              peg$currPos++;
-            } else {
-              s3 = peg$FAILED;
-              if (peg$silentFails === 0) { peg$fail(peg$c117); }
-            }
-          }
-        } else {
-          s2 = peg$FAILED;
-        }
-        if (s2 !== peg$FAILED) {
-          if (input.substr(peg$currPos, 1).toLowerCase() === peg$c118) {
-            s3 = input.charAt(peg$currPos);
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          if (peg$c114.test(input.charAt(peg$currPos))) {
+            s2 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
-            s3 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c119); }
+            s2 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c115); }
           }
-          if (s3 !== peg$FAILED) {
-            peg$savedPos = s0;
-            s1 = peg$c120(s1, s2);
-            s0 = s1;
-          } else {
-            peg$currPos = s0;
-            s0 = peg$FAILED;
-          }
+        }
+      } else {
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        if (input.substr(peg$currPos, 1).toLowerCase() === peg$c116) {
+          s2 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c117); }
+        }
+        if (s2 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c118(s1);
+          s0 = s1;
         } else {
           peg$currPos = s0;
           s0 = peg$FAILED;
@@ -1409,23 +1386,15 @@ export default /*
 
       peg$silentFails++;
       s0 = peg$currPos;
-      s1 = [];
       if (input.charCodeAt(peg$currPos) === 45) {
-        s2 = peg$c114;
+        s1 = peg$c120;
         peg$currPos++;
       } else {
-        s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c115); }
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c121); }
       }
-      while (s2 !== peg$FAILED) {
-        s1.push(s2);
-        if (input.charCodeAt(peg$currPos) === 45) {
-          s2 = peg$c114;
-          peg$currPos++;
-        } else {
-          s2 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c115); }
-        }
+      if (s1 === peg$FAILED) {
+        s1 = null;
       }
       if (s1 !== peg$FAILED) {
         s2 = [];
@@ -1465,7 +1434,7 @@ export default /*
       peg$silentFails--;
       if (s0 === peg$FAILED) {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c121); }
+        if (peg$silentFails === 0) { peg$fail(peg$c119); }
       }
 
       return s0;
@@ -1568,17 +1537,17 @@ export default /*
     }
 
 
-      function sign(negs) {
-        return negs.length % 2 == 0 ? 1 : -1;
+      function isNegative(neg) {
+        return neg === "-" ? -1 : 1;
       }
 
-      function makeInteger(ns, negs, hexa) {
+      function makeInteger(ns, neg, hexa) {
+        var negative = isNegative(neg);
         var n = hexa ?
            parseInt(ns.join(""), 16) :
            parseInt(ns.join(""), 10);
-        if(hexa && n >= 65536) expected('number < FFFFH')
-        if(!hexa && n >= 65536) expected('number < 65536')
-        return n * sign(negs);
+        if(hexa && n >= 32768) expected('number < 7FFFH')
+        return n * isNegative(neg);
       }
 
 

@@ -16,21 +16,26 @@ const executeInstruction = (instruction) => ({
 })
 
 const execute = (dispatch, getState, text) => {
-  const ast = parser.parse(text);
-  let i = getState().editor.line || 0;
-  TIMER = setInterval(
-    () => {
-      if (i < ast.length) {
-        dispatch(changeLine(i + 1, ast[i]));
-        dispatch(executeInstruction(ast[i]));
-        i++;
-      } else {
-        dispatch(changeLine(i + 1));
-        dispatch(stop());
-      }
-    },
-    getState().machine.velocity
-  );
+  try {
+    const ast = parser.parse(text);
+    let i = getState().editor.line || 0;
+    TIMER = setInterval(
+      () => {
+        if (i < ast.length) {
+          dispatch(changeLine(i + 1, ast[i]));
+          dispatch(executeInstruction(ast[i]));
+          i++;
+        } else {
+          dispatch(changeLine(i + 1));
+          dispatch(stop());
+        }
+      },
+      getState().machine.velocity
+    );
+  } catch (e) {
+    console.log(e);
+    dispatch(stop());
+  }
 }
 
 export const start = (text) => (dispatch, getState) => {

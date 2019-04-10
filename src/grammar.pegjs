@@ -2,17 +2,17 @@
 // ==========================
 
 {
-  function sign(negs) {
-    return negs.length % 2 == 0 ? 1 : -1;
+  function isNegative(neg) {
+    return neg === "-" ? -1 : 1;
   }
 
-  function makeInteger(ns, negs, hexa) {
+  function makeInteger(ns, neg, hexa) {
+    var negative = isNegative(neg);
     var n = hexa ?
        parseInt(ns.join(""), 16) :
        parseInt(ns.join(""), 10);
-    if(hexa && n >= 65536) expected('number < FFFFH')
-    if(!hexa && n >= 65536) expected('number < 65536')
-    return n * sign(negs);
+    if(hexa && n >= 32768) expected('number < 7FFFH')
+    return n * isNegative(neg);
   }
 }
 
@@ -95,10 +95,10 @@ REG "register"
   = reg:("AX"i / "BX"i / "[BX]"i / "CX"i / "DX"i / "AL"i / "AH"i / "BL"i / "BH"i / "CL"i / "CH"i / "DL"i / "DH"i) { return { type: 'register', value: reg } } 
 
 HEXA "hexadecimal"
-  = negs:("-"*) ns:([0-9A-Fa-f]+) "H"i { return { type: 'hexadecimal', value: makeInteger(ns, negs, true) } }
+  = ns:([0-9A-Fa-f]+) "H"i { return { type: 'hexadecimal', value: makeInteger(ns, "", true) } }
 
 DECIMAL "decimal"
-  = negs:("-"*) ns:([0-9]+) { return { type: 'decimal', value: makeInteger(ns, negs, false) } }
+  = neg:("-"?) ns:([0-9]+) { return { type: 'decimal', value: makeInteger(ns, neg, false) } }
 
 ENDLINE "end of line"
   = "\n"
