@@ -11,6 +11,9 @@ class Result extends Component {
   render() {
     return (
       <div className="machine">
+        <div className="velocity">
+          Velocidad: {this.props.velocity}ms
+        </div>
         <div className="layout">
           <CPU />
           <Memory />
@@ -33,6 +36,7 @@ class Result extends Component {
 export default connect(
   state => ({
     ast: state.editor.ast,
-    error: state.editor.error
+    error: state.editor.error,
+    velocity: state.machine.velocity,
   })
 )(Result)

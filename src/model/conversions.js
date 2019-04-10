@@ -7,6 +7,10 @@ export const fromReg = (name, hex) => {
   return { name, L: value.slice(0, 2), H: value.slice(-2) }
 }
 
+export const readHex = (number) => {
+  return parseInt(number + '', 16);
+}
+
 const build8Reg = (prev, value, f) => {
   const hexR = toHex16(prev);
   const hexV = toHex8(value);

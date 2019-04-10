@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 
+import { MACHINE_STATES } from '../model/machine';
 import { DEFAULT_FILE_NAME } from '../actions/editor'
 
 import PlayIcon from 'mdi-react/PlayIcon';
@@ -36,21 +37,21 @@ export default class Toolbar extends Component {
           Guardar como...
         </button>
         {
-          this.props.machineState === 'RUNNING' &&
+          this.props.machineState === MACHINE_STATES.RUNNING &&
           <button onClick={this.props.pause}>
             <PauseIcon size={24} />
             Pausar
           </button>
         }
         {
-          this.props.machineState === 'PAUSED' &&
+          this.props.machineState === MACHINE_STATES.PAUSED &&
           <button onClick={this.props.resume}>
             <PlayIcon size={24} />
             Reanudar
           </button>
         }
         {
-          this.props.machineState === 'STOPPED' &&
+          this.props.machineState === MACHINE_STATES.STOPPED &&
           <button onClick={this.props.start}>
             <PlayIcon size={24} />
             Ejecutar

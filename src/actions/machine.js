@@ -1,7 +1,8 @@
 import parser from '../grammar'
 import { setInterval, clearTimeout } from 'timers';
+import { MACHINE_STATES } from '../model/machine';
 
-let t;
+let TIMER;
 
 const changeLine = (line, instruction) => ({
   type: 'CHANGE_LINE',
@@ -17,7 +18,7 @@ const executeInstruction = (instruction) => ({
 const execute = (dispatch, getState, text) => {
   const ast = parser.parse(text);
   let i = getState().editor.line || 0;
-  t = setInterval(
+  TIMER = setInterval(
     () => {
       if (i < ast.length) {
         dispatch(changeLine(i + 1, ast[i]));
@@ -28,7 +29,7 @@ const execute = (dispatch, getState, text) => {
         dispatch(stop());
       }
     },
-    1000
+    getState().machine.velocity
   );
 }
 
@@ -41,7 +42,7 @@ export const start = (text) => (dispatch, getState) => {
 };
 
 export const stop = () => {
-  clearTimeout(t);
+  clearTimeout(TIMER);
   return {
     type: 'STOP'
   };
@@ -55,14 +56,36 @@ export const resume = () => (dispatch, getState) => {
 }
 
 export const pause = () => {
-  clearTimeout(t);
+  clearTimeout(TIMER);
   return {
     type: 'PAUSE'
   };
 }
 
+export const decreaseVelocity = () => (dispatch, getState) => {
+  dispatch(pause());
+  dispatch({
+    type: 'DECREASE_VELOCITY'
+  });
+  dispatch(resume());
+}
+
+export const increaseVelocity = () => (dispatch, getState) => {
+  const action = {
+    type: 'INCREASE_VELOCITY'
+  };
+  const state = getState().machine.state;
+  if (state === MACHINE_STATES.RUNNING) {
+    dispatch(pause());
+    dispatch(action);
+    dispatch(resume());
+  } else {
+    dispatch(action);
+  }
+}
+
 export const reset = () => {
-  clearTimeout(t);
+  clearTimeout(TIMER);
   return {
     type: 'RESET'
   };

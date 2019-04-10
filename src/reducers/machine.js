@@ -1,4 +1,12 @@
-import { createMachine, moveToRegister, start, stop, pause } from '../model/machine';
+import {
+  createMachine,
+  moveToRegister,
+  start,
+  stop,
+  pause,
+  increaseVelocity,
+  decreaseVelocity,
+} from '../model/machine';
 
 export default (machine = createMachine(), action) => {
   switch (action.type) {
@@ -17,6 +25,10 @@ export default (machine = createMachine(), action) => {
       );
     case 'RESET':
       return createMachine();
+    case 'INCREASE_VELOCITY':
+      return increaseVelocity(machine);
+    case 'DECREASE_VELOCITY':
+      return decreaseVelocity(machine);
     default:
       return machine;
   }

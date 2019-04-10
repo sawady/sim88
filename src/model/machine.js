@@ -1,16 +1,24 @@
 import Cell from './cell'
-import { toLowReg, toHighReg, fromReg } from './conversions'
+import { toLowReg, toHighReg, fromReg, readHex } from './conversions'
 
 import update from 'immutability-helper';
 
-const MEMORY_SIZE = 200
-const DEFAULT_IP = 150
+const INITIAL_VELOCITY = 800; // ms
+const MIN_VELOCITY = 10000; // ms
+const MAX_VELOCITY = 10; // ms
+const MEMORY_SIZE = 8000
+const DEFAULT_IP = readHex(2000)
 const DEFAULT_SP = MEMORY_SIZE + 1
 const REGISTERS = ['AX', 'BX', 'CX', 'DX']
 const LOW_REGISTERS = REGISTERS.map(x => x[0] + 'L');
 const HIGH_REGISTERS = REGISTERS.map(x => x[0] + 'H');
 const ALU_REGISTERS = ['OP1', 'OP2', 'RES']
 const FLAGS = ['i', 'z', 's', 'o', 'c', 'a', 'p']
+export const MACHINE_STATES = {
+  RUNNING: 'RUNNING',
+  PAUSED: 'PAUSED',
+  STOPPED: 'STOPPED',
+};
 
 const createReg = (name, value) => ({ type: 'REG', name, value });
 const createFlag = (name, value) => ({ type: 'FLAG', name, value });
@@ -53,28 +61,40 @@ export const moveToRegister = (machine, name, data) => {
 const generateMemory = (size) => {
   const memory = [];
   for (let i = 0; i <= size; i++) {
-    memory.push(new Cell(i, 0));
+    memory.push(new Cell(readHex(2000) + i, 0));
   }
   return memory;
 }
 
 export const start = (machine) => {
   return update(machine, {
-    state: { $set: 'RUNNING' },
+    state: { $set: MACHINE_STATES.RUNNING },
   });
 }
 
 export const pause = (machine) => {
   return update(machine, {
-    state: { $set: 'PAUSED' },
+    state: { $set: MACHINE_STATES.PAUSED },
   });
 }
 
 export const stop = (machine) => {
   return update(machine, {
-    state: { $set: 'STOPPED' },
+    state: { $set: MACHINE_STATES.STOPPED },
     activeComponent: { $set: null },
     decoder: { $set: '????' },
+  });
+}
+
+export const decreaseVelocity = (machine) => {
+  return update(machine, {
+    velocity: { $set: Math.round(Math.min(MIN_VELOCITY, machine.velocity * 1.5)) },
+  });
+}
+
+export const increaseVelocity = (machine) => {
+  return update(machine, {
+    velocity: { $set: Math.round(Math.max(MAX_VELOCITY, machine.velocity * 0.5)) },
   });
 }
 
@@ -87,6 +107,7 @@ export const createMachine = () => ({
   SP: createReg('SP', DEFAULT_SP),
   decoder: '????',
   memory: generateMemory(MEMORY_SIZE),
-  state: 'STOPPED',
+  state: MACHINE_STATES.STOPPED,
   activeComponent: null,
+  velocity: INITIAL_VELOCITY,
 });

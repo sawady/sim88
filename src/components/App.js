@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux';
 
 import { HotKeys } from 'react-hotkeys';
 
@@ -7,8 +8,9 @@ import Toolbar from './Toolbar';
 import Editor from './Editor';
 import Machine from './Machine';
 
+import { MACHINE_STATES } from '../model/machine';
 import { DEFAULT_FILE_NAME, setTitle, newFile, readFile, writeFile, writeNewFile } from '../actions/editor'
-import { start, stop, pause, reset, resume } from '../actions/machine'
+import { start, stop, pause, reset, resume, increaseVelocity, decreaseVelocity } from '../actions/machine'
 
 import '../styles/App.css'
 
@@ -20,9 +22,12 @@ class App extends Component {
     save: ['ctrl+s', 'ctrl+g'],
     saveAs: ['shift+ctrl+s', 'shift+ctrl+g'],
     start: 'f5',
-    pause: 'f6',
+    pauseOrResume: 'f6',
     stop: 'f7',
+    reset: 'f8',
     help: 'f1',
+    increase: 'ctrl+alt+i',
+    decrease: 'ctrl+alt+d',
   }
 
   handlers = {
@@ -31,8 +36,11 @@ class App extends Component {
     save: (event) => this.writeFile(this.refs.toolbar.refs.saveNewFile)(),
     saveAs: (event) => this.refs.toolbar.refs.saveNewFile.click(),
     start: (event) => this.start(),
-    pause: (event) => console.log('Pause hotkey called!'),
-    stop: (event) => console.log('Stop hotkey called!'),
+    increase: (event) => this.increaseVelocity(),
+    decrease: (event) => this.decreaseVelocity(),
+    pauseOrResume: (event) => this.pauseOrResume(),
+    stop: (event) => this.stop(),
+    reset: (event) => this.reset(),
     help: (event) => console.log('Help hotkey called!'),
   };
 
@@ -64,6 +72,14 @@ class App extends Component {
     this.props.writeNewFile(path, this.props.text);
   }
 
+  increaseVelocity = () => {
+    this.props.increaseVelocity();
+  }
+
+  decreaseVelocity = () => {
+    this.props.decreaseVelocity();
+  }
+
   stop = () => {
     this.props.stop();
   }
@@ -71,9 +87,19 @@ class App extends Component {
   start = () => {
     this.props.start(this.props.text, this.editor);
   }
-  
+
   reset = () => {
     this.props.reset();
+  }
+
+  pauseOrResume = () => {
+    console.log(this.props.machineState);
+    if (this.props.machineState === MACHINE_STATES.RUNNING) {
+      this.pause();
+    }
+    if (this.props.machineState === MACHINE_STATES.PAUSED) {
+      this.resume();
+    }
   }
 
   pause = () => {
@@ -119,15 +145,18 @@ export default connect(
     text: state.editor.text,
     machineState: state.machine.state,
   }),
-  dispatch => ({
-    newFile: () => dispatch(newFile()),
-    readFile: path => dispatch(readFile(path)),
-    writeFile: (path, text) => dispatch(writeFile(path, text)),
-    writeNewFile: (path, text) => dispatch(writeNewFile(path, text)),
-    start: text => dispatch(start(text)),
-    stop: () => dispatch(stop()),
-    pause: () => dispatch(pause()),
-    reset: () => dispatch(reset()),
-    resume: () => dispatch(resume()),
-  })
+  dispatch =>
+    bindActionCreators({
+      newFile,
+      readFile,
+      writeFile,
+      writeNewFile,
+      start,
+      stop,
+      pause,
+      reset,
+      resume,
+      increaseVelocity,
+      decreaseVelocity
+    }, dispatch),
 )(App)
