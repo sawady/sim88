@@ -14,6 +14,10 @@
     if(hexa && n >= 32768) expected('number < 7FFFH')
     return n * isNegative(neg);
   }
+  
+  function line() {
+  	return location().start.line;
+  }
 }
 
 PROGRAM
@@ -21,10 +25,10 @@ PROGRAM
     { return sts.map(function(x) { return x[1] }).filter(function(x) { return x !== null; } ) }
 
 STATEMENT =
-  op:BINOP _ p1:PARAM1 _ "," _ p2:PARAM2  { return { type: op, p1: p1, p2: p2 } }
-  / op:UNOP _ p1:PARAM1 { return { type: op, p1: p1 } }
-  / op:ZOP { return { type: op } }
-  / op:JMP _ label:LABEL { return { type: op, label: label } }
+  op:BINOP _ p1:PARAM1 _ "," _ p2:PARAM2 { return { line: line(), type: op, p1: p1, p2: p2 } }
+  / op:UNOP _ p1:PARAM1 { return { line: line(), type: op, p1: p1 } }
+  / op:ZOP { return { line: line(), type: op } }
+  / op:JMP _ label:LABEL { return { line: line(), type: op, label: label } }
   / COMMENT { return null }
 
 COMMENT = ';' ([^\n]*)

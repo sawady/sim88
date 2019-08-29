@@ -93,7 +93,6 @@ class App extends Component {
   }
 
   pauseOrResume = () => {
-    console.log(this.props.machineState);
     if (this.props.machineState === MACHINE_STATES.RUNNING) {
       this.pause();
     }

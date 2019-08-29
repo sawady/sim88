@@ -145,10 +145,10 @@ export default /*
         peg$c1 = function(sts) { return sts.map(function(x) { return x[1] }).filter(function(x) { return x !== null; } ) },
         peg$c2 = ",",
         peg$c3 = peg$literalExpectation(",", false),
-        peg$c4 = function(op, p1, p2) { return { type: op, p1: p1, p2: p2 } },
-        peg$c5 = function(op, p1) { return { type: op, p1: p1 } },
-        peg$c6 = function(op) { return { type: op } },
-        peg$c7 = function(op, label) { return { type: op, label: label } },
+        peg$c4 = function(op, p1, p2) { return { line: line(), type: op, p1: p1, p2: p2 } },
+        peg$c5 = function(op, p1) { return { line: line(), type: op, p1: p1 } },
+        peg$c6 = function(op) { return { line: line(), type: op } },
+        peg$c7 = function(op, label) { return { line: line(), type: op, label: label } },
         peg$c8 = function() { return null },
         peg$c9 = ";",
         peg$c10 = peg$literalExpectation(";", false),
@@ -1548,6 +1548,10 @@ export default /*
            parseInt(ns.join(""), 10);
         if(hexa && n >= 32768) expected('number < 7FFFH')
         return n * isNegative(neg);
+      }
+      
+      function line() {
+      	return location().start.line;
       }
 
 

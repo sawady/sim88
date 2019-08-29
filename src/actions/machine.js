@@ -18,15 +18,15 @@ const executeInstruction = (instruction) => ({
 const execute = (dispatch, getState, text) => {
   try {
     const ast = parser.parse(text);
-    let i = getState().editor.line || 0;
+    let i = 0;
     TIMER = setInterval(
       () => {
         if (i < ast.length) {
-          dispatch(changeLine(i + 1, ast[i]));
-          dispatch(executeInstruction(ast[i]));
+          const inst = ast[i];
+          dispatch(changeLine(inst.line, inst));
+          dispatch(executeInstruction(inst));
           i++;
         } else {
-          dispatch(changeLine(i + 1));
           dispatch(stop());
         }
       },

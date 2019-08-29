@@ -7,8 +7,6 @@ const createToInt = (size) => {
     throw new Error('Maximum size is 64');
   }
   // Determine value range
-  const maxValue = (1 << (size - 1)) - 1;
-  const minValue = -maxValue - 1;
   return (value) => {
     if (value < 0) {
       return (1 << size) + value;
