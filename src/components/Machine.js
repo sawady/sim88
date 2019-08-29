@@ -18,14 +18,19 @@ class Result extends Component {
           <CPU />
           <Memory />
         </div>
-        <div className="layout">
+        <div>
           <div>
             <span>RESULTADO:</span>
             {JSON.stringify(this.props.ast)}
           </div>
           <div>
-            <span>ERROR:</span>
-            {this.props.error}
+            {
+              this.props.error &&
+              <React.Fragment>
+                <span>ERROR: </span>
+                {this.props.error}
+              </React.Fragment>
+            }
           </div>
         </div>
       </div>

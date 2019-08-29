@@ -25,10 +25,10 @@ PROGRAM
     { return sts.map(function(x) { return x[1] }).filter(function(x) { return x !== null; } ) }
 
 STATEMENT =
-  op:BINOP _ p1:PARAM1 _ "," _ p2:PARAM2 { return { line: line(), type: op, p1: p1, p2: p2 } }
-  / op:UNOP _ p1:PARAM1 { return { line: line(), type: op, p1: p1 } }
-  / op:ZOP { return { line: line(), type: op } }
-  / op:JMP _ label:LABEL { return { line: line(), type: op, label: label } }
+  op:BINOP _ p1:PARAM1 _ "," _ p2:PARAM2 { return { line: line(), type: op, p1: p1, p2: p2, group: 'binary' } }
+  / op:UNOP _ p1:PARAM1 { return { line: line(), type: op, p1: p1, group: 'unary' } }
+  / op:ZOP { return { line: line(), type: op, group: 'zop' } }
+  / op:JMP _ label:LABEL { return { line: line(), type: op, label: label, group: 'jmp' } }
   / COMMENT { return null }
 
 COMMENT = ';' ([^\n]*)

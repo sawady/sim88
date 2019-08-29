@@ -1,6 +1,7 @@
 import parser from '../grammar'
 import { setInterval, clearTimeout } from 'timers';
 import { MACHINE_STATES } from '../model/machine';
+import staticCheck from '../checker/static';
 
 let TIMER;
 
@@ -10,15 +11,21 @@ const changeLine = (line, instruction) => ({
   ast: instruction,
 })
 
+const makeErrorMessage = (e) =>
+  e.name === 'SyntaxError' ?
+    `${e.name} on line ${e.location.start.line}: ${e.message}` :
+    `Error on line ${e.line}. ${e.message}`
+
 const executeInstruction = (instruction) => ({
   type: `I-${instruction.type.toUpperCase()}`,
   instruction,
 })
 
 const execute = (dispatch, getState, text) => {
+  let i = 0;
   try {
     const ast = parser.parse(text);
-    let i = 0;
+    staticCheck(ast);
     TIMER = setInterval(
       () => {
         if (i < ast.length) {
@@ -33,7 +40,11 @@ const execute = (dispatch, getState, text) => {
       getState().machine.velocity
     );
   } catch (e) {
-    console.log(e);
+    console.log(JSON.parse(JSON.stringify(e)));
+    dispatch({
+      type: 'SHOW_ERROR',
+      message: makeErrorMessage(e),
+    })
     dispatch(stop());
   }
 }

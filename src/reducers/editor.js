@@ -2,7 +2,7 @@
 import { DEFAULT_FILE_NAME } from '../actions/editor'
 
 const defaultText =
-`
+  `
 MOV AX, 32767
 MOV BX, 32768
 MOV CX, -32767
@@ -30,10 +30,14 @@ export default (state = defaultState, action) => {
         ...state,
         filepath: action.filepath,
       }
-    case 'STOP':
+    case 'START':
       return {
         ...state,
         error: undefined,
+      }
+    case 'STOP':
+      return {
+        ...state,
         ast: '',
         line: undefined,
       }
@@ -46,19 +50,17 @@ export default (state = defaultState, action) => {
         line: undefined,
       }
     case 'CHANGE_LINE':
-      try {
-        return {
-          ...state,
-          error: undefined,
-          ast: action.ast,
-          line: action.line,
-        }
-      } catch (e) {
-        return {
-          ...state,
-          ast: 'error',
-          error: e.message
-        }
+      return {
+        ...state,
+        error: undefined,
+        ast: action.ast,
+        line: action.line,
+      }
+    case 'SHOW_ERROR':
+      return {
+        ...state,
+        ast: 'error',
+        error: action.message,
       }
     default:
       return state
