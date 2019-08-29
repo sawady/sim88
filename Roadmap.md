@@ -1,6 +1,8 @@
 GENERAL
 ---
 
+- Chequeo estático de la forma de las instrucciones
+- Codificar instrucciones en memoria y cargarlas en el CPU para ejecutarlas
 - ALU de 16 bits capaz de ejecutar las operaciones: ADC, SUB, AND, OR, XOR, NOT, INC y DEC
 - Registro de indicadores con los flags de: Cero, Paridad, Paridad Auxiliar, Signo, Overflow, e indicador de interrupciones
 - Registros contador de programa (IP, requiere programa cargado en memoria) y puntero de pila (SP) de 16 bits
