@@ -17,12 +17,17 @@ const createToInt = (size) => {
   };
 }
 
-const toInt8 = createToInt(8);
-const toInt16 = createToInt(16);
+export const toInt2 = createToInt(2);
+export const toInt8 = createToInt(8);
+export const toInt16 = createToInt(16);
 
 export const toHex8 = (number) => (
   printHex8(toInt8(number))
 );
+
+export const fromBinToHex8 = (value) => (
+  printHex8(parseInt(value, 2))
+)
 
 export const toHex16 = (number) => (
   printHex16(toInt16(number))
@@ -39,6 +44,11 @@ export const printHex16 = (number) => (
 export const fromReg = (name, hex) => {
   const value = toHex16(hex);
   return { name, L: value.slice(0, 2), H: value.slice(-2) }
+}
+
+export const toOperand = (value) => {
+  const hex = toHex16(value);
+  return { L: hex.slice(0, 2), H: hex.slice(-2) }  
 }
 
 export const readHex = (number) => {

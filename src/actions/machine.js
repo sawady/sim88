@@ -1,7 +1,8 @@
 import parser from '../grammar'
 import { setInterval, clearTimeout } from 'timers';
 import { MACHINE_STATES } from '../model/machine';
-import staticCheck from '../checker/static';
+import staticCheck from '../model/static-checker';
+import compile from '../model/compiler';
 
 let TIMER;
 
@@ -26,6 +27,7 @@ const execute = (dispatch, getState, text) => {
   try {
     const ast = parser.parse(text);
     staticCheck(ast);
+    console.log('compile', compile(ast));
     TIMER = setInterval(
       () => {
         if (i < ast.length) {
