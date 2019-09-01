@@ -1,19 +1,21 @@
 import Cell from './cell'
 import { toLowReg, toHighReg, fromReg, readHex } from './conversions'
 
+import _flatten from 'lodash/flatten';
+import _find from 'lodash/find';
 import update from 'immutability-helper';
 
 const INITIAL_VELOCITY = 800; // ms
 const MIN_VELOCITY = 10000; // ms
 const MAX_VELOCITY = 10; // ms
 const MEMORY_SIZE = 1000 // 8000
-const DEFAULT_IP = readHex(2000)
-const DEFAULT_SP = MEMORY_SIZE + 1
-const REGISTERS = ['AX', 'BX', 'CX', 'DX']
+const DEFAULT_IP = readHex(2000);
+const DEFAULT_SP = MEMORY_SIZE + 1;
+const REGISTERS = ['AX', 'BX', 'CX', 'DX'];
 const LOW_REGISTERS = REGISTERS.map(x => x[0] + 'L');
 const HIGH_REGISTERS = REGISTERS.map(x => x[0] + 'H');
-const ALU_REGISTERS = ['OP1', 'OP2', 'RES']
-const FLAGS = ['i', 'z', 's', 'o', 'c', 'a', 'p']
+const ALU_REGISTERS = ['OP1', 'OP2', 'RES'];
+const FLAGS = ['i', 'z', 's', 'o', 'c', 'a', 'p'];
 export const MACHINE_STATES = {
   RUNNING: 'RUNNING',
   PAUSED: 'PAUSED',
@@ -66,7 +68,31 @@ const generateMemory = (size) => {
   return memory;
 }
 
+const loadProgramInMemory = (program) => (memory) => {
+  const flattened = _flatten(program.map(x => x.compiled));
+  return memory.map((cell, i) => cell.setFromHexValue(flattened[i] || 0));
+}
+
+export const addIP = (value, machine) => {
+  return update(machine, {
+    IP: { $apply: (reg) => createReg('IP', reg.value + value) },
+  })
+}
+
+export const updateIP = (value, machine) => {
+  return update(machine, {
+    IP: { $set: createReg('IP', value) }
+  })
+}
+
 export const start = (machine) => {
+  return update(machine, {
+    IP: { $set: createReg('IP', DEFAULT_IP) },
+    state: { $set: MACHINE_STATES.RUNNING },
+  });
+}
+
+export const resume = (machine) => {
   return update(machine, {
     state: { $set: MACHINE_STATES.RUNNING },
   });
@@ -98,6 +124,16 @@ export const increaseVelocity = (machine) => {
   });
 }
 
+export const loadProgram = (program, machine) => {
+  return update(machine, {
+    memory: { $apply: loadProgramInMemory(program) },
+    compiledProgram: { $set: program },
+  })
+}
+
+export const findCompiledInstruction = (line, program) =>
+  _find(program, x => line === x.line)
+
 export const createMachine = () => ({
   registers: REGISTERS.reduce(addReg, {}),
   ALU: ALU_REGISTERS.reduce(addReg, {}),
@@ -110,4 +146,5 @@ export const createMachine = () => ({
   state: MACHINE_STATES.STOPPED,
   activeComponent: null,
   velocity: INITIAL_VELOCITY,
+  compiledProgram: [],
 });

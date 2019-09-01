@@ -2,21 +2,32 @@ import {
   createMachine,
   moveToRegister,
   start,
+  resume,
   stop,
   pause,
   increaseVelocity,
   decreaseVelocity,
+  loadProgram,
+  updateIP,
+  addIP,
 } from '../model/machine';
 
 export default (machine = createMachine(), action) => {
   switch (action.type) {
-    case 'RESUME':
     case 'START':
       return start(machine);
+    case 'RESUME':
+      return resume(machine);
     case 'STOP':
       return stop(machine);
     case 'PAUSE':
       return pause(machine);
+    case 'LOAD_PROGRAM':
+      return loadProgram(action.program, machine);
+    case 'ADD_IP':
+      return addIP(action.value, machine);
+    case 'UPDATE_IP':
+      return updateIP(action.value, machine);
     case 'I-MOV':
       return moveToRegister(
         machine,

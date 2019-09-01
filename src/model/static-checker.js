@@ -17,6 +17,7 @@ function checkParams(instruction) {
 const validParams = {
   'mov': {
     'register-decimal': true,
+    'register-hexadecimal': true,
   }
 }
 
@@ -25,7 +26,6 @@ function checkParamsBinary(instruction) {
   const p2Type = instruction.p2.type;
   const combination = `${p1Type}-${p2Type}`;
   if (!validParams[instruction.type][combination]) {
-    console.log(instruction);
     const error = new Error(`
       Invalid params for ${instruction.type},
       you pass ${combination}

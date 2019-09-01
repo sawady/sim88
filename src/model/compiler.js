@@ -3,7 +3,7 @@ import { toOperand, fromBinToHex8 } from './conversions';
 export default function compile(ast) {
   const res = [];
   for (let i = 0; i < ast.length; i++) {
-    res.push([compileInstruction(ast[i])]);
+    res.push(compileInstruction(ast[i]));
   }
   return res;
 }
@@ -21,10 +21,19 @@ function compileBinary(instruction) {
   const p1Type = instruction.p1.type;
   const p2Type = instruction.p2.type;
   const combination = `${p1Type}-${p2Type}`;
-  return COMPILATION_DATA[instruction.type][combination](instruction);
+  const compileF = COMPILATION_DATA[instruction.type][combination];
+  if (!compileF) {
+    const error = new Error(`
+      Compilation for ${instruction.type},
+      is not yet implemented for ${combination} combination
+    `);
+    error.line = instruction.line;
+    throw error;
+  }
+  return compileF(instruction);
 }
 
-// the order is important, because we compile using it
+// the order is important, because it compile using it
 const REGS_8_BITS = ['AL', 'CL', 'DL', 'BL', 'AH', 'CH', 'DH', 'BH'];
 const REGS_16_BITS = ['AX', 'CX', 'DX', 'BX', 'SP'];
 
@@ -52,7 +61,11 @@ function movRegDatDec(inst) {
   const regType = compileReg(inst.p1.value);
   const type = fromBinToHex8('1011' + opS + regType, 2);
   const operands = opS === '0' ?
-    [ val.H ] :
-    [ val.H, val.L ];
-  return [type].concat(operands);
+    [val.H] :
+    [val.H, val.L];
+  return {
+    line: inst.line,
+    opSize: operands.length,
+    compiled: [type].concat(operands)
+  };
 }

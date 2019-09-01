@@ -3,12 +3,13 @@ import { DEFAULT_FILE_NAME } from '../actions/editor'
 
 const defaultText =
   `
-MOV AX, 32767
+MOV AL, 100  
+MOV AH, 101
 MOV BX, 32768
 MOV CX, -32767
 MOV DX, -32768
 END
-`
+  `
 
 const defaultState = {
   filepath: DEFAULT_FILE_NAME,

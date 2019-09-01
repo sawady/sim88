@@ -4,6 +4,8 @@ import { connect } from 'react-redux'
 import CPU from './CPU'
 import Memory from './Memory'
 
+import _find from 'lodash/find'
+
 import '../styles/Machine.css'
 
 class Result extends Component {
@@ -20,8 +22,19 @@ class Result extends Component {
         </div>
         <div>
           <div>
-            <span>RESULTADO:</span>
+            <span>RESULTADO AST:</span>
             {JSON.stringify(this.props.ast)}
+          </div>
+          <div>
+            <span>RESULTADO COMPILED:</span>
+            {
+              JSON.stringify(
+                _find(
+                  this.props.compiledProgram,
+                  x => x.line === this.props.ast.line
+                )
+              )
+            }
           </div>
           <div>
             {
@@ -41,7 +54,9 @@ class Result extends Component {
 export default connect(
   state => ({
     ast: state.editor.ast,
+    currentLine: state.editor.line,
     error: state.editor.error,
+    compiledProgram: state.machine.compiledProgram,
     velocity: state.machine.velocity,
   })
 )(Result)

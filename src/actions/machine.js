@@ -1,6 +1,6 @@
 import parser from '../grammar'
 import { setInterval, clearTimeout } from 'timers';
-import { MACHINE_STATES } from '../model/machine';
+import { MACHINE_STATES, findCompiledInstruction } from '../model/machine';
 import staticCheck from '../model/static-checker';
 import compile from '../model/compiler';
 
@@ -27,13 +27,20 @@ const execute = (dispatch, getState, text) => {
   try {
     const ast = parser.parse(text);
     staticCheck(ast);
-    console.log('compile', compile(ast));
+    const compiledProgram = compile(ast);
+    dispatch(loadProgram(compiledProgram));
     TIMER = setInterval(
       () => {
         if (i < ast.length) {
           const inst = ast[i];
           dispatch(changeLine(inst.line, inst));
           dispatch(executeInstruction(inst));
+          const compiledInst = findCompiledInstruction(inst.line, compiledProgram);
+          dispatch(
+            addIP(
+              compiledInst.opSize + 1
+            )
+          );
           i++;
         } else {
           dispatch(stop());
@@ -107,4 +114,25 @@ export const reset = () => {
   return {
     type: 'RESET'
   };
+}
+
+export const loadProgram = (program) => {
+  return {
+    type: 'LOAD_PROGRAM',
+    program,
+  }
+}
+
+export const addIP = (value) => {
+  return {
+    type: 'ADD_IP',
+    value,
+  }
+}
+
+export const updateIP = (value) => {
+  return {
+    type: 'UPDATE_IP',
+    value,
+  }
 }

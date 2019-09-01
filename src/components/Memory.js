@@ -11,6 +11,12 @@ class Memory extends Component {
     this.refs.cell.scrollIntoView(false);
   }
 
+  componentWillReceiveProps(props) {
+    if (this.componentWillReceiveProps.IP !== props.IP) {
+      this.refs.cell.scrollIntoView(false);
+    }
+  }
+
   renderCell = (IP) => cell =>
     <div
       key={cell.dir}
