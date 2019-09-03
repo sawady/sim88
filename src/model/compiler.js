@@ -1,9 +1,14 @@
 import { toOperand, fromBinToHex8 } from './conversions';
+import { combination } from './instruction';
 
-export default function compile(ast) {
+export default function compile(org, ast) {
   const res = [];
+  let dir = org;
   for (let i = 0; i < ast.length; i++) {
-    res.push(compileInstruction(ast[i]));
+    let compiled = compileInstruction(ast[i]);
+    compiled.dir = dir;
+    dir += compiled.opSize + 1;
+    res.push(compiled);
   }
   return res;
 }
@@ -12,25 +17,33 @@ function compileInstruction(instruction) {
   switch (instruction.group) {
     case 'binary':
       return compileBinary(instruction);
+    case 'END':
+      return compileEND(instruction);
     default:
       throw new Error('Unknown group');
   }
 }
 
 function compileBinary(instruction) {
-  const p1Type = instruction.p1.type;
-  const p2Type = instruction.p2.type;
-  const combination = `${p1Type}-${p2Type}`;
-  const compileF = COMPILATION_DATA[instruction.type][combination];
+  const comb = combination(instruction);
+  const compileF = COMPILATION_DATA[instruction.type][comb];
   if (!compileF) {
     const error = new Error(`
       Compilation for ${instruction.type},
-      is not yet implemented for ${combination} combination
+      is not yet implemented for ${comb} combination
     `);
     error.line = instruction.line;
     throw error;
   }
   return compileF(instruction);
+}
+
+function compileEND(instruction) {
+  return {
+    line: instruction.line,
+    opSize: 0,
+    compiled: [fromBinToHex8('0')],
+  }
 }
 
 // the order is important, because it compile using it
@@ -66,6 +79,7 @@ function movRegDatDec(inst) {
   return {
     line: inst.line,
     opSize: operands.length,
-    compiled: [type].concat(operands)
+    compiled: [type].concat(operands),
+    combination: combination(inst),
   };
 }

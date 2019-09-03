@@ -1,3 +1,5 @@
+import { combination } from './instruction';
+
 export default function staticCheck(ast) {
   for (let i = 0; i < ast.length; i++) {
     checkParams(ast[i]);
@@ -22,13 +24,11 @@ const validParams = {
 }
 
 function checkParamsBinary(instruction) {
-  const p1Type = instruction.p1.type;
-  const p2Type = instruction.p2.type;
-  const combination = `${p1Type}-${p2Type}`;
-  if (!validParams[instruction.type][combination]) {
+  const comb = combination(instruction);
+  if (!validParams[instruction.type][comb]) {
     const error = new Error(`
       Invalid params for ${instruction.type},
-      you pass ${combination}
+      you pass ${comb}
     `);
     error.line = instruction.line;
     throw error;

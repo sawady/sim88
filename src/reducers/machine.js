@@ -1,6 +1,5 @@
 import {
   createMachine,
-  moveToRegister,
   start,
   resume,
   stop,
@@ -8,6 +7,7 @@ import {
   increaseVelocity,
   decreaseVelocity,
   loadProgram,
+  executeInstruction,
   updateIP,
   addIP,
 } from '../model/machine';
@@ -28,12 +28,8 @@ export default (machine = createMachine(), action) => {
       return addIP(action.value, machine);
     case 'UPDATE_IP':
       return updateIP(action.value, machine);
-    case 'I-MOV':
-      return moveToRegister(
-        machine,
-        action.instruction.p1.value,
-        action.instruction.p2
-      );
+    case 'EXECUTE_INSTRUCTION':
+      return executeInstruction(machine, action.instruction);
     case 'RESET':
       return createMachine();
     case 'INCREASE_VELOCITY':

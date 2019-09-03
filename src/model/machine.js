@@ -1,5 +1,6 @@
 import Cell from './cell'
 import { toLowReg, toHighReg, fromReg, readHex } from './conversions'
+import { instructionName } from './instruction';
 
 import _flatten from 'lodash/flatten';
 import _find from 'lodash/find';
@@ -8,8 +9,8 @@ import update from 'immutability-helper';
 const INITIAL_VELOCITY = 800; // ms
 const MIN_VELOCITY = 10000; // ms
 const MAX_VELOCITY = 10; // ms
-const MEMORY_SIZE = 1000 // 8000
-const DEFAULT_IP = readHex(2000);
+const MEMORY_SIZE = 1000 // 57343
+const DEFAULT_IP = readHex('2000');
 const DEFAULT_SP = MEMORY_SIZE + 1;
 const REGISTERS = ['AX', 'BX', 'CX', 'DX'];
 const LOW_REGISTERS = REGISTERS.map(x => x[0] + 'L');
@@ -33,7 +34,7 @@ export const renderRegister = (x) => fromReg(x.name, x.value);
 
 const updateValue = (value) => ({ value: { $set: value } });
 
-const getFullReg = (reg) => reg[0] + 'X';
+const getFullRegName = (reg) => reg[0] + 'X';
 
 const updateRegister = (reg, prev, value) => {
   if (REGISTERS.includes(reg)) {
@@ -48,8 +49,23 @@ const updateRegister = (reg, prev, value) => {
   return updateValue(0);
 }
 
-export const moveToRegister = (machine, name, data) => {
-  const reg = getFullReg(name);
+export const executeInstruction = (machine, instruction) => {
+  switch (instructionName(instruction)) {
+    case 'mov-register-decimal':
+      return moveRegisterDecimal(
+        machine,
+        instruction.p1.value,
+        instruction.p2
+      );
+    case 'END':
+      return stop(machine);
+    default:
+      return machine;
+  }
+}
+
+export const moveRegisterDecimal = (machine, name, data) => {
+  const reg = getFullRegName(name);
   const prev = machine.registers[reg].value;
   return update(machine, {
     activeComponent: { $set: reg },

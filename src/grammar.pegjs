@@ -21,8 +21,8 @@
 }
 
 PROGRAM
-  = sts:(_ STATEMENT __ COMMENT* __ ENDLINE _)+ END .* 
-    { return sts.map(function(x) { return x[1] }).filter(function(x) { return x !== null; } ) }
+  = sts:(_ STATEMENT __ COMMENT* __ ENDLINE _)+ e:END .* 
+    { return sts.map(function(x) { return x[1] }).filter(function(x) { return x !== null; } ).concat(e) }
 
 STATEMENT =
   op:BINOP _ p1:PARAM1 _ "," _ p2:PARAM2 { return { line: line(), type: op, p1: p1, p2: p2, group: 'binary' } }
@@ -108,7 +108,7 @@ ENDLINE "end of line"
   = "\n"
 
 END
-  = "END"i
+  = "END"i { return { line: line(), group: 'END', type: 'END' } }
 
 _ "whitespace"
   = [ \t\n\r]*

@@ -1,10 +1,12 @@
 import parser from '../grammar'
 import { setInterval, clearTimeout } from 'timers';
 import { MACHINE_STATES, findCompiledInstruction } from '../model/machine';
+import { readHex } from '../model/conversions';
 import staticCheck from '../model/static-checker';
 import compile from '../model/compiler';
 
 let TIMER;
+let LINE;
 
 const changeLine = (line, instruction) => ({
   type: 'CHANGE_LINE',
@@ -18,30 +20,25 @@ const makeErrorMessage = (e) =>
     `Error on line ${e.line}. ${e.message}`
 
 const executeInstruction = (instruction) => ({
-  type: `I-${instruction.type.toUpperCase()}`,
+  type: 'EXECUTE_INSTRUCTION',
   instruction,
 })
 
 const execute = (dispatch, getState, text) => {
-  let i = 0;
   try {
     const ast = parser.parse(text);
     staticCheck(ast);
-    const compiledProgram = compile(ast);
+    const compiledProgram = compile(readHex(2000), ast);
     dispatch(loadProgram(compiledProgram));
     TIMER = setInterval(
       () => {
-        if (i < ast.length) {
-          const inst = ast[i];
+        if (LINE < ast.length) {
+          const inst = ast[LINE];
           dispatch(changeLine(inst.line, inst));
-          dispatch(executeInstruction(inst));
           const compiledInst = findCompiledInstruction(inst.line, compiledProgram);
-          dispatch(
-            addIP(
-              compiledInst.opSize + 1
-            )
-          );
-          i++;
+          dispatch(updateIP(compiledInst.dir));
+          dispatch(executeInstruction(inst, compiledInst));
+          LINE++;
         } else {
           dispatch(stop());
         }
@@ -59,6 +56,7 @@ const execute = (dispatch, getState, text) => {
 }
 
 export const start = (text) => (dispatch, getState) => {
+  LINE = 0;
   dispatch(stop());
   dispatch({
     type: 'START',
@@ -111,6 +109,7 @@ export const increaseVelocity = () => (dispatch, getState) => {
 
 export const reset = () => {
   clearTimeout(TIMER);
+  LINE = 0;
   return {
     type: 'RESET'
   };
