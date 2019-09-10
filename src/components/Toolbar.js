@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { MACHINE_STATES } from '../model/machine';
+import { MACHINE_STATES } from '../model/constants';
 import { DEFAULT_FILE_NAME } from '../actions/editor'
 
 import PlayIcon from 'mdi-react/PlayIcon';

@@ -1118,6 +1118,12 @@ export default /*
       s0 = peg$parseREG();
       if (s0 === peg$FAILED) {
         s0 = peg$parseVAR();
+        if (s0 === peg$FAILED) {
+          s0 = peg$parseHEXA();
+          if (s0 === peg$FAILED) {
+            s0 = peg$parseDECIMAL();
+          }
+        }
       }
       peg$silentFails--;
       if (s0 === peg$FAILED) {
@@ -1132,13 +1138,13 @@ export default /*
       var s0, s1;
 
       peg$silentFails++;
-      s0 = peg$parseHEXA();
+      s0 = peg$parseREG();
       if (s0 === peg$FAILED) {
-        s0 = peg$parseDECIMAL();
+        s0 = peg$parseVAR();
         if (s0 === peg$FAILED) {
-          s0 = peg$parseREG();
+          s0 = peg$parseHEXA();
           if (s0 === peg$FAILED) {
-            s0 = peg$parseVAR();
+            s0 = peg$parseDECIMAL();
           }
         }
       }

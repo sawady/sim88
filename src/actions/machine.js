@@ -1,6 +1,7 @@
 import parser from '../grammar'
 import { setInterval, clearTimeout } from 'timers';
-import { MACHINE_STATES, findCompiledInstruction } from '../model/machine';
+import { findCompiledInstruction } from '../model/machine';
+import { MACHINE_STATES } from '../model/constants';
 import { readHex } from '../model/conversions';
 import staticCheck from '../model/static-checker';
 import compile from '../model/compiler';

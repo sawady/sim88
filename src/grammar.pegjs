@@ -87,10 +87,10 @@ LABEL
   = ":" label:([a-z]+) { return label.join('') }
 
 PARAM1 "param1"
-  = REG / VAR
+  = REG / VAR / HEXA / DECIMAL
 
 PARAM2 "param2"
-  = HEXA / DECIMAL / REG / VAR
+  = REG / VAR / HEXA / DECIMAL
 
 VAR "variable"
   = v:([a-z]+) { return { type: 'variable', name: v.join('')} }

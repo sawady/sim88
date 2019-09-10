@@ -20,6 +20,7 @@ const validParams = {
   'mov': {
     'register-decimal': true,
     'register-hexadecimal': true,
+    'register-register': true,
   }
 }
 

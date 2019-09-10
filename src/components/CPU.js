@@ -9,19 +9,19 @@ import '../styles/CPU.css'
 
 class CPU extends Component {
 
-  registerClass = (activeComponent, reg) => classNames('register', {
-    active: activeComponent === reg,
+  registerClass = (activeComponents, reg) => classNames('register', {
+    active: activeComponents.includes(reg),
   })
 
   renderRegister = (reg) => {
-    const { activeComponent } = this.props;
+    const { activeComponents } = this.props;
     const r = renderRegister(reg);
     return (
-      <div key={reg.name} className={this.registerClass(activeComponent, reg.name)}>
+      <div key={reg.name} className={this.registerClass(activeComponents, reg.name)}>
         <div className="name">{r.name}</div>
         <div className="values">
-          <div className="value">{r.L}</div>
           <div className="value">{r.H}</div>
+          <div className="value">{r.L}</div>
         </div>
       </div>
     );
@@ -146,6 +146,6 @@ export default connect(
     SP: state.machine.SP,
     IR: state.machine.IR,
     decoder: state.machine.decoder,
-    activeComponent: state.machine.activeComponent,
+    activeComponents: state.machine.activeComponents,
   })
 )(CPU)

@@ -1,3 +1,9 @@
+import {
+  REGISTERS,
+  LOW_REGISTERS,
+  HIGH_REGISTERS,
+} from './constants';
+
 // black magin
 const createToInt = (size) => {
   if (size < 2) {
@@ -43,7 +49,7 @@ export const printHex16 = (number) => (
 
 export const fromReg = (name, hex) => {
   const value = toHex16(hex);
-  return { name, L: value.slice(0, 2), H: value.slice(-2) }
+  return { name, L: value.slice(-2), H: value.slice(0, 2) }
 }
 
 export const toOperand = (value) => {
@@ -62,10 +68,24 @@ const build8Reg = (prev, value, f) => {
   return parseInt(res, 16);
 }
 
-export const toLowReg = (prev, value) => {
-  return build8Reg(prev, value, (v, r) => r.slice(0, 2) + v);
+export const putLowReg = (prev, value) => {
+  return build8Reg(prev, value, (v, r) => r.slice(0, 2) + v.slice(-2));
 }
 
-export const toHighReg = (prev, value) => {
-  return build8Reg(prev, value, (v, r) => v + r.slice(-2));
+export const putHighReg = (prev, value) => {
+  return build8Reg(prev, value, (v, r) => v.slice(0, 2) + r.slice(-2));
+}
+
+export const getValueFromReg = (reg, value) => {
+  if (REGISTERS.includes(reg)) {
+    return value;
+  }
+  const regLH = fromReg(reg, value);
+  if (LOW_REGISTERS.includes(reg)) {
+    return regLH.L;
+  }
+  if (HIGH_REGISTERS.includes(reg)) {
+    return regLH.H;
+  }
+  return value;
 }

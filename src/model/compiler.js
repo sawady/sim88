@@ -64,11 +64,13 @@ function opSize(reg) {
 
 const COMPILATION_DATA = {
   'mov': {
-    'register-decimal': movRegDatDec
+    'register-decimal': movRegDat,
+    'register-hexadecimal': movRegDat,
+    'register-register': movRegReg,
   },
 }
 
-function movRegDatDec(inst) {
+function movRegDat(inst) {
   const val = toOperand(inst.p2.value);
   const opS = opSize(inst.p1.value);
   const regType = compileReg(inst.p1.value);
@@ -76,6 +78,20 @@ function movRegDatDec(inst) {
   const operands = opS === '0' ?
     [val.H] :
     [val.H, val.L];
+  return {
+    line: inst.line,
+    opSize: operands.length,
+    compiled: [type].concat(operands),
+    combination: combination(inst),
+  };
+}
+
+function movRegReg(inst) {
+  const opS = opSize(inst.p1.value);
+  const regType1 = compileReg(inst.p1.value);
+  const regType2 = compileReg(inst.p2.value);
+  const type = fromBinToHex8('1000101' + opS, 2);
+  const operands = [fromBinToHex8('11' + regType1 + regType2, 2)];
   return {
     line: inst.line,
     opSize: operands.length,

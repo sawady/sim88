@@ -8,7 +8,7 @@ import Toolbar from './Toolbar';
 import Editor from './Editor';
 import Machine from './Machine';
 
-import { MACHINE_STATES } from '../model/machine';
+import { MACHINE_STATES } from '../model/constants';
 import { DEFAULT_FILE_NAME, setTitle, newFile, readFile, writeFile, writeNewFile } from '../actions/editor'
 import { start, stop, pause, reset, resume, increaseVelocity, decreaseVelocity } from '../actions/machine'
 
