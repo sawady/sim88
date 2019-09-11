@@ -3,6 +3,7 @@ import { DEFAULT_FILE_NAME } from '../actions/editor'
 
 const defaultText =
   `
+  hola DB 0FFH
 
   MOV AX, 77FFH
   MOV BX, AX

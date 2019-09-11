@@ -16,7 +16,9 @@ export default function compile(org, ast) {
 function compileInstruction(instruction) {
   switch (instruction.group) {
     case 'binary':
-      return compileBinary(instruction);
+    case 'unary':
+    case 'variable':
+      return compileGeneric(instruction);
     case 'END':
       return compileEND(instruction);
     default:
@@ -24,7 +26,7 @@ function compileInstruction(instruction) {
   }
 }
 
-function compileBinary(instruction) {
+function compileGeneric(instruction) {
   const comb = combination(instruction);
   const compileF = COMPILATION_DATA[instruction.type][comb];
   if (!compileF) {
@@ -35,7 +37,10 @@ function compileBinary(instruction) {
     error.line = instruction.line;
     throw error;
   }
-  return compileF(instruction);
+  const compiled = compileF(instruction);
+  compiled.line = instruction.line;
+  compiled.combination = combination;
+  return compiled;
 }
 
 function compileEND(instruction) {
@@ -68,6 +73,17 @@ const COMPILATION_DATA = {
     'register-hexadecimal': movRegDat,
     'register-register': movRegReg,
   },
+  'variable': {
+    'variable-DB': defVar,
+  }
+}
+
+function defVar(inst) {
+  const val = toOperand(inst.value.value);
+  return {
+    opSize: 0,
+    compiled: [val.H],
+  }
 }
 
 function movRegDat(inst) {
@@ -79,10 +95,8 @@ function movRegDat(inst) {
     [val.H] :
     [val.H, val.L];
   return {
-    line: inst.line,
     opSize: operands.length,
     compiled: [type].concat(operands),
-    combination: combination(inst),
   };
 }
 
@@ -93,9 +107,7 @@ function movRegReg(inst) {
   const type = fromBinToHex8('1000101' + opS, 2);
   const operands = [fromBinToHex8('11' + regType1 + regType2, 2)];
   return {
-    line: inst.line,
     opSize: operands.length,
     compiled: [type].concat(operands),
-    combination: combination(inst),
   };
 }

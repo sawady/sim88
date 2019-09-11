@@ -1,11 +1,12 @@
 GENERAL
 ---
 
-- Chequeo estático de la forma de las instrucciones
+- (en proceso) Chequeo estático de la forma de las instrucciones
+- (en proceso) Carga de programa en memoria
 - Codificar instrucciones en memoria y cargarlas en el CPU para ejecutarlas
 - ALU de 16 bits capaz de ejecutar las operaciones: ADC, SUB, AND, OR, XOR, NOT, INC y DEC
 - Registro de indicadores con los flags de: Cero, Paridad, Paridad Auxiliar, Signo, Overflow, e indicador de interrupciones
-- Registros contador de programa (IP, requiere programa cargado en memoria) y puntero de pila (SP) de 16 bits
+- Registros contador de programa (IP) y puntero de pila (SP) de 16 bits
 - periféricos PIC y Timer
 - impresora con Interfaz Centronics
 - dispositivo que hace handshaking
@@ -16,6 +17,7 @@ GENERAL
 - Tablas (tabla DB 1, 2, 4, 8, 16, 32, 64, 128)
 - Strings (string DB “un mensaje”)
 - ORG
+- Ejecutar instrucción a instrucción con un botón
 
 MODOS DE DIRECCIONAMIENTO
 ---

@@ -29,6 +29,8 @@ STATEMENT =
   / op:UNOP _ p1:PARAM1 { return { line: line(), type: op, p1: p1, group: 'unary' } }
   / op:ZOP { return { line: line(), type: op, group: 'zop' } }
   / op:JMP _ label:LABEL { return { line: line(), type: op, label: label, group: 'jmp' } }
+  / name:NAME _ type:TYPE _ value:(VALUE / "?") { return { line: line(), type: name.type, name: name.name, vartype: type, value: value, group: 'variable' } }
+  / v:NAME _ "EQU" _ value:VALUE { return { line: line(), type: 'constant', name: v.name, value: value, group: 'constant' } }
   / COMMENT { return null }
 
 COMMENT = ';' ([^\n]*)
@@ -87,16 +89,21 @@ LABEL
   = ":" label:([a-z]+) { return label.join('') }
 
 PARAM1 "param1"
-  = REG / VAR / HEXA / DECIMAL
+  = REG / NAME / HEXA / DECIMAL
 
 PARAM2 "param2"
-  = REG / VAR / HEXA / DECIMAL
+  = REG / NAME / HEXA / DECIMAL
 
-VAR "variable"
-  = v:([a-z]+) { return { type: 'variable', name: v.join('')} }
+TYPE "type"
+  = "DB"
+
+NAME "variable"
+  = v:([a-zA-Z_][a-zA-Z_0-9]*) { return { type: 'variable', name: v[0].concat(v[1].join(''))} }
 
 REG "register"
   = reg:("AX"i / "BX"i / "[BX]"i / "CX"i / "DX"i / "AL"i / "AH"i / "BL"i / "BH"i / "CL"i / "CH"i / "DL"i / "DH"i) { return { type: 'register', value: reg } } 
+  
+VALUE = NAME / HEXA / DECIMAL
 
 HEXA "hexadecimal"
   = ns:([0-9A-Fa-f]+) "H"i { return { type: 'hexadecimal', value: makeInteger(ns, "", true) } }
