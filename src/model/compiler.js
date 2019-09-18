@@ -2,31 +2,34 @@ import { toOperand, fromBinToHex8 } from './conversions';
 import { combination } from './instruction';
 
 export default function compile(org, ast) {
-  const res = [];
-  let dir = org;
+  const res = {};
+  let dir = { value: org };
   for (let i = 0; i < ast.length; i++) {
-    let compiled = compileInstruction(ast[i]);
-    compiled.dir = dir;
-    dir += compiled.opSize + 1;
-    res.push(compiled);
+    try {
+      compileInstruction(dir, res, ast[i]);
+    } catch (e) {
+      e.line = ast[i].line;
+      throw e;
+    }
   }
+  console.log('compiled', res);
   return res;
 }
 
-function compileInstruction(instruction) {
+function compileInstruction(dir, res, instruction) {
   switch (instruction.group) {
     case 'binary':
     case 'unary':
     case 'variable':
-      return compileGeneric(instruction);
+      return compileGeneric(dir, res, instruction);
     case 'END':
-      return compileEND(instruction);
+      return compileEND(dir, res, instruction);
     default:
       throw new Error('Unknown group');
   }
 }
 
-function compileGeneric(instruction) {
+function compileGeneric(dir, res, instruction) {
   const comb = combination(instruction);
   const compileF = COMPILATION_DATA[instruction.type][comb];
   if (!compileF) {
@@ -37,18 +40,14 @@ function compileGeneric(instruction) {
     error.line = instruction.line;
     throw error;
   }
-  const compiled = compileF(instruction);
-  compiled.line = instruction.line;
-  compiled.combination = combination;
-  return compiled;
+  compileF(instruction).forEach(x => {
+    res[dir.value] = x;
+    dir.value++;
+  });
 }
 
 function compileEND(instruction) {
-  return {
-    line: instruction.line,
-    opSize: 0,
-    compiled: [fromBinToHex8('0')],
-  }
+  return [fromBinToHex8('0')];
 }
 
 // the order is important, because it compile using it
@@ -80,10 +79,7 @@ const COMPILATION_DATA = {
 
 function defVar(inst) {
   const val = toOperand(inst.value.value);
-  return {
-    opSize: 0,
-    compiled: [val.H],
-  }
+  return [val.H];
 }
 
 function movRegDat(inst) {
@@ -94,10 +90,7 @@ function movRegDat(inst) {
   const operands = opS === '0' ?
     [val.H] :
     [val.H, val.L];
-  return {
-    opSize: operands.length,
-    compiled: [type].concat(operands),
-  };
+  return [type].concat(operands);
 }
 
 function movRegReg(inst) {
@@ -106,8 +99,5 @@ function movRegReg(inst) {
   const regType2 = compileReg(inst.p2.value);
   const type = fromBinToHex8('1000101' + opS, 2);
   const operands = [fromBinToHex8('11' + regType1 + regType2, 2)];
-  return {
-    opSize: operands.length,
-    compiled: [type].concat(operands),
-  };
+  return [type].concat(operands);
 }

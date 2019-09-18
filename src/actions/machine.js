@@ -1,48 +1,23 @@
 import parser from '../grammar'
 import { setInterval, clearTimeout } from 'timers';
-import { findCompiledInstruction } from '../model/machine';
 import { MACHINE_STATES } from '../model/constants';
 import { readHex } from '../model/conversions';
 import staticCheck from '../model/static-checker';
 import compile from '../model/compiler';
 
 let TIMER;
-let LINE;
-
-const changeLine = (line, instruction) => ({
-  type: 'CHANGE_LINE',
-  line: line,
-  ast: instruction,
-})
 
 const makeErrorMessage = (e) =>
   e.name === 'SyntaxError' ?
     `${e.name} on line ${e.location.start.line}: ${e.message}` :
     `Error on line ${e.line}. ${e.message}`
 
-const executeInstruction = (instruction) => ({
-  type: 'EXECUTE_INSTRUCTION',
-  instruction,
-})
-
-const execute = (dispatch, getState, text) => {
+const executeProgram = (dispatch, getState) => {
   try {
-    const ast = parser.parse(text);
-    staticCheck(ast);
-    const compiledProgram = compile(readHex(2000), ast);
-    dispatch(loadProgram(compiledProgram));
     TIMER = setInterval(
       () => {
-        if (LINE < ast.length) {
-          const inst = ast[LINE];
-          dispatch(changeLine(inst.line, inst));
-          const compiledInst = findCompiledInstruction(inst.line, compiledProgram);
-          dispatch(updateIP(compiledInst.dir));
-          dispatch(executeInstruction(inst, compiledInst));
-          LINE++;
-        } else {
-          dispatch(stop());
-        }
+        dispatch({ type: 'DO_STEP' });
+        dispatch({ type: 'NEXT_STEP'});
       },
       getState().machine.velocity
     );
@@ -53,16 +28,26 @@ const execute = (dispatch, getState, text) => {
       message: makeErrorMessage(e),
     })
     dispatch(stop());
+    throw e;
   }
 }
 
 export const start = (text) => (dispatch, getState) => {
-  LINE = 0;
   dispatch(stop());
-  dispatch({
-    type: 'START',
-  });
-  execute(dispatch, getState, text);
+  dispatch({ type: 'START' });
+  try {
+    const ast = parser.parse(text);
+    staticCheck(ast);
+    console.log('ast', ast);
+    const compiled = compile(readHex(2000), ast);
+    dispatch(loadProgram(compiled));
+    executeProgram(dispatch, getState);
+  } catch (e) {
+    dispatch({
+      type: 'SHOW_ERROR',
+      message: makeErrorMessage(e),
+    })
+  }
 };
 
 export const stop = () => {
@@ -73,10 +58,8 @@ export const stop = () => {
 };
 
 export const resume = () => (dispatch, getState) => {
-  execute(dispatch, getState, getState().editor.text);
-  dispatch({
-    type: 'RESUME'
-  });
+  executeProgram(dispatch, getState);
+  dispatch({ type: 'RESUME' });
 }
 
 export const pause = () => {
@@ -110,7 +93,6 @@ export const increaseVelocity = () => (dispatch, getState) => {
 
 export const reset = () => {
   clearTimeout(TIMER);
-  LINE = 0;
   return {
     type: 'RESET'
   };

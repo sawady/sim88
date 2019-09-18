@@ -8,9 +8,13 @@ export const MAX_VELOCITY = 10; // ms
 
 export const MEMORY_SIZE = 1000 // 57343
 
+export const DEFAULT_IR = readHex('0');
+
 export const DEFAULT_IP = readHex('2000');
 
 export const DEFAULT_SP = MEMORY_SIZE + 1;
+
+export const DEFAULT_DECODER_VALUE = '????'
 
 export const REGISTERS = ['AX', 'BX', 'CX', 'DX'];
 
@@ -26,4 +30,13 @@ export const MACHINE_STATES = {
   RUNNING: 'RUNNING',
   PAUSED: 'PAUSED',
   STOPPED: 'STOPPED',
+};
+
+export const INSTRUCTION_CYCLE_STATES = {
+  STOPPED: 'STOPPED',
+  FETCHING_INSTRUCTION: 'FETCHING_INSTRUCTION',
+  FETCHING_OPERAND_1: 'FETCHING_OPERAND_1',
+  FETCHING_OPERAND_2: 'FETCHING_OPERAND_2',
+  DECODING: 'DECODING',
+  EXECUTING: 'EXECUTING',
 };

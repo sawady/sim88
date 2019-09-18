@@ -9,18 +9,32 @@ import '../styles/CPU.css'
 
 class CPU extends Component {
 
-  registerClass = (activeComponents, reg) => classNames('register', {
-    active: activeComponents.includes(reg),
-  })
+  componentClass = (baseClass, componentName, className) => {
+    const { activeComponents } = this.props;
+    return classNames(baseClass, {
+      active: activeComponents.includes(componentName),
+    }, className)
+  }
 
   renderRegister = (reg) => {
-    const { activeComponents } = this.props;
     const r = renderRegister(reg);
     return (
-      <div key={reg.name} className={this.registerClass(activeComponents, reg.name)}>
+      <div key={reg.name} className={this.componentClass('register', reg.name)}>
         <div className="name">{r.name}</div>
         <div className="values">
           <div className="value">{r.H}</div>
+          <div className="value">{r.L}</div>
+        </div>
+      </div>
+    );
+  }
+
+  render8Register = (reg) => {
+    const r = renderRegister(reg);
+    return (
+      <div key={reg.name} className={this.componentClass('register', reg.name, 'ir')}>
+        <div className="name">{r.name}</div>
+        <div className="values">
           <div className="value">{r.L}</div>
         </div>
       </div>
@@ -71,14 +85,7 @@ class CPU extends Component {
 
   renderSP = () => this.renderRegister(this.props.SP)
 
-  renderIR = () => (
-    <div className="register ir">
-      <div className="name">IR</div>
-      <div className="values">
-        <div className="value">{this.props.IR}</div>
-      </div>
-    </div>
-  )
+  renderIR = () => this.render8Register(this.props.IR)
 
   renderOrders = () => (
     <div className="redbox orders">
@@ -87,7 +94,7 @@ class CPU extends Component {
   )
 
   renderDecoder = () => (
-    <div className="redbox decoder">
+    <div className={this.componentClass('redbox decoder', 'decoder')}>
       <div className="title">
         DECODIFICADOR
       </div>

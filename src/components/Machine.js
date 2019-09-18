@@ -37,6 +37,12 @@ class Result extends Component {
             }
           </div>
           <div>
+            <span>INSTRUCTION CYCLE STATE:</span>
+            {
+              this.props.instructionCycleState
+            }
+          </div>
+          <div>
             {
               this.props.error &&
               <React.Fragment>
@@ -56,6 +62,7 @@ export default connect(
     ast: state.editor.ast,
     currentLine: state.editor.line,
     error: state.editor.error,
+    instructionCycleState: state.machine.instructionCycleState,
     compiledProgram: state.machine.compiledProgram,
     velocity: state.machine.velocity,
   })

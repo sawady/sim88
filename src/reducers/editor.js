@@ -3,12 +3,19 @@ import { DEFAULT_FILE_NAME } from '../actions/editor'
 
 const defaultText =
   `
-  hola DB 0FFH
 
-  MOV AX, 77FFH
-  MOV BX, AX
-  MOV CL, AL
-  MOV DH, AH
+  MOV AX, 0FFH
+  MOV AL, 0FFH
+  MOV AH, 0FFH
+  MOV BX, 0FFH
+  MOV BL, 0FFH
+  MOV BH, 0FFH
+  MOV CX, 0FFH
+  MOV CL, 0FFH
+  MOV CH, 0FFH
+  MOV DX, 0FFH
+  MOV DL, 0FFH
+  MOV DH, 0FFH
   END
     
   `

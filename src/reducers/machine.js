@@ -7,7 +7,8 @@ import {
   increaseVelocity,
   decreaseVelocity,
   loadProgram,
-  executeInstruction,
+  doStep,
+  nextCycleState,
   updateIP,
   addIP,
 } from '../model/machine';
@@ -28,8 +29,10 @@ export default (machine = createMachine(), action) => {
       return addIP(action.value, machine);
     case 'UPDATE_IP':
       return updateIP(action.value, machine);
-    case 'EXECUTE_INSTRUCTION':
-      return executeInstruction(machine, action.instruction);
+    case 'DO_STEP':
+      return doStep(machine);
+    case 'NEXT_STEP':
+      return nextCycleState(machine);
     case 'RESET':
       return createMachine();
     case 'INCREASE_VELOCITY':
