@@ -1,5 +1,5 @@
 import parser from '../grammar'
-import { setInterval, clearTimeout } from 'timers';
+import { startExecutionCycle } from '../model/machine';
 import { MACHINE_STATES } from '../model/constants';
 import { readHex } from '../model/conversions';
 import staticCheck from '../model/static-checker';
@@ -14,13 +14,7 @@ const makeErrorMessage = (e) =>
 
 const executeProgram = (dispatch, getState) => {
   try {
-    TIMER = setInterval(
-      () => {
-        dispatch({ type: 'DO_STEP' });
-        dispatch({ type: 'NEXT_STEP'});
-      },
-      getState().machine.velocity
-    );
+    startExecutionCycle(dispatch, getState);
   } catch (e) {
     console.log(JSON.parse(JSON.stringify(e)));
     dispatch({
@@ -58,8 +52,8 @@ export const stop = () => {
 };
 
 export const resume = () => (dispatch, getState) => {
-  executeProgram(dispatch, getState);
   dispatch({ type: 'RESUME' });
+  executeProgram(dispatch, getState);
 }
 
 export const pause = () => {
@@ -78,16 +72,13 @@ export const decreaseVelocity = () => (dispatch, getState) => {
 }
 
 export const increaseVelocity = () => (dispatch, getState) => {
-  const action = {
-    type: 'INCREASE_VELOCITY'
-  };
   const state = getState().machine.state;
   if (state === MACHINE_STATES.RUNNING) {
     dispatch(pause());
-    dispatch(action);
+    dispatch({ type: 'INCREASE_VELOCITY' });
     dispatch(resume());
   } else {
-    dispatch(action);
+    dispatch({ type: 'INCREASE_VELOCITY' });
   }
 }
 
@@ -102,13 +93,6 @@ export const loadProgram = (program) => {
   return {
     type: 'LOAD_PROGRAM',
     program,
-  }
-}
-
-export const addIP = (value) => {
-  return {
-    type: 'ADD_IP',
-    value,
   }
 }
 

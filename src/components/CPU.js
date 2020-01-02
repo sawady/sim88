@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import classNames from 'classnames';
+import classNames from 'classnames'
 
-import { renderRegister } from '../model/machine';
+import { fromReg } from '../model/conversions'
 
 import '../styles/CPU.css'
 
@@ -17,7 +17,7 @@ class CPU extends Component {
   }
 
   renderRegister = (reg) => {
-    const r = renderRegister(reg);
+    const r = fromReg(reg.name, reg.value);
     return (
       <div key={reg.name} className={this.componentClass('register', reg.name)}>
         <div className="name">{r.name}</div>
@@ -30,7 +30,7 @@ class CPU extends Component {
   }
 
   render8Register = (reg) => {
-    const r = renderRegister(reg);
+    const r = fromReg(reg.name, reg.value);
     return (
       <div key={reg.name} className={this.componentClass('register', reg.name, 'ir')}>
         <div className="name">{r.name}</div>
@@ -134,11 +134,11 @@ class CPU extends Component {
         </div>
         <div className="layout">
           {this.renderDecoder()}
-          {this.renderOrders()}
+          {/* {this.renderOrders()} */}
         </div>
-        <div className="layout">
+        {/* <div className="layout">
           {this.renderSequencer()}
-        </div>
+        </div> */}
       </div>
     )
   }

@@ -1,9 +1,10 @@
 import Cell from './cell'
-import { fromReg, readHex } from './conversions'
-import _find from 'lodash/find';
-import interpreter from './interpreter';
+import { readHex } from './conversions'
+import interpreter from './interpreter'
 
-import update from 'immutability-helper';
+import _find from 'lodash/find';
+import update from 'immutability-helper'
+
 import {
   INITIAL_VELOCITY,
   MIN_VELOCITY,
@@ -27,8 +28,6 @@ const addReg = (res, reg) => {
   return res;
 }
 
-export const renderRegister = (x) => fromReg(x.name, x.value);
-
 export const fetchInstruction = (machine) => {
   return update(machine, {
     IR: {
@@ -42,16 +41,23 @@ export const fetchInstruction = (machine) => {
 }
 
 export const fetchOperand = (machine) => {
-  return incrementIP(update(machine, {
+  return update(machine, {
     activeComponents: { $set: [] },
-  }));
+  });
 }
 
 export const decode = (machine) => {
-  return incrementIP(update(machine, {
+  return update(machine, {
     activeComponents: { $set: ['decoder'] },
     decoder: { $set: 'MOV' },
-  }));
+  });
+}
+
+export const incrementIP = (machine) => {
+  return update(machine, {
+    IP: { $apply: (reg) => createReg('IP', reg.value + 1) },
+    activeComponents: { $set: ['IP'] },
+  });
 }
 
 export const execute = (machine) => {
@@ -59,35 +65,53 @@ export const execute = (machine) => {
 }
 
 export const doStep = (machine) => {
-  console.log('step', machine.instructionCycleState);
-  switch (machine.instructionCycleState) {
-    case INSTRUCTION_CYCLE_STATES.FETCHING_INSTRUCTION:
+  console.log('step', machine.currentCycleState);
+  return changeNextStep(doCurrentStep(changeCurrentStep(machine)));
+}
+
+export const changeCurrentStep = (machine) => {
+  return update(machine, {
+    currentCycleState: { $set: machine.nextCycleState },
+  });
+}
+
+export const doCurrentStep = (machine) => {
+  switch (machine.currentCycleState) {
+    case INSTRUCTION_CYCLE_STATES.FETCH_INSTRUCTION:
       return fetchInstruction(machine);
-    case INSTRUCTION_CYCLE_STATES.FETCHING_OPERAND_1:
-    case INSTRUCTION_CYCLE_STATES.FETCHING_OPERAND_2:
+    case INSTRUCTION_CYCLE_STATES.FETCH_OPERAND_1:
+    case INSTRUCTION_CYCLE_STATES.FETCH_OPERAND_2:
       return fetchOperand(machine);
-    case INSTRUCTION_CYCLE_STATES.DECODING:
+    case INSTRUCTION_CYCLE_STATES.DECODE:
       return decode(machine);
-    case INSTRUCTION_CYCLE_STATES.EXECUTING:
+    case INSTRUCTION_CYCLE_STATES.EXECUTE:
       return execute(machine);
+    case INSTRUCTION_CYCLE_STATES.ADD_IP_1:
+    case INSTRUCTION_CYCLE_STATES.ADD_IP_2:
+    case INSTRUCTION_CYCLE_STATES.ADD_IP_3:
+      return incrementIP(machine);
     default:
       return machine;
   }
 }
 
-export const nextCycleState = (machine) => {
+export const changeNextStep = (machine) => {
   const states = INSTRUCTION_CYCLE_STATES;
   const next = {
-    [states.FETCHING_INSTRUCTION]: states.DECODING,
-    [states.DECODING]: states.FETCHING_OPERAND_1,
-    [states.FETCHING_OPERAND_1]:
+    [states.FETCH_INSTRUCTION]: states.DECODE,
+    [states.DECODE]: states.ADD_IP_1,
+    [states.ADD_IP_1]: states.FETCH_OPERAND_1,
+    [states.FETCH_OPERAND_1]:
       machine.currentInstruction && machine.currentInstruction.operands === 2 ?
-        states.FETCHING_OPERAND_2 :
-        states.EXECUTING,
-    [states.EXECUTING]: states.FETCHING_INSTRUCTION,
-  }[machine.instructionCycleState] || states.STOPPED;
+        states.ADD_IP_2 :
+        states.EXECUTE,
+    [states.ADD_IP_2]: states.FETCH_OPERAND_2,
+    [states.FETCH_OPERAND_2]: states.EXECUTE,
+    [states.EXECUTE]: states.ADD_IP_3,
+    [states.ADD_IP_3]: states.FETCH_INSTRUCTION,
+  }[machine.currentCycleState];
   return update(machine, {
-    instructionCycleState: { $set: next },
+    nextCycleState: { $set: next || states.STOPPED },
   });
 }
 
@@ -103,16 +127,6 @@ const loadProgramInMemory = (program) => (memory) => {
   return memory.map(cell => cell.setFromHexValue(program[cell.dir] || 0));
 }
 
-export const incrementIP = (machine) => {
-  return addIP(1, machine);
-}
-
-export const addIP = (value, machine) => {
-  return update(machine, {
-    IP: { $apply: (reg) => createReg('IP', reg.value + value) },
-  });
-}
-
 export const updateIP = (value, machine) => {
   return update(machine, {
     IP: { $set: createReg('IP', value) }
@@ -123,7 +137,6 @@ export const start = (machine) => {
   return update(machine, {
     IP: { $set: createReg('IP', DEFAULT_IP) },
     state: { $set: MACHINE_STATES.RUNNING },
-    instructionCycleState: { $set: INSTRUCTION_CYCLE_STATES.FETCHING_INSTRUCTION },
   });
 }
 
@@ -142,7 +155,7 @@ export const pause = (machine) => {
 export const stop = (machine) => {
   return update(machine, {
     state: { $set: MACHINE_STATES.STOPPED },
-    instructionCycleState: { $set: INSTRUCTION_CYCLE_STATES.STOPPED },
+    currentCycleState: { $set: INSTRUCTION_CYCLE_STATES.STOPPED },
     activeComponents: { $set: [] },
     decoder: { $set: '????' },
   });
@@ -177,7 +190,8 @@ export const createMachine = () => ({
   decoder: DEFAULT_DECODER_VALUE,
   memory: generateMemory(MEMORY_SIZE),
   state: MACHINE_STATES.STOPPED,
-  instructionCycleState: INSTRUCTION_CYCLE_STATES.STOPPED,
+  currentCycleState: INSTRUCTION_CYCLE_STATES.STOPPED,
+  nextCycleState: INSTRUCTION_CYCLE_STATES.FETCH_INSTRUCTION,
   activeComponents: [],
   velocity: INITIAL_VELOCITY,
   start,
