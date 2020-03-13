@@ -18,6 +18,7 @@ import {
   DEFAULT_DECODER_VALUE,
   IR,
   IP,
+  DECODER,
   REG,
   FLAG,
 } from './constants';
@@ -47,17 +48,20 @@ const fetchInstruction = (machine) => ({
   activeComponents: { $set: [IR] },
 })
 
+const interpretInstruction = (machine) => ({
+
+})
+
 const incrementIP = () => ({
   IP: { $apply: (reg) => createReg(IP, reg.value + 1) },
+  decoder: { $set: DEFAULT_DECODER_VALUE },
   activeComponents: { $set: [IP] },
-});
+})
 
-const decode = () => {
-  return {
-    activeComponents: { $set: ['decoder'] },
-    decoder: { $set: 'MOV' },
-  };
-}
+const decodeInstruction = () => ({
+  activeComponents: { $set: [DECODER] },
+  decoder: { $set: 'MOV' },
+})
 
 const sequence = async (doStep, steps) => {
   for (const step of steps) {
@@ -66,14 +70,14 @@ const sequence = async (doStep, steps) => {
 }
 
 export const startExecutionCycle = async (doStep) => {
-  sequence(doStep, [
-    fetchInstruction,
-    incrementIP,
-    incrementIP,
-    incrementIP,
-    incrementIP,
-    incrementIP
-  ]);
+  while (true) {
+    await sequence(doStep, [
+      fetchInstruction,
+      decodeInstruction,
+      interpretInstruction,
+      incrementIP,
+    ]);
+  }
 }
 
 export const start = () => ({
@@ -92,7 +96,6 @@ export const pause = () => ({
 export const stop = () => ({
   state: { $set: MACHINE_STATES.STOPPED },
   activeComponents: { $set: [] },
-  IP: { $set: createReg(IP, DEFAULT_IP) },
   decoder: { $set: DEFAULT_DECODER_VALUE },
 })
 

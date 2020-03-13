@@ -12,7 +12,7 @@ const makeErrorMessage = (e) =>
 
 let TIMER;
 
-const doSep = (dispatch, getState) => (f) =>
+const doStep = (dispatch, getState) => (f) =>
   new Promise((resolve) => {
     const current = getState().machine;
     if (current.state === MACHINE_STATES.RUNNING) {
@@ -24,9 +24,9 @@ const doSep = (dispatch, getState) => (f) =>
     }
   });
 
-const executeProgram = (dispatch, getState) => {
+const executeProgram = async (dispatch, getState) => {
   try {
-    startExecutionCycle(doSep(dispatch, getState));
+    await startExecutionCycle(doStep(dispatch, getState));
   } catch (e) {
     console.log(JSON.parse(JSON.stringify(e)));
     dispatch({
@@ -34,7 +34,6 @@ const executeProgram = (dispatch, getState) => {
       message: e,
     })
     dispatch(stop());
-    throw e;
   }
 }
 
@@ -65,14 +64,12 @@ export const start = (text) => (dispatch, getState) => {
     const compiled = compile(readHex(2000), ast);
     console.log('compile', compiled);
     dispatch(loadProgram(compiled));
-    // Execute Program
     executeProgram(dispatch, getState);
   } catch (e) {
     dispatch({
       type: 'SHOW_ERROR',
       message: makeErrorMessage(e),
     })
-    throw e;
   }
 };
 
