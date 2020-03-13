@@ -1,34 +1,32 @@
 import Cell from './cell'
-import { fromReg, readHex } from './conversions'
-import { execute } from './interpreter';
+import { readHex } from './conversions'
 
-import _flatten from 'lodash/flatten';
-import _find from 'lodash/find';
-import update from 'immutability-helper';
+import _find from 'lodash/find'
+
 import {
   INITIAL_VELOCITY,
   MIN_VELOCITY,
   MAX_VELOCITY,
   MEMORY_SIZE,
+  DEFAULT_IR,
   DEFAULT_IP,
   DEFAULT_SP,
   REGISTERS,
   ALU_REGISTERS,
   FLAGS,
   MACHINE_STATES,
+  DEFAULT_DECODER_VALUE,
+  IR,
+  IP,
+  REG,
+  FLAG,
 } from './constants';
 
-const createReg = (name, value) => ({ type: 'REG', name, value });
-const createFlag = (name, value) => ({ type: 'FLAG', name, value });
+const createReg = (name, value) => ({ type: REG, name, value });
+const createFlag = (name, value) => ({ type: FLAG, name, value });
 const addReg = (res, reg) => {
   res[reg] = createReg(reg, 10);
   return res;
-}
-
-export const renderRegister = (x) => fromReg(x.name, x.value);
-
-export const executeInstruction = (machine, instruction) => {
-  return execute(machine, instruction);
 }
 
 const generateMemory = (size) => {
@@ -39,87 +37,88 @@ const generateMemory = (size) => {
   return memory;
 }
 
-const loadProgramInMemory = (program) => (memory) => {
-  const flattened = _flatten(program.map(x => x.compiled));
-  return memory.map((cell, i) => cell.setFromHexValue(flattened[i] || 0));
+const fetchInstruction = (machine) => ({
+  IR: {
+    $set: createReg(IR,
+      _find(machine.memory, { dir: machine.IP.value }).value
+    )
+  },
+  decoder: { $set: DEFAULT_DECODER_VALUE },
+  activeComponents: { $set: [IR] },
+})
+
+const incrementIP = () => ({
+  IP: { $apply: (reg) => createReg(IP, reg.value + 1) },
+  activeComponents: { $set: [IP] },
+});
+
+const decode = () => {
+  return {
+    activeComponents: { $set: ['decoder'] },
+    decoder: { $set: 'MOV' },
+  };
 }
 
-export const addIP = (value, machine) => {
-  return update(machine, {
-    IP: { $apply: (reg) => createReg('IP', reg.value + value) },
-  })
+export const startExecutionCycle = async (doStep) => {
+  const steps = [
+    fetchInstruction,
+    incrementIP,
+    incrementIP,
+    incrementIP,
+    incrementIP,
+    incrementIP
+  ];
+  for (const step of steps) {
+    await doStep(step);
+  }
 }
 
-export const updateIP = (value, machine) => {
-  return update(machine, {
-    IP: { $set: createReg('IP', value) }
-  })
-}
+export const start = () => ({
+  IP: { $set: createReg(IP, DEFAULT_IP) },
+  state: { $set: MACHINE_STATES.RUNNING },
+})
 
-export const start = (machine) => {
-  return update(machine, {
-    IP: { $set: createReg('IP', DEFAULT_IP) },
-    state: { $set: MACHINE_STATES.RUNNING },
-  });
-}
+export const resume = () => ({
+  state: { $set: MACHINE_STATES.RUNNING },
+})
 
-export const resume = (machine) => {
-  return update(machine, {
-    state: { $set: MACHINE_STATES.RUNNING },
-  });
-}
+export const pause = () => ({
+  state: { $set: MACHINE_STATES.PAUSED },
+})
 
-export const pause = (machine) => {
-  return update(machine, {
-    state: { $set: MACHINE_STATES.PAUSED },
-  });
-}
+export const stop = () => ({
+  state: { $set: MACHINE_STATES.STOPPED },
+  activeComponents: { $set: [] },
+  IP: { $set: createReg(IP, DEFAULT_IP) },
+  decoder: { $set: DEFAULT_DECODER_VALUE },
+})
 
-export const stop = (machine) => {
-  return update(machine, {
-    state: { $set: MACHINE_STATES.STOPPED },
-    activeComponents: { $set: [] },
-    decoder: { $set: '????' },
-  });
-}
+export const decreaseVelocity = (machine) => ({
+  velocity: { $set: Math.round(Math.min(MIN_VELOCITY, machine.velocity * 1.5)) },
+})
 
-export const decreaseVelocity = (machine) => {
-  return update(machine, {
-    velocity: { $set: Math.round(Math.min(MIN_VELOCITY, machine.velocity * 1.5)) },
-  });
-}
+export const increaseVelocity = (machine) => ({
+  velocity: { $set: Math.round(Math.max(MAX_VELOCITY, machine.velocity * 0.5)) },
+})
 
-export const increaseVelocity = (machine) => {
-  return update(machine, {
-    velocity: { $set: Math.round(Math.max(MAX_VELOCITY, machine.velocity * 0.5)) },
-  });
-}
+const loadProgramInMemory = (program) => (memory) =>
+  memory.map(cell => cell.setFromHexValue(program[cell.dir] || 0))
 
-export const loadProgram = (program, machine) => {
-  return update(machine, {
-    memory: { $apply: loadProgramInMemory(program) },
-    compiledProgram: { $set: program },
-  })
-}
-
-export const findCompiledInstruction = (line, program) =>
-  _find(program, x => line === x.line)
+export const loadProgram = (program) => () => ({
+  memory: { $apply: loadProgramInMemory(program) },
+})
 
 export const createMachine = () => ({
   registers: REGISTERS.reduce(addReg, {}),
   ALU: ALU_REGISTERS.reduce(addReg, {}),
   flags: FLAGS.map(x => createFlag(x, false)),
-  IR: '00',
-  IP: createReg('IP', DEFAULT_IP),
+  IR: createReg(IR, DEFAULT_IR),
+  IP: createReg(IP, DEFAULT_IP),
   SP: createReg('SP', DEFAULT_SP),
-  decoder: '????',
+  currentInstruction: null,
+  decoder: DEFAULT_DECODER_VALUE,
   memory: generateMemory(MEMORY_SIZE),
   state: MACHINE_STATES.STOPPED,
   activeComponents: [],
   velocity: INITIAL_VELOCITY,
-  compiledProgram: [],
-  start,
-  stop,
-  pause,
-  resume,
-});
+})

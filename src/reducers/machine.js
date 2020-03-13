@@ -1,3 +1,5 @@
+import update from 'immutability-helper'
+
 import {
   createMachine,
   start,
@@ -7,35 +9,29 @@ import {
   increaseVelocity,
   decreaseVelocity,
   loadProgram,
-  executeInstruction,
-  updateIP,
-  addIP,
 } from '../model/machine';
 
 export default (machine = createMachine(), action) => {
+  const _update = (f) => update(machine, f(machine));
   switch (action.type) {
     case 'START':
-      return start(machine);
+      return _update(start);
     case 'RESUME':
-      return resume(machine);
+      return _update(resume);
     case 'STOP':
-      return stop(machine);
+      return _update(stop);
     case 'PAUSE':
-      return pause(machine);
+      return _update(pause);
     case 'LOAD_PROGRAM':
-      return loadProgram(action.program, machine);
-    case 'ADD_IP':
-      return addIP(action.value, machine);
-    case 'UPDATE_IP':
-      return updateIP(action.value, machine);
-    case 'EXECUTE_INSTRUCTION':
-      return executeInstruction(machine, action.instruction);
+      return _update(loadProgram(action.program));
     case 'RESET':
       return createMachine();
     case 'INCREASE_VELOCITY':
-      return increaseVelocity(machine);
+      return _update(increaseVelocity);
     case 'DECREASE_VELOCITY':
-      return decreaseVelocity(machine);
+      return _update(decreaseVelocity);
+    case 'UPDATE_MACHINE':
+      return _update(() => action.machine);
     default:
       return machine;
   }

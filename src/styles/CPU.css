@@ -72,6 +72,11 @@
 
 .cpu .redbox.decoder {
   padding: 5px;
+  width: 100%;
+}
+
+.cpu .redbox.decoder.active {
+  background-color: tomato;
 }
 
 .cpu .redbox.sequencer {

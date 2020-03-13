@@ -1,68 +1,80 @@
 import parser from '../grammar'
-import { setInterval, clearTimeout } from 'timers';
-import { findCompiledInstruction } from '../model/machine';
+import { startExecutionCycle } from '../model/machine';
 import { MACHINE_STATES } from '../model/constants';
 import { readHex } from '../model/conversions';
 import staticCheck from '../model/static-checker';
 import compile from '../model/compiler';
-
-let TIMER;
-let LINE;
-
-const changeLine = (line, instruction) => ({
-  type: 'CHANGE_LINE',
-  line: line,
-  ast: instruction,
-})
 
 const makeErrorMessage = (e) =>
   e.name === 'SyntaxError' ?
     `${e.name} on line ${e.location.start.line}: ${e.message}` :
     `Error on line ${e.line}. ${e.message}`
 
-const executeInstruction = (instruction) => ({
-  type: 'EXECUTE_INSTRUCTION',
-  instruction,
-})
+let TIMER;
 
-const execute = (dispatch, getState, text) => {
+const doSep = (dispatch, getState) => (f) => {
+  return new Promise((resolve) => {
+    const current = getState().machine;
+    if (current.state === MACHINE_STATES.RUNNING) {
+      TIMER = setTimeout(() => {
+        const updated = f(current);
+        dispatch(updateMachine(updated));
+        resolve();
+      }, getState().machine.velocity);
+    }
+  });
+}
+
+const executeProgram = (dispatch, getState) => {
   try {
-    const ast = parser.parse(text);
-    staticCheck(ast);
-    const compiledProgram = compile(readHex(2000), ast);
-    dispatch(loadProgram(compiledProgram));
-    TIMER = setInterval(
-      () => {
-        if (LINE < ast.length) {
-          const inst = ast[LINE];
-          dispatch(changeLine(inst.line, inst));
-          const compiledInst = findCompiledInstruction(inst.line, compiledProgram);
-          dispatch(updateIP(compiledInst.dir));
-          dispatch(executeInstruction(inst, compiledInst));
-          LINE++;
-        } else {
-          dispatch(stop());
-        }
-      },
-      getState().machine.velocity
-    );
+    startExecutionCycle(doSep(dispatch, getState));
   } catch (e) {
     console.log(JSON.parse(JSON.stringify(e)));
     dispatch({
       type: 'SHOW_ERROR',
-      message: makeErrorMessage(e),
+      message: e,
     })
     dispatch(stop());
+    throw e;
+  }
+}
+
+const loadProgram = (program) => {
+  return {
+    type: 'LOAD_PROGRAM',
+    program,
+  }
+}
+
+const updateMachine = (machine) => {
+  return {
+    type: 'UPDATE_MACHINE',
+    machine,
   }
 }
 
 export const start = (text) => (dispatch, getState) => {
-  LINE = 0;
   dispatch(stop());
-  dispatch({
-    type: 'START',
-  });
-  execute(dispatch, getState, text);
+  dispatch({ type: 'START' });
+  try {
+    // Produce de AST
+    const ast = parser.parse(text);
+    // Do static checks
+    staticCheck(ast);
+    console.log('ast', ast);
+    // Compile AST
+    const compiled = compile(readHex(2000), ast);
+    console.log('compile', compiled);
+    dispatch(loadProgram(compiled));
+    // Execute Program
+    executeProgram(dispatch, getState);
+  } catch (e) {
+    dispatch({
+      type: 'SHOW_ERROR',
+      message: makeErrorMessage(e),
+    })
+    throw e;
+  }
 };
 
 export const stop = () => {
@@ -73,10 +85,8 @@ export const stop = () => {
 };
 
 export const resume = () => (dispatch, getState) => {
-  execute(dispatch, getState, getState().editor.text);
-  dispatch({
-    type: 'RESUME'
-  });
+  dispatch({ type: 'RESUME' });
+  executeProgram(dispatch, getState);
 }
 
 export const pause = () => {
@@ -86,53 +96,23 @@ export const pause = () => {
   };
 }
 
-export const decreaseVelocity = () => (dispatch, getState) => {
-  dispatch(pause());
-  dispatch({
-    type: 'DECREASE_VELOCITY'
-  });
-  dispatch(resume());
-}
-
-export const increaseVelocity = () => (dispatch, getState) => {
-  const action = {
-    type: 'INCREASE_VELOCITY'
-  };
+const changeVelocity = (event) => (dispatch, getState) => {
   const state = getState().machine.state;
   if (state === MACHINE_STATES.RUNNING) {
     dispatch(pause());
-    dispatch(action);
+    dispatch({ type: event });
     dispatch(resume());
   } else {
-    dispatch(action);
+    dispatch({ type: event });
   }
 }
 
+export const decreaseVelocity = () => changeVelocity('DECREASE_VELOCITY');
+
+export const increaseVelocity = () => changeVelocity('INCREASE_VELOCITY');
+
 export const reset = () => {
-  clearTimeout(TIMER);
-  LINE = 0;
   return {
     type: 'RESET'
   };
-}
-
-export const loadProgram = (program) => {
-  return {
-    type: 'LOAD_PROGRAM',
-    program,
-  }
-}
-
-export const addIP = (value) => {
-  return {
-    type: 'ADD_IP',
-    value,
-  }
-}
-
-export const updateIP = (value) => {
-  return {
-    type: 'UPDATE_IP',
-    value,
-  }
 }

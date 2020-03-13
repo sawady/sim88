@@ -29,7 +29,6 @@ export const moveRegisterDecimal = (machine, name, data) => {
   const prev = machine.registers[reg].value;
   return update(machine, {
     activeComponents: { $set: [reg] },
-    decoder: { $set: 'MOV' },
     registers: {
       [reg]: updateRegister(name, prev, data.value),
     },
@@ -43,7 +42,6 @@ export const moveRegisterRegister = (machine, param1, param2) => {
   const value = getValueFromReg(param2.value, machine.registers[reg2].value);
   return update(machine, {
     activeComponents: { $set: [reg1, reg2] },
-    decoder: { $set: 'MOV' },
     registers: {
       [reg1]: updateRegister(param1.value, prev, value),
     },
