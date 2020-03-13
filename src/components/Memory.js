@@ -33,7 +33,7 @@ class Memory extends Component {
     return (
       <div className="memory frame">
         <div className="title">
-          <span>Memoria</span>
+          <span>Memory</span>
         </div>
         {
           memory.map(this.renderCell(IP))

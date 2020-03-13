@@ -59,18 +59,21 @@ const decode = () => {
   };
 }
 
+const sequence = async (doStep, steps) => {
+  for (const step of steps) {
+    await doStep(step);
+  }
+}
+
 export const startExecutionCycle = async (doStep) => {
-  const steps = [
+  sequence(doStep, [
     fetchInstruction,
     incrementIP,
     incrementIP,
     incrementIP,
     incrementIP,
     incrementIP
-  ];
-  for (const step of steps) {
-    await doStep(step);
-  }
+  ]);
 }
 
 export const start = () => ({

@@ -12,8 +12,8 @@ const makeErrorMessage = (e) =>
 
 let TIMER;
 
-const doSep = (dispatch, getState) => (f) => {
-  return new Promise((resolve) => {
+const doSep = (dispatch, getState) => (f) =>
+  new Promise((resolve) => {
     const current = getState().machine;
     if (current.state === MACHINE_STATES.RUNNING) {
       TIMER = setTimeout(() => {
@@ -23,7 +23,6 @@ const doSep = (dispatch, getState) => (f) => {
       }, getState().machine.velocity);
     }
   });
-}
 
 const executeProgram = (dispatch, getState) => {
   try {
@@ -112,6 +111,7 @@ export const decreaseVelocity = () => changeVelocity('DECREASE_VELOCITY');
 export const increaseVelocity = () => changeVelocity('INCREASE_VELOCITY');
 
 export const reset = () => {
+  clearTimeout(TIMER);
   return {
     type: 'RESET'
   };

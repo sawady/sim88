@@ -11,7 +11,7 @@ export const MIN_VELOCITY = 10000; // ms
 
 export const MAX_VELOCITY = 10; // ms
 
-export const MEMORY_SIZE = 1000 // 57343
+export const MEMORY_SIZE = 8000 // 57343
 
 export const DEFAULT_IR = readHex('0');
 

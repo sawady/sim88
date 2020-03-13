@@ -96,7 +96,7 @@ class CPU extends Component {
   renderDecoder = () => (
     <div className={this.componentClass('redbox decoder', 'decoder')}>
       <div className="title">
-        DECODIFICADOR
+        INSTRUCTION
       </div>
       <div className="value">
         {this.props.decoder}

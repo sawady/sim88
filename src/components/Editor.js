@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 
 import AceEditor from 'react-ace'
 
-import 'brace/mode/assembly_x86'
-import 'brace/theme/monokai'
-import "brace/ext/language_tools";
+import 'ace-builds/src-noconflict/mode-assembly_x86'
+import 'ace-builds/src-noconflict/theme-monokai'
+import 'ace-builds/src-noconflict/ext-language_tools'
 
 import '../styles/Editor.css'
 
@@ -33,8 +33,8 @@ class Editor extends Component {
   }
 
   focus = () => {
-    const editor = this.refs.aceEditor.editor;    
-    editor.focus();    
+    const editor = this.refs.aceEditor.editor;
+    editor.focus();
   }
 
   render() {
