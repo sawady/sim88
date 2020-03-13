@@ -1,5 +1,10 @@
 import { readHex } from './conversions'
 
+export const IR = 'IR';
+export const IP = 'IP';
+export const REG = 'REG';
+export const FLAG = 'FLAG';
+
 export const INITIAL_VELOCITY = 800; // ms
 
 export const MIN_VELOCITY = 10000; // ms
@@ -30,16 +35,4 @@ export const MACHINE_STATES = {
   RUNNING: 'RUNNING',
   PAUSED: 'PAUSED',
   STOPPED: 'STOPPED',
-};
-
-export const INSTRUCTION_CYCLE_STATES = {
-  STOPPED: 'STOPPED',
-  FETCH_INSTRUCTION: 'FETCH_INSTRUCTION',
-  DECODE: 'DECODE',
-  ADD_IP_1: 'ADD_IP_1',
-  FETCH_OPERAND_1: 'FETCH_OPERAND_1',
-  ADD_IP_2: 'ADD_IP_2',
-  FETCH_OPERAND_2: 'FETCH_OPERAND_2',
-  EXECUTE: 'EXECUTE',
-  ADD_IP_3: 'ADD_IP_3',
 };

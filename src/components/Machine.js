@@ -39,15 +39,9 @@ class Result extends Component {
           <div>
             <span>CURRENT CYCLE STATE:</span>
             {
-              this.props.currentCycleState
+              this.props.state
             }
           </div>
-          {/* <div>
-            <span>NEXT CYCLE STATE:</span>
-            {
-              this.props.nextCycleState
-            }
-          </div> */}
           <div>
             {
               this.props.error &&
@@ -68,8 +62,7 @@ export default connect(
     ast: state.editor.ast,
     currentLine: state.editor.line,
     error: state.editor.error,
-    currentCycleState: state.machine.currentCycleState,
-    nextCycleState: state.machine.nextCycleState,
+    state: state.machine.state,
     compiledProgram: state.machine.compiledProgram,
     velocity: state.machine.velocity,
   })
