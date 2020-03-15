@@ -1,11 +1,12 @@
 import _find from 'lodash/find';
-import { AH, AL, AX, BH, BINARY, BL, BX, CH, CL, DH, DL, DX, END, ERROR, HEXADECIMAL, MOV, REGISTER, REGISTERS, UNARY } from "./constants";
+import { AH, AL, AX, BH, BINARY, BL, BX, CH, CL, DH, DL, DX, END, ERROR, HEXADECIMAL, MOV, REGISTER, REGISTERS, UNARY, CX } from "./constants";
 import { fromHexTo2CInt, printHex8 } from "./conversions";
 import { incrementIP } from './machine';
 
 const mov = (reg) => ({
   type: MOV,
-  group: REGISTERS.includes(reg) ? BINARY : UNARY,
+  group: BINARY,
+  paramSize: REGISTERS.includes(reg) ? 2 : 1,
   p1: { type: REGISTER, value: reg },
 })
 
@@ -16,7 +17,7 @@ const INSTRUCTIONS = {
   BB: mov(BX),
   B3: mov(BL),
   B7: mov(BH),
-  B9: mov(CH),
+  B9: mov(CX),
   B1: mov(CL),
   B5: mov(CH),
   BA: mov(DX),
@@ -42,13 +43,13 @@ function addOperand(instruction, ...cells) {
 }
 
 export function addOperands(ip, memory, instruction) {
-  switch (instruction.group) {
-    case BINARY:
+  switch (instruction.paramSize) {
+    case 2:
       return {
         currentInstruction: { $set: addOperand(instruction, fetchCell(memory, ip), fetchCell(memory, ip + 1)) },
         ...incrementIP()
       };
-    case UNARY:
+    case 1:
       return {
         currentInstruction: { $set: addOperand(instruction, fetchCell(memory, ip)) },
       };

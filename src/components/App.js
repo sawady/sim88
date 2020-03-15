@@ -46,6 +46,7 @@ class App extends Component {
 
   componentDidMount() {
     setTitle(DEFAULT_FILE_NAME);
+    this.reset();
   }
 
   newFile = () => {
@@ -90,6 +91,7 @@ class App extends Component {
 
   reset = () => {
     this.props.reset();
+    this.readFile({ target: { value: 'newfile.asm' } });
   }
 
   pauseOrResume = () => {

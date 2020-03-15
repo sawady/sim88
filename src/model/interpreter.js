@@ -54,6 +54,8 @@ const moveRegisterRegister = (machine, param1, param2) => {
 }
 
 export const execute = (machine, instruction) => {
+  console.log(instructionName(instruction));
+
   switch (instructionName(instruction)) {
     case `${MOV}-${REGISTER}-${DECIMAL}`:
       return moveRegisterDecimal(
