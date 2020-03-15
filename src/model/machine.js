@@ -1,5 +1,5 @@
 import Cell from './cell'
-import { readHex } from './conversions'
+import { fromHexToInt } from './conversions'
 
 import _find from 'lodash/find'
 
@@ -18,13 +18,19 @@ import {
   DEFAULT_DECODER_VALUE,
   IR,
   IP,
+  SP,
   DECODER,
   REG,
   FLAG,
-} from './constants';
+  ERROR,
+} from './constants'
+import { decode, addOperands } from './decoder'
+import { execute } from './interpreter'
 
 const createReg = (name, value) => ({ type: REG, name, value });
+
 const createFlag = (name, value) => ({ type: FLAG, name, value });
+
 const addReg = (res, reg) => {
   res[reg] = createReg(reg, 10);
   return res;
@@ -33,35 +39,45 @@ const addReg = (res, reg) => {
 const generateMemory = (size) => {
   const memory = [];
   for (let i = 0; i <= size; i++) {
-    memory.push(new Cell(readHex(2000) + i, 0));
+    memory.push(new Cell(fromHexToInt('2000') + i, 0));
   }
   return memory;
 }
 
+const currentCell = (machine) => _find(machine.memory, { dir: machine.IP.value });
+
 const fetchInstruction = (machine) => ({
   IR: {
-    $set: createReg(IR,
-      _find(machine.memory, { dir: machine.IP.value }).value
-    )
+    $set: createReg(IR, currentCell(machine).value)
   },
   decoder: { $set: DEFAULT_DECODER_VALUE },
   activeComponents: { $set: [IR] },
 })
 
-const interpretInstruction = (machine) => ({
+const executeInstruction = (machine) => {
+  const instruction = machine.currentInstruction;
+  console.log('currentInstruction', instruction);
+  if (instruction.type === ERROR) {
+    return error();
+  }
+  return execute(machine, instruction);
+}
 
-})
-
-const incrementIP = () => ({
+export const incrementIP = () => ({
   IP: { $apply: (reg) => createReg(IP, reg.value + 1) },
-  decoder: { $set: DEFAULT_DECODER_VALUE },
   activeComponents: { $set: [IP] },
 })
 
-const decodeInstruction = () => ({
-  activeComponents: { $set: [DECODER] },
-  decoder: { $set: 'MOV' },
-})
+const decodeInstruction = (machine) => {
+  const decoded = decode(machine.IR.value);
+  return {
+    activeComponents: { $set: [DECODER] },
+    currentInstruction: { $set: decoded },
+    decoder: { $set: decoded.type },
+  };
+}
+
+const fetchOperands = (machine) => addOperands(machine.IP.value, machine.memory, machine.currentInstruction)
 
 const sequence = async (doStep, steps) => {
   for (const step of steps) {
@@ -74,7 +90,9 @@ export const startExecutionCycle = async (doStep) => {
     await sequence(doStep, [
       fetchInstruction,
       decodeInstruction,
-      interpretInstruction,
+      incrementIP,
+      fetchOperands,
+      executeInstruction,
       incrementIP,
     ]);
   }
@@ -83,6 +101,7 @@ export const startExecutionCycle = async (doStep) => {
 export const start = () => ({
   IP: { $set: createReg(IP, DEFAULT_IP) },
   state: { $set: MACHINE_STATES.RUNNING },
+  decoder: { $set: DEFAULT_DECODER_VALUE },
 })
 
 export const resume = () => ({
@@ -91,6 +110,11 @@ export const resume = () => ({
 
 export const pause = () => ({
   state: { $set: MACHINE_STATES.PAUSED },
+})
+
+export const error = () => ({
+  state: { $set: MACHINE_STATES.STOPPED },
+  activeComponents: { $set: [] },
 })
 
 export const stop = () => ({
@@ -120,7 +144,7 @@ export const createMachine = () => ({
   flags: FLAGS.map(x => createFlag(x, false)),
   IR: createReg(IR, DEFAULT_IR),
   IP: createReg(IP, DEFAULT_IP),
-  SP: createReg('SP', DEFAULT_SP),
+  SP: createReg(SP, DEFAULT_SP),
   currentInstruction: null,
   decoder: DEFAULT_DECODER_VALUE,
   memory: generateMemory(MEMORY_SIZE),

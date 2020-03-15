@@ -1,19 +1,21 @@
+import { BINARY, UNARY, VARIABLE, END } from "./constants";
+
 export const combination = (instruction) => {
   switch (instruction.group) {
-    case 'binary':
+    case BINARY:
       return `${instruction.p1.type}-${instruction.p2.type}`;
-    case 'unary':
+    case UNARY:
       return `${instruction.p1.type}`;
-    case 'variable':
+    case VARIABLE:
       return `${instruction.type}-${instruction.vartype}`;
-    case 'END':
-      return 'END';
+    case END:
+      return END;
     default:
       throw new Error('Unknown group');
   }
 }
 
 export const instructionName = (instruction) => {
-  if (instruction.type === 'END') return 'END';
+  if (instruction.type === END) return END;
   return `${instruction.type}-${combination(instruction)}`;
 }

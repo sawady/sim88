@@ -1,4 +1,5 @@
 import { combination } from './instruction';
+import { MOV, REGISTER, DECIMAL, HEXADECIMAL, BINARY } from './constants';
 
 export default function staticCheck(ast) {
   for (let i = 0; i < ast.length; i++) {
@@ -8,7 +9,7 @@ export default function staticCheck(ast) {
 
 function checkParams(instruction) {
   switch (instruction.group) {
-    case 'binary':
+    case BINARY:
       checkParamsBinary(instruction);
       break;
     default:
@@ -17,10 +18,10 @@ function checkParams(instruction) {
 }
 
 const validParams = {
-  'mov': {
-    'register-decimal': true,
-    'register-hexadecimal': true,
-    'register-register': true,
+  [MOV]: {
+    [`${REGISTER}-${DECIMAL}`]: true,
+    [`${REGISTER}-${HEXADECIMAL}`]: true,
+    [`${REGISTER}-${REGISTER}`]: true,
   }
 }
 

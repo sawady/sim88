@@ -1,4 +1,5 @@
-import { toOperand, fromBinToHex8 } from './conversions';
+import { AH, AL, AX, BH, BINARY, BL, BX, CH, CL, CX, DB, DECIMAL, DH, DL, DX, END, HEXADECIMAL, MOV, REGISTER, SP, UNARY, VARIABLE } from './constants';
+import { fromBinToHex8, toOperand } from './conversions';
 import { combination } from './instruction';
 
 export default function compile(org, ast) {
@@ -12,18 +13,17 @@ export default function compile(org, ast) {
       throw e;
     }
   }
-  console.log('compiled', res);
   return res;
 }
 
 function compileInstruction(dir, res, instruction) {
   switch (instruction.group) {
-    case 'binary':
-    case 'unary':
-    case 'variable':
+    case BINARY:
+    case UNARY:
+    case VARIABLE:
       return compileGeneric(dir, res, instruction);
-    case 'END':
-      return compileEND(dir, res, instruction);
+    case END:
+      return compileEND();
     default:
       throw new Error('Unknown group');
   }
@@ -46,13 +46,13 @@ function compileGeneric(dir, res, instruction) {
   });
 }
 
-function compileEND(instruction) {
+function compileEND() {
   return [fromBinToHex8('0')];
 }
 
 // the order is important, because it compile using it
-const REGS_8_BITS = ['AL', 'CL', 'DL', 'BL', 'AH', 'CH', 'DH', 'BH'];
-const REGS_16_BITS = ['AX', 'CX', 'DX', 'BX', 'SP'];
+const REGS_8_BITS = [AL, CL, DL, BL, AH, CH, DH, BH];
+const REGS_16_BITS = [AX, CX, DX, BX, SP];
 
 function compileReg(reg) {
   const i = REGS_8_BITS.indexOf(reg);
@@ -67,13 +67,13 @@ function opSize(reg) {
 }
 
 const COMPILATION_DATA = {
-  'mov': {
-    'register-decimal': movRegDat,
-    'register-hexadecimal': movRegDat,
-    'register-register': movRegReg,
+  [MOV]: {
+    [`${REGISTER}-${DECIMAL}`]: movRegDat,
+    [`${REGISTER}-${HEXADECIMAL}`]: movRegDat,
+    [`${REGISTER}-${REGISTER}`]: movRegReg,
   },
-  'variable': {
-    'variable-DB': defVar,
+  [VARIABLE]: {
+    [`${VARIABLE}-${DB}`]: defVar,
   }
 }
 
@@ -86,7 +86,7 @@ function movRegDat(inst) {
   const val = toOperand(inst.p2.value);
   const opS = opSize(inst.p1.value);
   const regType = compileReg(inst.p1.value);
-  const type = fromBinToHex8('1011' + opS + regType, 2);
+  const type = fromBinToHex8('1011' + opS + regType);
   const operands = opS === '0' ?
     [val.H] :
     [val.H, val.L];
@@ -97,7 +97,7 @@ function movRegReg(inst) {
   const opS = opSize(inst.p1.value);
   const regType1 = compileReg(inst.p1.value);
   const regType2 = compileReg(inst.p2.value);
-  const type = fromBinToHex8('1000101' + opS, 2);
-  const operands = [fromBinToHex8('11' + regType1 + regType2, 2)];
+  const type = fromBinToHex8('1000101' + opS);
+  const operands = [fromBinToHex8('11' + regType1 + regType2)];
   return [type].concat(operands);
 }

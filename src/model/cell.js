@@ -1,4 +1,4 @@
-import { printHex8, printHex16, readHex } from '../model/conversions'
+import { printHex8, printHex16, fromHexToInt } from '../model/conversions'
 
 export default class Cell {
 
@@ -12,7 +12,7 @@ export default class Cell {
   }
 
   setFromHexValue(value) {
-    return new Cell(this.dir, readHex(value));
+    return new Cell(this.dir, fromHexToInt(value + ''));
   }
 
   renderDir() {

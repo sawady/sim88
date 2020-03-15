@@ -2,8 +2,11 @@ import fs from 'fs';
 
 export const DEFAULT_FILE_NAME = 'newfile.asm'
 
+export const CHANGE_TEXT = 'CHANGE_TEXT';
+export const CHANGE_FILE_PATH = 'CHANGE_FILE_PATH';
+
 export const changeText = text => ({
-  type: 'CHANGE_TEXT',
+  type: CHANGE_TEXT,
   text
 })
 
@@ -14,7 +17,7 @@ export const setTitle = (title) => {
 export const changeFilePath = (filepath) => {
   setTitle(filepath);
   return {
-    type: 'CHANGE_FILE_PATH',
+    type: CHANGE_FILE_PATH,
     filepath
   }
 }
