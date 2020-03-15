@@ -11,8 +11,9 @@
     var n = hexa ?
        parseInt(ns.join(""), 16) :
        parseInt(ns.join(""), 10);
-    if(hexa && n >= 32768) expected('number < 7FFFH')
-    return n * isNegative(neg);
+    n = n * isNegative(neg);
+    if(n > 65535 || n < -32768) expected('number out of range')
+    return n;
   }
   
   function line() {
@@ -122,3 +123,4 @@ _ "whitespace"
 
 __ ""
   = [ \t]*
+  
