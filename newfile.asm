@@ -1,5 +1,6 @@
 
+  ORG 2000H
   MOV AL, 1
-  MOV AH, 2
+  MOV AH, 2H
   END
   

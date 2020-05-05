@@ -35,9 +35,7 @@ export const readFile = (path) => (dispatch) => {
 }
 
 export const writeFile = (filepath, text) => () => {
-  fs.writeFile(filepath, text, (err) => {
-
-  });
+  fs.writeFile(filepath, text, () => { });
 }
 
 export const writeNewFile = (filepath, text) => (dispatch) => {

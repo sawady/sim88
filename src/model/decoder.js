@@ -1,5 +1,5 @@
 import _find from 'lodash/find';
-import { AH, AL, AX, BH, BINARY, BL, BX, CH, CL, DH, DL, DX, END, ERROR, HEXADECIMAL, MOV, REGISTER, REGISTERS, UNARY, CX } from "./constants";
+import { AH, AL, AX, BH, BINARY, BL, BX, CH, CL, CX, DH, DL, DX, END, ERROR, MOV, REGISTER, REGISTERS, NUMBER } from "./constants";
 import { fromHexTo2CInt, printHex8 } from "./conversions";
 import { incrementIP } from './machine';
 
@@ -38,7 +38,7 @@ function addOperand(instruction, ...cells) {
   const op2 = cells[1] ? printHex8(cells[1].value) : ''
   return {
     ...instruction,
-    p2: { type: HEXADECIMAL, value: fromHexTo2CInt(op2 + op1) }
+    p2: { type: NUMBER, value: fromHexTo2CInt(op2 + op1) }
   }
 }
 

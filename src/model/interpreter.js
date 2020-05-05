@@ -1,16 +1,7 @@
-import {
-  REGISTERS,
-  LOW_REGISTERS,
-  HIGH_REGISTERS,
-  END,
-  MOV,
-  REGISTER,
-  HEXADECIMAL,
-  DECIMAL,
-} from './constants'
-import { forRegLowPart, forRegHighPart, forReg } from './conversions'
-import { instructionName } from './instruction'
-import { stop } from './machine'
+import { END, HIGH_REGISTERS, LOW_REGISTERS, MOV, REGISTER, REGISTERS, NUMBER } from './constants';
+import { forReg, forRegHighPart, forRegLowPart } from './conversions';
+import { instructionName } from './instruction';
+import { stop } from './machine';
 
 const getFullRegName = (reg) => reg[0] + 'X';
 
@@ -29,7 +20,7 @@ const updateRegister = (reg, prev, value) => {
   return updateValue(0);
 }
 
-const moveRegisterDecimal = (machine, name, data) => {
+const moveRegisterNumber = (machine, name, data) => {
   const reg = getFullRegName(name);
   const prev = machine.registers[reg].value;
   return {
@@ -57,14 +48,8 @@ export const execute = (machine, instruction) => {
   console.log(instructionName(instruction));
 
   switch (instructionName(instruction)) {
-    case `${MOV}-${REGISTER}-${DECIMAL}`:
-      return moveRegisterDecimal(
-        machine,
-        instruction.p1.value,
-        instruction.p2
-      );
-    case `${MOV}-${REGISTER}-${HEXADECIMAL}`:
-      return moveRegisterDecimal(
+    case `${MOV}-${REGISTER}-${NUMBER}`:
+      return moveRegisterNumber(
         machine,
         instruction.p1.value,
         instruction.p2

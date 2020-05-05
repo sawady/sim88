@@ -1,6 +1,7 @@
 
-import { DEFAULT_FILE_NAME, CHANGE_TEXT, CHANGE_FILE_PATH } from '../actions/editor';
-import { START, STOP, RESET, SHOW_ERROR } from '../actions/machine';
+import { CHANGE_FILE_PATH, CHANGE_TEXT, DEFAULT_FILE_NAME } from '../actions/editor';
+import { RESET, SHOW_ERROR, START, STOP } from '../actions/machine';
+import { SET_AST } from '../actions/parser';
 
 const defaultState = {
   filepath: DEFAULT_FILE_NAME,
@@ -21,6 +22,11 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         filepath: action.filepath,
+      }
+    case SET_AST:
+      return {
+        ...state,
+        ast: action.ast,
       }
     case START:
       return {

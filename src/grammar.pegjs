@@ -26,7 +26,8 @@ PROGRAM
     { return sts.map(function(x) { return x[1] }).filter(function(x) { return x !== null; } ).concat(e) }
 
 STATEMENT =
-  op:BINOP _ p1:PARAM1 _ "," _ p2:PARAM2 { return { line: line(), type: op, p1: p1, p2: p2, group: 'BINARY' } }
+  op:ORG _ p1:NUMBER { return { line: line(), type: op, p1: p1, group: 'ORG' } }
+  / op:BINOP _ p1:PARAM1 _ "," _ p2:PARAM2 { return { line: line(), type: op, p1: p1, p2: p2, group: 'BINARY' } }
   / op:UNOP _ p1:PARAM1 { return { line: line(), type: op, p1: p1, group: 'UNARY' } }
   / op:ZOP { return { line: line(), type: op, group: 'ZOP' } }
   / op:JMP _ label:LABEL { return { line: line(), type: op, label: label, group: 'JMP' } }
@@ -35,6 +36,8 @@ STATEMENT =
   / COMMENT { return null }
 
 COMMENT = ';' ([^\n]*)
+
+ORG = op:("ORG"i) { return op.toUpperCase() }
 
 BINOP
   = op:(
@@ -90,10 +93,10 @@ LABEL
   = ":" label:([a-z]+) { return label.join('') }
 
 PARAM1 "param1"
-  = REG / NAME / HEXA / DECIMAL
+  = REG / VALUE
 
 PARAM2 "param2"
-  = REG / NAME / HEXA / DECIMAL
+  = REG / VALUE
 
 TYPE "type"
   = "DB"
@@ -104,13 +107,15 @@ NAME "variable"
 REG "register"
   = reg:("AX"i / "BX"i / "[BX]"i / "CX"i / "DX"i / "AL"i / "AH"i / "BL"i / "BH"i / "CL"i / "CH"i / "DL"i / "DH"i) { return { type: 'REGISTER', value: reg } } 
   
-VALUE = NAME / HEXA / DECIMAL
+VALUE = NAME / NUMBER
+
+NUMBER = HEXA / DECIMAL
 
 HEXA "hexadecimal"
-  = ns:([0-9A-Fa-f]+) "H"i { return { type: 'HEXADECIMAL', value: makeInteger(ns, "", true) } }
+  = ns:([0-9A-Fa-f]+) "H"i { return { type: 'NUMBER', value: makeInteger(ns, "", true) } }
 
 DECIMAL "decimal"
-  = neg:("-"?) ns:([0-9]+) { return { type: 'DECIMAL', value: makeInteger(ns, neg, false) } }
+  = neg:("-"?) ns:([0-9]+) { return { type: 'NUMBER', value: makeInteger(ns, neg, false) } }
 
 ENDLINE "end of line"
   = "\n"

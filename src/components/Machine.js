@@ -4,8 +4,6 @@ import { connect } from 'react-redux'
 import CPU from './CPU'
 import Memory from './Memory'
 
-import _find from 'lodash/find'
-
 import '../styles/Machine.css'
 
 class Result extends Component {
@@ -21,21 +19,6 @@ class Result extends Component {
           <Memory />
         </div>
         <div>
-          <div>
-            <span>RESULTADO AST:</span>
-            {JSON.stringify(this.props.ast)}
-          </div>
-          <div>
-            <span>RESULTADO COMPILED:</span>
-            {
-              JSON.stringify(
-                _find(
-                  this.props.compiledProgram,
-                  x => x.line === this.props.ast.line
-                )
-              )
-            }
-          </div>
           <div>
             <span>CURRENT CYCLE STATE:</span>
             {

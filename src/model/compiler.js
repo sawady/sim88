@@ -1,4 +1,4 @@
-import { AH, AL, AX, BH, BINARY, BL, BX, CH, CL, CX, DB, DECIMAL, DH, DL, DX, END, HEXADECIMAL, MOV, REGISTER, SP, UNARY, VARIABLE } from './constants';
+import { AH, AL, AX, BH, BINARY, BL, BX, CH, CL, CX, DB, DH, DL, DX, END, MOV, NUMBER, REGISTER, SP, UNARY, VARIABLE } from './constants';
 import { fromBinToHex8, toOperand } from './conversions';
 import { combination } from './instruction';
 
@@ -68,8 +68,7 @@ function opSize(reg) {
 
 const COMPILATION_DATA = {
   [MOV]: {
-    [`${REGISTER}-${DECIMAL}`]: movRegDat,
-    [`${REGISTER}-${HEXADECIMAL}`]: movRegDat,
+    [`${REGISTER}-${NUMBER}`]: movRegDat,
     [`${REGISTER}-${REGISTER}`]: movRegReg,
   },
   [VARIABLE]: {

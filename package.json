@@ -43,5 +43,10 @@
     "height": 600,
     "min-width": 400,
     "min-height": 400
+  },
+  "devDependencies": {
+    "babel-eslint": "10.1.0",
+    "eslint-config-nw-react-app": "5.1.0",
+    "eslint-plugin-react": "7.19.0"
   }
 }

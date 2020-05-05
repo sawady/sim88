@@ -13,6 +13,7 @@ import { DEFAULT_FILE_NAME, setTitle, newFile, readFile, writeFile, writeNewFile
 import { start, stop, pause, reset, resume, increaseVelocity, decreaseVelocity } from '../actions/machine'
 
 import '../styles/App.css'
+import { parse } from '../actions/parser';
 
 class App extends Component {
 
@@ -47,6 +48,7 @@ class App extends Component {
   componentDidMount() {
     setTitle(DEFAULT_FILE_NAME);
     this.reset();
+    parse();
   }
 
   newFile = () => {
