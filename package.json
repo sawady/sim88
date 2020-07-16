@@ -6,7 +6,7 @@
     "ace-builds": "1.4.8",
     "classnames": "2.2.6",
     "immutability-helper": "3.0.1",
-    "lodash": "4.17.15",
+    "lodash": "4.17.19",
     "mdi-react": "5.0.0",
     "nw-react-scripts": "1.0.11",
     "pegjs": "0.10.0",
