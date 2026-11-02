@@ -9,6 +9,7 @@ import {
   STEP_INSTRUCTION,
   STEP_PHASE,
   STOP,
+  TYPE_KEY,
 } from '../actions/machine';
 import {
   createMachine,
@@ -21,6 +22,7 @@ import {
   stepInstruction,
   stepPhase,
   stop,
+  typeKey,
 } from '../model/machine';
 import { MACHINE_STATES } from '../model/constants';
 
@@ -46,6 +48,8 @@ export default (machine = createMachine(), action) => {
       return manual(machine, stepInstruction);
     case STEP_BACK:
       return machine.program ? stepBack(machine) : machine;
+    case TYPE_KEY:
+      return machine.state === MACHINE_STATES.STOPPED ? machine : typeKey(machine, action.code);
     case RESET:
       return { ...createMachine(), velocity: machine.velocity };
     case INCREASE_VELOCITY:

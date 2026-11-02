@@ -53,11 +53,20 @@ export function readReg(cpu, name) {
 export const readByte = (mem, address) => mem[address & 0xffff];
 export const readWord = (mem, address) => mem[address & 0xffff] | (mem[(address + 1) & 0xffff] << 8);
 
+// What the CPU sees outside itself: the I/O bus (IN/OUT) and the keyboard
+// (INT 6). The machine provides a real one (see machine.js and io.js).
+export const NO_IO = {
+  in: () => 0,
+  out: () => {},
+  readChar: () => undefined,
+};
+
 // Mutable scratch copy of the state while one instruction executes.
 class Execution {
-  constructor(cpu, instruction) {
+  constructor(cpu, instruction, io) {
     this.cpu = cpu;
     this.instruction = instruction;
+    this.io = io;
     this.regs = { ...cpu.regs };
     this.ip = cpu.ip;
     this.flags = cpu.flags;
@@ -72,6 +81,8 @@ class Execution {
       memoryReads: [],
       memoryWrites: [],
       output: [], // bytes written to the console (INT 7)
+      needsInput: false, // INT 6 found no key: the instruction must be retried
+      ports: [], // { port, value, direction: 'in' | 'out' }
     };
   }
 
@@ -209,6 +220,15 @@ const SYSTEM_INTERRUPTS = {
   3: (x) => {
     x.events.breakpoint = true;
   },
+  6: (x) => {
+    // INT 6: waits for a key and stores its code at the address in BX.
+    const code = x.io.readChar();
+    if (code === undefined) {
+      x.events.needsInput = true;
+      return;
+    }
+    x.writeMem(x.reg('BX'), 8, code);
+  },
   7: (x) => {
     // INT 7: writes AL bytes starting at the address in BX.
     const count = x.reg('AL');
@@ -289,6 +309,20 @@ const EXECUTORS = {
     x.ip = x.pop();
     x.flags = x.pop();
   },
+  IN: (x, [dst, port], size) => {
+    const address = port.type === 'imm' ? port.value : x.reg('DX');
+    let value = x.io.in(address) & 0xff;
+    if (size === 16) value |= (x.io.in((address + 1) & 0xffff) & 0xff) << 8;
+    x.events.ports.push({ port: address, value, direction: 'in' });
+    x.write(dst, value);
+  },
+  OUT: (x, [port, src], size) => {
+    const address = port.type === 'imm' ? port.value : x.reg('DX');
+    const value = x.read(src);
+    x.io.out(address, value & 0xff);
+    if (size === 16) x.io.out((address + 1) & 0xffff, value >> 8);
+    x.events.ports.push({ port: address, value, direction: 'out' });
+  },
   CLI: (x) => x.setFlags({ I: false }),
   STI: (x) => x.setFlags({ I: true }),
 
@@ -302,8 +336,8 @@ export const IMPLEMENTED = Object.keys(EXECUTORS);
 
 // Executes one decoded instruction. IP must already point to the next one
 // (the machine increments it after decoding, as the real cycle does).
-export function execute(cpu, instruction) {
-  const x = new Execution(cpu, instruction);
+export function execute(cpu, instruction, io = NO_IO) {
+  const x = new Execution(cpu, instruction, io);
   const run = instruction.mnemonic && EXECUTORS[instruction.mnemonic];
   if (!instruction.mnemonic) {
     throw new CpuError(
@@ -322,8 +356,8 @@ export function execute(cpu, instruction) {
 }
 
 // Fetch, decode and execute one instruction.
-export function step(cpu) {
+export function step(cpu, io = NO_IO) {
   const instruction = decode(cpu.mem, cpu.ip);
   const advanced = { ...cpu, ip: (cpu.ip + instruction.length) & 0xffff };
-  return { instruction, ...execute(advanced, instruction) };
+  return { instruction, ...execute(advanced, instruction, io) };
 }

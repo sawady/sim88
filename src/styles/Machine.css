@@ -77,3 +77,15 @@
   min-height: 1.2em;
   white-space: pre-wrap;
 }
+
+.console pre:focus {
+  outline: 1px dashed #00a8a8;
+}
+
+.console.waiting {
+  box-shadow: 0 0 0 2px gold, 8px 8px rgba(0, 0, 0, 0.5);
+}
+
+.console .hint {
+  color: gold;
+}

@@ -8,6 +8,7 @@
 
 import { createCpu, execute, MEMORY_SIZE } from './cpu';
 import { decode } from './decoder';
+import { busIO, createBus } from './io';
 import {
   INITIAL_VELOCITY,
   MIN_VELOCITY,
@@ -33,9 +34,14 @@ const display = () => ({
   currentLine: null,
 });
 
-export const createMachine = () => ({
+// `bus` holds the devices plugged into the I/O ports (see io.js).
+export const createMachine = ({ bus = createBus() } = {}) => ({
   cpu: createCpu(),
   ...display(),
+  bus,
+  devices: bus.initialState(),
+  input: [], // keys typed and not read yet by INT 6
+  waitingInput: false,
   state: MACHINE_STATES.STOPPED,
   velocity: INITIAL_VELOCITY,
   history: [],
@@ -54,6 +60,9 @@ export function loadProgram(machine, program) {
     ...display(),
     cpu: createCpu({ mem, ip: program.entry }),
     program,
+    devices: machine.bus.initialState(),
+    input: [],
+    waitingInput: false,
     history: [],
     output: '',
     message: null,
@@ -111,17 +120,24 @@ function incrementIP(machine) {
 // commits its result, so the UI can show operands and result separately.
 function fetchOperands(machine) {
   let result;
+  const io = busIO(machine.bus, machine.devices, machine.input);
   try {
-    result = execute(machine.cpu, machine.instruction);
+    result = execute(machine.cpu, machine.instruction, io);
   } catch (e) {
     return halt(machine, { error: e.message });
   }
   const { events } = result;
+  if (events.needsInput) {
+    // INT 6 with no key typed: this phase runs again until there is one.
+    return { ...machine, waitingInput: true, activeComponents: [] };
+  }
+  result = { ...result, devices: io.devices, input: io.input };
   const alu = events.alu
     ? { ...machine.alu, OP1: events.alu.op1, OP2: events.alu.op2 ?? 0 }
     : machine.alu;
   return {
     ...machine,
+    waitingInput: false,
     pending: result,
     alu,
     activeComponents: [...events.registers, ...(events.alu ? ['OP1', 'OP2'] : [])],
@@ -130,7 +146,7 @@ function fetchOperands(machine) {
 }
 
 function executeInstruction(machine) {
-  const { cpu, events } = machine.pending;
+  const { cpu, events, devices, input } = machine.pending;
   const alu = events.alu ? { ...machine.alu, RES: events.alu.result } : machine.alu;
   const output = events.output.length
     ? machine.output + String.fromCharCode(...events.output)
@@ -138,6 +154,8 @@ function executeInstruction(machine) {
   const next = {
     ...machine,
     cpu,
+    devices,
+    input,
     pending: null,
     alu,
     output,
@@ -167,18 +185,27 @@ const halt = (machine, { message = null, error = null }) => ({
 // Runs the next phase of the cycle.
 export function stepPhase(machine) {
   const next = EXECUTION_CYCLE[machine.phase](machine);
+  if (next.waitingInput) return next;
   if (next.state === MACHINE_STATES.STOPPED && machine.state !== MACHINE_STATES.STOPPED) {
     return { ...next, phase: 0 };
   }
   return { ...next, phase: (machine.phase + 1) % EXECUTION_CYCLE.length };
 }
 
-// Runs the remaining phases of the current instruction.
+// Runs the remaining phases of the current instruction (or up to INT 6
+// waiting for a key).
 export function stepInstruction(machine) {
   let m = stepPhase(machine);
-  while (m.phase !== 0 && m.state !== MACHINE_STATES.STOPPED) m = stepPhase(m);
+  while (m.phase !== 0 && m.state !== MACHINE_STATES.STOPPED && !m.waitingInput) m = stepPhase(m);
   return m;
 }
+
+// A key typed on the keyboard, for INT 6.
+export const typeKey = (machine, code) => ({
+  ...machine,
+  input: [...machine.input, code & 0xff],
+  waitingInput: false,
+});
 
 // Goes back to the state before the current (or previous) instruction.
 export function stepBack(machine) {

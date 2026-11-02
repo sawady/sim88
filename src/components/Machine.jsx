@@ -1,5 +1,7 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { typeKey } from '../actions/machine';
 
 import CPU from './CPU';
 import Memory from './Memory';
@@ -14,7 +16,25 @@ const STATE_LABELS = {
 
 export default function Machine() {
   const assemblerError = useSelector((state) => state.editor.error);
-  const { state, velocity, message, error, output } = useSelector((s) => s.machine);
+  const { state, velocity, message, error, output, waitingInput } = useSelector((s) => s.machine);
+  const dispatch = useDispatch();
+  const screen = useRef(null);
+
+  // INT 6 waits for a key: the screen takes the keyboard.
+  useEffect(() => {
+    if (waitingInput && screen.current) screen.current.focus();
+  }, [waitingInput]);
+
+  const onKeyDown = (ev) => {
+    if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
+    let code;
+    if (ev.key.length === 1) code = ev.key.charCodeAt(0);
+    else if (ev.key === 'Enter') code = 13;
+    else if (ev.key === 'Backspace') code = 8;
+    if (code === undefined || code > 255) return;
+    ev.preventDefault();
+    dispatch(typeKey(code));
+  };
   const shownError = assemblerError || (error && `Error de ejecución: ${error}`);
 
   return (
@@ -37,9 +57,14 @@ export default function Machine() {
         <CPU />
         <Memory />
       </div>
-      <div className="console">
-        <div className="title">Pantalla (INT 7)</div>
-        <pre aria-label="Pantalla">{output}</pre>
+      <div className={waitingInput ? 'console waiting' : 'console'}>
+        <div className="title">
+          Pantalla (INT 7) y teclado (INT 6)
+          {waitingInput && <span className="hint"> · Esperando una tecla…</span>}
+        </div>
+        <pre ref={screen} tabIndex={0} aria-label="Pantalla" onKeyDown={onKeyDown}>
+          {output}
+        </pre>
       </div>
     </div>
   );

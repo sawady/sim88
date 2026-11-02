@@ -16,6 +16,7 @@ export const STOP = 'STOP';
 export const RESUME = 'RESUME';
 export const PAUSE = 'PAUSE';
 export const RESET = 'RESET';
+export const TYPE_KEY = 'TYPE_KEY';
 export const DECREASE_VELOCITY = 'DECREASE_VELOCITY';
 export const INCREASE_VELOCITY = 'INCREASE_VELOCITY';
 
@@ -105,3 +106,6 @@ export const reset = () => {
   clearTimeout(TIMER);
   return { type: RESET };
 };
+
+// A key typed on the simulated keyboard (read by INT 6).
+export const typeKey = (code) => ({ type: TYPE_KEY, code });

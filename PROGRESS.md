@@ -103,12 +103,13 @@ Taken by Federico Sawady on 2026-11-02.
 
 - [x] **24. INT, IRET, STI, CLI and the vector table** · Deps: 22, 10
   256 vectors in the first KB; `INT n` pushes flags and IP and jumps; IRET returns. STI/CLI set I.
-- [ ] **25. System interrupts 0, 3, 6 and 7, and a console in the UI** · Deps: 24
+- [x] **25. System interrupts 0, 3, 6 and 7, and a console in the UI** · Deps: 24
   INT 0 ends, INT 3 is a breakpoint (pause), INT 6 reads a character into `[BX]`, INT 7 writes
   AL bytes from BX to a console.
-  Done: INT 0, INT 3, INT 7 and the console. Missing: INT 6 (keyboard input in the UI).
-- [ ] **26. IN, OUT and an I/O bus** · Deps: 16
-  Port map with an interface to plug peripherals.
+  The screen takes the keyboard while INT 6 waits; keys typed earlier are buffered.
+- [x] **26. IN, OUT and an I/O bus** · Deps: 16
+  Port map with an interface to plug peripherals (`src/model/io.js`); device state lives in the
+  machine, so step back undoes I/O. Unmapped ports read FFh ⚠️.
 - [ ] **27. PIO, LED bar and switches** · Deps: 26
 - [ ] **28. PIC and the INT/NMI lines** · Deps: 24, 26
 - [ ] **29. Timer** · Deps: 28
@@ -168,6 +169,10 @@ Federico: please confirm or correct. Sources are in the MSX88 notes kept outside
 12. **INT n through the vector table** pushes the flags and IP (no CS: there are no segments),
     clears I, and jumps to the word at 4·n. IRET pops IP and the flags. This matches the MSX88
     manual; INT 0, 3, 6 and 7 are handled by the simulator itself (the "monitor").
+13. **INT 6** does not echo the key on the screen (the program prints it with INT 7 if it wants).
+    Enter is 0Dh. Not confirmed.
+14. **Unmapped I/O ports** read FFh and ignore writes. Port addresses of the MSX88 peripherals
+    (PIO 30h–33h, PIC 20h–2Bh, timer 10h–11h, HAND 40h–41h, CDMA 50h–57h) come from the manual.
 
 ## Log
 
@@ -179,6 +184,7 @@ Federico: please confirm or correct. Sources are in the MSX88 notes kept outside
   back). UI: virtualized memory with "go to", step / micro-step / back buttons, running line
   highlighted in the editor, INT 7 console, error and status boxes. Checked in headless Chromium
   with the default example (sum of a table at 1000h, code at 2000h, loop, HLT, END).
+- 2026-11-02: INT 6 with keyboard input in the UI (task 25) and the I/O bus for IN/OUT (task 26).
 
 - 2026-11-02: modernization merged (#5): Vite, React 19, Redux 5, peggy, Vitest, CI, GitHub Pages.
   Decisions 1–4 taken. This file replaces the plan kept outside the repo.

@@ -29,14 +29,16 @@ It follows the dialect and conventions of MSX88: data at `ORG 1000h`, code at `O
   (`EQU`), `ORG`, `OFFSET`, `BYTE PTR` / `WORD PTR`, expressions, and errors with the line.
 - Instructions, encoded with real 8086 opcodes: `MOV`, `ADD`, `ADC`, `SUB`, `SBB`, `CMP`, `AND`,
   `OR`, `XOR`, `NOT`, `NEG`, `INC`, `DEC`, `PUSH`, `POP`, `PUSHF`, `POPF`, `JMP`, `JZ`, `JNZ`,
-  `JS`, `JNS`, `JC`, `JNC`, `JO`, `JNO`, `CALL`, `RET`, `INT`, `IRET`, `STI`, `CLI`, `NOP`, `HLT`.
+  `JS`, `JNS`, `JC`, `JNC`, `JO`, `JNO`, `CALL`, `RET`, `INT`, `IRET`, `STI`, `CLI`, `IN`, `OUT`,
+  `NOP`, `HLT`.
 - Addressing modes: immediate, register, direct (`VAR`, `[1000h]`) and indirect through `[BX]`.
 - Flags Z, S, O, C, A, P and I; 64 KB of memory; interrupt vector table; INT 0 (end),
-  INT 3 (breakpoint) and INT 7 (write to the screen).
+  INT 3 (breakpoint), INT 6 (read a key) and INT 7 (write to the screen).
+- `IN` / `OUT` on an I/O bus ready for peripherals.
 - Execution animated phase by phase (fetch, decode, IP, operands, execute) at adjustable
   speed, or step by step: one instruction, one phase, or **one instruction back**.
 
-Not yet: `IN`/`OUT` and the peripherals (PIO, PIC, timer, handshake, CDMA), INT 6 (keyboard).
+Not yet: the peripherals (PIO with LEDs and switches, PIC, timer, handshake, printer, CDMA).
 Where SIM88 is not sure to behave like MSX88, PROGRESS.md lists it under "Open questions".
 
 ## Example
