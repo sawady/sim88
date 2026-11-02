@@ -1,4 +1,5 @@
-import { fromHexToInt } from './conversions'
+// No imports here: conversions.js imports this module, and a cycle breaks
+// whoever imports conversions.js first.
 
 export const IR = 'IR'
 export const IP = 'IP'
@@ -38,9 +39,9 @@ export const MAX_VELOCITY = 10 // ms
 
 export const MEMORY_SIZE = 1000 // 57343 is the total amount for 64kb
 
-export const DEFAULT_IR = fromHexToInt('0')
+export const DEFAULT_IR = 0x0
 
-export const DEFAULT_IP = fromHexToInt('2000')
+export const DEFAULT_IP = 0x2000
 
 export const DEFAULT_SP = MEMORY_SIZE + 1
 

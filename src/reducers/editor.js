@@ -34,7 +34,12 @@ export default (state = defaultState, action) => {
         line: undefined,
       }
     case RESET:
-      return defaultState
+      // Resetting the machine keeps the program being edited.
+      return {
+        ...defaultState,
+        filepath: state.filepath,
+        text: state.text,
+      }
     case SHOW_ERROR:
       return {
         ...state,

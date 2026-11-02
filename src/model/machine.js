@@ -56,7 +56,6 @@ const fetchInstruction = (machine) => ({
 
 const executeInstruction = (machine) => {
   const instruction = machine.currentInstruction;
-  console.log('currentInstruction', instruction);
   if (instruction.type === ERROR) {
     return error();
   }
@@ -85,16 +84,20 @@ const sequence = async (doStep, steps) => {
   }
 }
 
+// Steps of one fetch-decode-execute cycle. Each step takes the machine and
+// returns an immutability-helper spec to apply to it.
+export const EXECUTION_CYCLE = [
+  fetchInstruction,
+  decodeInstruction,
+  incrementIP,
+  fetchOperands,
+  executeInstruction,
+  incrementIP,
+]
+
 export const startExecutionCycle = async (doStep) => {
   while (true) {
-    await sequence(doStep, [
-      fetchInstruction,
-      decodeInstruction,
-      incrementIP,
-      fetchOperands,
-      executeInstruction,
-      incrementIP,
-    ]);
+    await sequence(doStep, EXECUTION_CYCLE);
   }
 }
 
