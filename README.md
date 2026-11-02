@@ -1,5 +1,10 @@
 # SIM88
 
+[![CI](https://github.com/sawady/sim88/actions/workflows/ci.yml/badge.svg)](https://github.com/sawady/sim88/actions/workflows/ci.yml)
+[![Deploy](https://github.com/sawady/sim88/actions/workflows/deploy.yml/badge.svg)](https://github.com/sawady/sim88/actions/workflows/deploy.yml)
+
+**Try it in the browser: <https://sawady.github.io/sim88/>** (no installation needed).
+
 An educational simulator of a simplified Intel 8088 CPU that runs in the browser.
 
 You write a small assembly program, SIM88 assembles it into memory and runs it
@@ -121,7 +126,7 @@ Every push to `master` is built and published to GitHub Pages by
 
 The plan, its progress and the design decisions live in [PROGRESS.md](PROGRESS.md).
 Bug reports, questions and ideas are welcome as GitHub issues; see
-[CONTRIBUTING.md](CONTRIBUTING.md).
+[CONTRIBUTING.md](CONTRIBUTING.md). Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
