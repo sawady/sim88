@@ -10,6 +10,18 @@ tagged releases yet. The planned work and its status live in [PROGRESS.md](PROGR
 
 ### Added
 
+- Text mode interface in the style of the MS-DOS tools of the time: IBM VGA 8x16 font on a
+  character grid scaled by whole factors, menu bar with pull-down menus (Alt + letter, arrows,
+  mouse), function key bar, windows with double line frames and shadows (Alt+1 to Alt+5), and
+  dialogs. The Ace editor has a matching text mode theme.
+- Themes: classic blue (Borland), MSX88, green phosphor, amber phosphor and high contrast, plus
+  an optional CRT effect; chosen in Options › Appearance and remembered.
+- Spanish and English interface, assembler and simulator messages included; the browser's
+  language is used the first time, and Options › Language changes it.
+- Options › Frequencies: the timer clock (1 Hz by default) and the printer speed (one character
+  every 8 instructions by default) can be changed.
+- A GIF and screenshots of every theme in the README; a favicon of its own.
+
 - MSX88 peripherals in their four configurations, chosen in the toolbar: PIO with switches and
   LEDs, PIC (F10 requests INT0, priorities, EOI), timer at 1 Hz with a "Pulso" button, printer
   through the PIO or the handshake (HAND), and the DMA controller (CDMA). A peripherals panel
@@ -38,6 +50,8 @@ tagged releases yet. The planned work and its status live in [PROGRESS.md](PROGR
 
 ### Changed
 
+- The toolbar is replaced by the menus: the examples, the peripheral configuration and MSX88
+  strict mode are in the Examples and Options menus.
 - Where MSX88 differs from a real 8086, SIM88 follows MSX88: `JMP` and `CALL` carry an absolute
   address and `NOP` assembles to 98h, so the bytes match the ASM88 listings.
 - Build moved from create-nw-react-app and NW.js to Vite, with React 19, react-redux 9,
@@ -51,10 +65,12 @@ tagged releases yet. The planned work and its status live in [PROGRESS.md](PROGR
 
 - The NW.js desktop build and the create-react-app service worker.
 - The AST/compiled-code debug panel.
-- The unused React logo (`src/images/logo.svg`) left over from the create-react-app template.
+- The unused React logo (`src/images/logo.svg`) and favicon left over from the create-react-app
+  template, and the Material Design icons.
 
 ### Fixed
 
+- On a first visit the editor could start empty instead of showing the default example.
 - Switches, F10, timer pulses or keys that arrived in the middle of an instruction were lost.
 - Assembler: register names in lower case, CRLF line endings, `PUSHF` / `POPF`, a program that
   is just `END`, and the initial registers (all 0, SP at 8000h).

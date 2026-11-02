@@ -144,9 +144,13 @@ Taken by Federico Sawady on 2026-11-02.
 - [x] **35. Loadable examples** · `gfi`
   A menu with example programs from `src/examples/`, one per course topic; each selects the
   configuration it needs (`; conexionado: N`) and is tested in strict mode.
-- [ ] **36. i18n es/en**
-- [ ] **37. Screenshot and GIF for the README** · `gfi` · Deps: 9
-  Screenshot done (`docs/screenshot.png`, linked from the README); the GIF is pending.
+- [x] **36. i18n es/en**
+  `src/i18n` (dictionaries `es.js` / `en.js`, `t()`, `useT()`); Options › Language, the browser's
+  language by default, remembered. Assembler and simulator messages are translated by pattern
+  (`messages.js`); tests check that both dictionaries have the same keys and that every message
+  in `src/model` has a pattern.
+- [x] **37. Screenshot and GIF for the README** · `gfi` · Deps: 9
+  `docs/demo.gif` and `docs/screenshots/` (one per theme, English, menu, dialog).
 - [x] **38. Load Ace in a separate chunk** · `gfi`
   The main chunk is below 500 kB. (Main ~300 kB; the editor loads in its own ~590 kB chunk.)
 - [x] **39. UI tests with Testing Library** · `gfi`
@@ -154,6 +158,26 @@ Taken by Federico Sawady on 2026-11-02.
   (`src/components/__tests__/App.test.jsx`, jsdom; Ace is replaced by a textarea.)
 - [ ] **40. Incremental TypeScript migration** · Deps: 16
   `allowJs` + `checkJs` on `src/model` first, then file by file.
+- [x] **41. Text mode interface, in the style of the MS-DOS tools of the time**
+  IBM VGA 8x16 font (Ultimate Oldschool PC Font Pack, CC BY-SA 4.0, downloaded at install by
+  `scripts/fetch-font.mjs`), a character grid scaled by whole factors, menu bar with pull-down
+  menus (Alt + letter, arrows, mouse), function key bar, windows with double frames and shadows
+  (Alt+1..5), dialogs with focus kept inside, and an Ace theme of its own. Small screens stack the
+  windows. Tests: `src/components/__tests__/App.test.jsx`, `tui/__tests__`.
+- [x] **42. Themes** · Deps: 41
+  Classic blue (Borland), MSX88 (after a v3.0 screenshot), green phosphor, amber phosphor, high
+  contrast, as CSS variables in `src/styles/themes.css`; optional CRT effect; Options ›
+  Appearance, remembered. A test checks WCAG contrast of every theme.
+- [x] **43. Configurable timer and printer speed**
+  Options › Frequencies: timer at 1 Hz by default (0.5, 1, 2, 5, 10 or 0.1–50 Hz) and printer at
+  one character every 8 instructions by default (1–1000).
+- [ ] **44. Example programs in English** · `gfi` · Deps: 36
+  The examples' comments and strings are in Spanish; the English UI could load English versions.
+- [ ] **45. Visual checks of the themes in CI** · Deps: 42
+  Screenshots with Playwright against `vite preview` (today they are taken by hand).
+- [ ] **46. A layout for phones** · Deps: 41
+  Small screens stack the windows and scroll; a touch friendly layout (bigger keys, the function
+  key bar as buttons) would help.
 
 ## Open questions (MSX88 fidelity)
 
@@ -184,10 +208,11 @@ Resolved by Federico on 2026-11-02 (decisions 5 and 6): JMP/CALL absolute, NOP 9
 9. **HLT** (rule given by Federico): if I = 1 and some PIC line with something connected (F10 and
    the timer always; the HAND in configuration 2, the CDMA in 3) is unmasked, the CPU waits for
    an interrupt, as the MSX88 manual says; otherwise the program ends.
-10. **Timer clock**: 1 Hz in real time while the program runs (not while paused); the "Pulso"
-    button gives a pulse by hand. The timer does not reset CONT by itself: the interrupt routine
+10. **Timer clock**: 1 Hz in real time while the program runs (not while paused), adjustable in
+    Options › Frequencies; the "Pulso" button gives a pulse by hand. The timer does not reset CONT by itself: the interrupt routine
     writes 0, as the course programs do.
-11. **Printer speed**: it prints one character every 8 instructions; BUSY means its 5 character
+11. **Printer speed**: it prints one character every 8 instructions (adjustable in Options ›
+    Frequencies); BUSY means its 5 character
     buffer is full, and a character sent while BUSY is lost.
 12. **HAND interrupts** are level triggered: the request stays while bit 7 is set and the printer
     is not busy (so after the EOI the next character is requested).
@@ -198,6 +223,13 @@ Resolved by Federico on 2026-11-02 (decisions 5 and 6): JMP/CALL absolute, NOP 9
 15. **Configuration 1 printer**: STROBE is PA1 and a character is taken on its rising edge.
 
 ## Log
+
+- 2026-11-02: new text mode interface (tasks 41–42): VGA font, menus, function key bar, windows
+  with double frames and shadows, dialogs, five themes and a CRT effect; Spanish and English
+  (task 36), assembler errors included; Options › Frequencies for the timer and the printer
+  (task 43); README GIF and screenshots (task 37). Fixed: the first visit could show an empty
+  editor. Checked in headless Chromium at 390x844, 1024x640, 1366x768, 1536x864 (pixel ratio
+  1.25), 1920x1080 and 2560x1440, in every theme, with no console errors.
 
 - 2026-11-02: README screenshot (task 37, GIF pending). Fixed: a switch, F10, timer pulse or key
   arriving between the operands and execute phases was lost.

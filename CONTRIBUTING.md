@@ -29,7 +29,13 @@ Guidelines:
 - Keep the model (`src/model`) free of React and Redux.
 - When behavior must match MSX88, note your source (course guide, manual, sample program) in the
   PR description.
-- Code, comments and docs in English. The UI is in Spanish for now (i18n is planned).
+- Code, comments and docs in English. Every UI text goes through `src/i18n` (`es.js` and `en.js`
+  must have the same keys; a test checks it). New assembler or simulator messages need a
+  pattern in `src/i18n/messages.js` (a test scans `src/model` for them).
+- Themes are CSS variables in `src/styles/themes.css`; a test checks that each one defines all
+  of them with enough contrast.
+- `npm install` downloads the screen font (CC BY-SA 4.0) into `src/fonts/vendor/`, which is not
+  committed.
 
 ## License
 
