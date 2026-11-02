@@ -4,6 +4,7 @@
   "errors": 0,
   "warnings": 1,
   "messages": [
+   "!! Alcanzado 'fin de fichero'. !!",
    "(linea 5)Aviso: falta la directiva 'END'."
   ],
   "listing": [

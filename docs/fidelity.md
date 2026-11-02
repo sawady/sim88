@@ -156,8 +156,9 @@ flags, memory and screen as MSX88.
 
 The timer's clock on MSX88 is **real time**: the same program, in fast mode,
 counts 415 and 444 loop turns before the first tick in two runs
-(`exp-timer-speed-fast`, `exp-timer-speed-fast-again`), and about three times
-as many with COMP = 3 (`exp-timer-speed-comp3`). With an instruction-based
+(`exp-timer-speed-fast`, `exp-timer-speed-fast-again`; 435 and 470 in a second
+run of the whole corpus), and about three times as many with COMP = 3
+(`exp-timer-speed-comp3`: 1270, then 1417). With an instruction-based
 clock both runs would give the same count. In the slow (animated) mode a
 program does not even reach `STI` in 20 seconds.
 

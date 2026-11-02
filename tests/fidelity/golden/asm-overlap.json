@@ -3,7 +3,9 @@
  "assembler": {
   "errors": 1,
   "warnings": 0,
-  "messages": [],
+  "messages": [
+   "!! Detectado solapamiento en memoria. !!"
+  ],
   "listing": [
    {
     "address": "2000",

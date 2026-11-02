@@ -446,6 +446,14 @@ def parse_listing(text):
     return rows, symbols
 
 
+def normalize_listing(text, name):
+    """The .LST header names the DOS file (P007.ASM) and the date of the run:
+    use the program's name and drop the date, so runs give the same file."""
+    text = re.sub(r'Listado Fuente: \S+', f'Listado Fuente: {name}.lst', text)
+    text = re.sub(r'Programa Fuente en: \S+', f'Programa Fuente en: {name}.asm', text)
+    return re.sub(r' Fecha: [^\r\n]*', ' Fecha: -', text)
+
+
 def parse_summary(out_text):
     m = re.search(r'(\d+) Error\(es\)\s+(\d+) Aviso\(s\)', out_text)
     errors, warnings = (int(m.group(1)), int(m.group(2))) if m else (None, None)
@@ -547,7 +555,9 @@ def main():
             golden_path = os.path.join(args.out, f'{program["name"]}.json')
             if os.path.exists(lst) and os.path.exists(golden_path):
                 golden = json.load(open(golden_path))
-                listing, symbols = parse_listing(open(lst, encoding='latin-1').read())
+                text = open(lst, encoding='latin-1', newline='').read()
+                open(lst, 'w', encoding='latin-1', newline='').write(normalize_listing(text, program['name']))
+                listing, symbols = parse_listing(text)
                 golden['assembler']['listing'], golden['assembler']['symbols'] = listing, symbols
                 json.dump(golden, open(golden_path, 'w'), indent=1)
         return
@@ -638,7 +648,8 @@ def write_results(programs, results, files, out, initial):
             listing, symbols = parse_listing(lst)
             golden['assembler']['listing'] = listing
             golden['assembler']['symbols'] = symbols
-            open(os.path.join(out, f'{program["name"]}.lst'), 'w', encoding='latin-1', newline='').write(lst)
+            open(os.path.join(out, f'{program["name"]}.lst'), 'w', encoding='latin-1', newline='').write(
+                normalize_listing(lst, program['name']))
         if program['name'] in results:
             golden['run'] = results[program['name']]
         json.dump(golden, open(os.path.join(out, f'{program["name"]}.json'), 'w'), indent=1)
