@@ -41,13 +41,13 @@ Taken by Federico Sawady on 2026-11-02.
 - [x] **4. Allow an empty program (just `END`)** · `gfi`
 - [x] **5. Initial values of the registers and SP** · `gfi`
   Registers start at 0 and SP at a documented value (8000h, the top of user memory ⚠️).
-- [ ] **6. Friendly errors for unsupported instructions**
+- [x] **6. Friendly errors for unsupported instructions**
   Never a `TypeError`: unknown or not yet implemented instructions give a message with the line.
-- [ ] **7. Size and range checks** · Deps: 6
+- [x] **7. Size and range checks** · Deps: 6
   `MOV AL, BX` and `MOV AL, 300` are errors with the line.
 - [ ] **8. Decode MOV reg, reg (8A/8B + ModRM)**
   The cycle runs `MOV BX, AX`.
-- [ ] **9. Remove the debug panel from the UI** · `gfi`
+- [x] **9. Remove the debug panel from the UI** · `gfi`
   No "RESULTADO AST / COMPILED"; errors are shown with error styling.
 
 ## Phase 1: memory and two-pass assembler

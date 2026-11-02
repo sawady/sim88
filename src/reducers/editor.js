@@ -6,7 +6,6 @@ const defaultState = {
   filepath: DEFAULT_FILE_NAME,
   text: '',
   error: undefined,
-  ast: '',
   line: undefined,
 };
 
@@ -30,7 +29,6 @@ export default (state = defaultState, action) => {
     case STOP:
       return {
         ...state,
-        ast: '',
         line: undefined,
       }
     case RESET:
@@ -43,7 +41,6 @@ export default (state = defaultState, action) => {
     case SHOW_ERROR:
       return {
         ...state,
-        ast: 'error',
         error: action.message,
       }
     default:

@@ -1,69 +1,37 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React from 'react';
+import { useSelector } from 'react-redux';
 
-import CPU from './CPU'
-import Memory from './Memory'
+import CPU from './CPU';
+import Memory from './Memory';
 
-import _find from 'lodash/find'
+import '../styles/Machine.css';
 
-import '../styles/Machine.css'
+const STATE_LABELS = {
+  RUNNING: 'Ejecutando',
+  PAUSED: 'Pausado',
+  STOPPED: 'Detenido',
+};
 
-class Result extends Component {
+export default function Machine() {
+  const error = useSelector((state) => state.editor.error);
+  const machineState = useSelector((state) => state.machine.state);
+  const velocity = useSelector((state) => state.machine.velocity);
 
-  render() {
-    return (
-      <div className="machine">
-        <div className="velocity">
-          Velocidad: {this.props.velocity}ms
-        </div>
-        <div className="layout">
-          <CPU />
-          <Memory />
-        </div>
-        <div>
-          <div>
-            <span>RESULTADO AST:</span>
-            {JSON.stringify(this.props.ast)}
-          </div>
-          <div>
-            <span>RESULTADO COMPILED:</span>
-            {
-              JSON.stringify(
-                _find(
-                  this.props.compiledProgram,
-                  x => x.line === this.props.ast.line
-                )
-              )
-            }
-          </div>
-          <div>
-            <span>CURRENT CYCLE STATE:</span>
-            {
-              this.props.state
-            }
-          </div>
-          <div>
-            {
-              this.props.error &&
-              <React.Fragment>
-                <span>ERROR: </span>
-                {this.props.error}
-              </React.Fragment>
-            }
-          </div>
-        </div>
+  return (
+    <div className="machine">
+      <div className="status">
+        <span>Estado: {STATE_LABELS[machineState] || machineState}</span>
+        <span>Velocidad: {velocity}ms</span>
       </div>
-    )
-  }
+      {error && (
+        <div className="error" role="alert">
+          {error}
+        </div>
+      )}
+      <div className="layout">
+        <CPU />
+        <Memory />
+      </div>
+    </div>
+  );
 }
-
-export default connect(
-  state => ({
-    ast: state.editor.ast,
-    currentLine: state.editor.line,
-    error: state.editor.error,
-    state: state.machine.state,
-    compiledProgram: state.machine.compiledProgram,
-    velocity: state.machine.velocity,
-  })
-)(Result)

@@ -37,6 +37,17 @@
   padding: 0px 5px;
 }
 
-.velocity {
+.status {
+  display: flex;
+  gap: 24px;
   margin-bottom: 15px;
+}
+
+.error {
+  margin-bottom: 15px;
+  padding: 8px 12px;
+  background-color: #a8002a;
+  border-left: 6px solid #ff5c7c;
+  font-family: monospace;
+  white-space: pre-wrap;
 }

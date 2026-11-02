@@ -49,9 +49,10 @@ describe('compiler: MOV encoding (8086 opcodes)', () => {
     expect(bytes('MOV AL, 1\ndato DB 0FFh\nEND')).toEqual(['B0', '01', 'FF']);
   });
 
-  // BUG: 8 bit immediates are not range checked, the high byte is dropped.
-  test.fails('MOV reg8 with an immediate that does not fit in 8 bits is an error', () => {
-    expect(() => assemble('MOV AL, 300\nEND')).toThrow();
+  test('MOV reg8 with an immediate that does not fit in 8 bits is an error, with line', () => {
+    expect(() => assemble('MOV AL, 300\nEND')).toThrow(/does not fit in 8 bits/);
+    expect(bytes('MOV AL, 255\nMOV AL, -128\nEND')).toEqual(['B0', 'FF', 'B0', '80']);
+    expect(() => assemble('MOV AL, -129\nEND')).toThrow(/does not fit/);
   });
 
   test('lower case registers assemble like upper case ones', () => {
@@ -63,8 +64,7 @@ describe('compiler: MOV encoding (8086 opcodes)', () => {
     expect(bytes('dato DB ?\nEND')).toEqual(['00']);
   });
 
-  // BUG: [BX] is accepted as a register and encoded with garbage.
-  test.fails('MOV AX, [BX] is rejected or encoded as indirect addressing (8B 07)', () => {
+  test('MOV AX, [BX] is rejected or encoded as indirect addressing (8B 07)', () => {
     let result;
     try {
       result = bytes('MOV AX, [BX]\nEND');
@@ -83,35 +83,26 @@ describe('static checks and unsupported instructions', () => {
     } catch (e) {
       error = e;
     }
-    expect(error.message).toMatch(/Invalid params for MOV/);
+    expect(error.message).toMatch(/Invalid operands for MOV/);
     expect(error.line).toBe(2);
   });
 
-  test('EQU, jumps and zero operand instructions are not compiled yet', () => {
-    expect(() => assemble('N EQU 1\nEND')).toThrow(/Unknown group/);
-    expect(() => assemble('JMP :fin\nEND')).toThrow(/Unknown group/);
-    expect(() => assemble('NOP\nEND')).toThrow(/Unknown group/);
-  });
-
-  test('other binary/unary instructions crash with a TypeError', () => {
-    expect(() => assemble('ADD AX, BX\nEND')).toThrow(TypeError);
-    expect(() => assemble('INC AX\nEND')).toThrow(TypeError);
-  });
-
-  // BUG: should be a friendly "not implemented"/"invalid params" error with a line.
-  test.fails('unsupported instructions give a friendly error with line number', () => {
-    let error;
-    try {
-      assemble('ADD AX, BX\nEND');
-    } catch (e) {
-      error = e;
+  test('unsupported instructions give a friendly error with line number', () => {
+    for (const src of ['ADD AX, BX', 'INC AX', 'N EQU 1', 'JMP :fin', 'NOP']) {
+      let error;
+      try {
+        assemble(`MOV AL, 1\n${src}\nEND`);
+      } catch (e) {
+        error = e;
+      }
+      expect(error).not.toBeInstanceOf(TypeError);
+      expect(error.message).toMatch(/not implemented yet/);
+      expect(error.line).toBe(2);
     }
-    expect(error).not.toBeInstanceOf(TypeError);
-    expect(error.line).toBe(1);
   });
 
-  // BUG: operand sizes are not checked; MOV AL, BX is accepted.
-  test.fails('MOV between registers of different size is rejected', () => {
-    expect(() => assemble('MOV AL, BX\nEND')).toThrow();
+  test('MOV between registers of different size is rejected', () => {
+    expect(() => assemble('MOV AL, BX\nEND')).toThrow(/size mismatch/);
+    expect(() => assemble('MOV AX, BL\nEND')).toThrow(/size mismatch/);
   });
 });
