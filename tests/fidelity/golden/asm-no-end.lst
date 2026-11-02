@@ -1,0 +1,18 @@
+
+								p gina: 1 
+
+ Listado Fuente: P021.LST
+ Programa Fuente en: P021.ASM
+ Fecha: Mon Nov 02 15:34:44 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; run: no
+			      2	; A source without END.
+			      3	        ORG 2000H
+ 2000 CD 00		      4	        INT 0
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

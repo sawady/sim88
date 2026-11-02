@@ -1,0 +1,20 @@
+
+								p gina: 1 
+
+ Listado Fuente: P011.LST
+ Programa Fuente en: P011.ASM
+ Fecha: Mon Nov 02 15:34:43 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; run: no
+			      2	; A direct address in brackets.
+			      3	        ORG 2000H
+			      4	        MOV AL, [1000H]
+Error: (null).
+			      5	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

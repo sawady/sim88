@@ -1,0 +1,32 @@
+
+								p gina: 1 
+
+ Listado Fuente: P005.LST
+ Programa Fuente en: P005.ASM
+ Fecha: Mon Nov 02 15:34:42 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; run: no
+			      2	; Are names case sensitive? The label is defined
+				 in lower case.
+			      3	        ORG 1000H
+ 1000 05		      4	dato    DB 5
+			      5	        ORG 2000H
+ 2000 B0 C8		      6	lazo:   MOV AL, DATO
+Error: Etiqueta no definida.
+Error: Valor de expresion fuera de rango.
+ 2002 FE C8		      7	        DEC AL
+ 2004 75 00		      8	        JNZ LAZO
+Error: Etiqueta no definida.
+Error: Salto fuera de rango.
+ 2006 CD 00		      9	        INT 0
+			     10	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ dato    	Byte		1000h	No usado
+ lazo    	Label		2000h	No usado

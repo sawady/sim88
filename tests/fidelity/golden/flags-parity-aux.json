@@ -1,0 +1,315 @@
+{
+ "program": "flags-parity-aux.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "B8",
+     "00",
+     "00"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "81",
+     "C0",
+     "03",
+     "01"
+    ],
+    "line": 5
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "9C"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2008",
+    "bytes": [
+     "B8",
+     "00",
+     "00"
+    ],
+    "line": 7
+   },
+   {
+    "address": "200B",
+    "bytes": [
+     "81",
+     "C0",
+     "07",
+     "01"
+    ],
+    "line": 8
+   },
+   {
+    "address": "200F",
+    "bytes": [
+     "9C"
+    ],
+    "line": 9
+   },
+   {
+    "address": "2010",
+    "bytes": [
+     "B8",
+     "00",
+     "00"
+    ],
+    "line": 10
+   },
+   {
+    "address": "2013",
+    "bytes": [
+     "81",
+     "C0",
+     "00",
+     "FF"
+    ],
+    "line": 11
+   },
+   {
+    "address": "2017",
+    "bytes": [
+     "9C"
+    ],
+    "line": 12
+   },
+   {
+    "address": "2018",
+    "bytes": [
+     "B8",
+     "08",
+     "00"
+    ],
+    "line": 13
+   },
+   {
+    "address": "201B",
+    "bytes": [
+     "81",
+     "C0",
+     "08",
+     "00"
+    ],
+    "line": 14
+   },
+   {
+    "address": "201F",
+    "bytes": [
+     "9C"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2020",
+    "bytes": [
+     "B8",
+     "00",
+     "08"
+    ],
+    "line": 16
+   },
+   {
+    "address": "2023",
+    "bytes": [
+     "81",
+     "C0",
+     "00",
+     "08"
+    ],
+    "line": 17
+   },
+   {
+    "address": "2027",
+    "bytes": [
+     "9C"
+    ],
+    "line": 18
+   },
+   {
+    "address": "2028",
+    "bytes": [
+     "B0",
+     "10"
+    ],
+    "line": 19
+   },
+   {
+    "address": "202A",
+    "bytes": [
+     "80",
+     "E8",
+     "01"
+    ],
+    "line": 20
+   },
+   {
+    "address": "202D",
+    "bytes": [
+     "9C"
+    ],
+    "line": 21
+   },
+   {
+    "address": "202E",
+    "bytes": [
+     "B0",
+     "0F"
+    ],
+    "line": 22
+   },
+   {
+    "address": "2030",
+    "bytes": [
+     "80",
+     "E0",
+     "0F"
+    ],
+    "line": 23
+   },
+   {
+    "address": "2033",
+    "bytes": [
+     "9C"
+    ],
+    "line": 24
+   },
+   {
+    "address": "2034",
+    "bytes": [
+     "B0",
+     "FF"
+    ],
+    "line": 25
+   },
+   {
+    "address": "2036",
+    "bytes": [
+     "FE",
+     "C0"
+    ],
+    "line": 26
+   },
+   {
+    "address": "2038",
+    "bytes": [
+     "9C"
+    ],
+    "line": 27
+   },
+   {
+    "address": "2039",
+    "bytes": [
+     "B0",
+     "00"
+    ],
+    "line": 28
+   },
+   {
+    "address": "203B",
+    "bytes": [
+     "FE",
+     "C8"
+    ],
+    "line": 29
+   },
+   {
+    "address": "203D",
+    "bytes": [
+     "9C"
+    ],
+    "line": 30
+   },
+   {
+    "address": "203E",
+    "bytes": [
+     "B3",
+     "03"
+    ],
+    "line": 31
+   },
+   {
+    "address": "2040",
+    "bytes": [
+     "80",
+     "CB",
+     "00"
+    ],
+    "line": 32
+   },
+   {
+    "address": "2043",
+    "bytes": [
+     "9C"
+    ],
+    "line": 33
+   },
+   {
+    "address": "2044",
+    "bytes": [
+     "B3",
+     "01"
+    ],
+    "line": 34
+   },
+   {
+    "address": "2046",
+    "bytes": [
+     "80",
+     "F3",
+     "00"
+    ],
+    "line": 35
+   },
+   {
+    "address": "2049",
+    "bytes": [
+     "9C"
+    ],
+    "line": 36
+   },
+   {
+    "address": "204A",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 37
+   }
+  ],
+  "symbols": []
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "10FF",
+   "BX": "0001",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "204C",
+   "SP": "7FEA"
+  },
+  "flags": "0200",
+  "memory": {
+   "2000": "B8000081C003019CB8000081C007019CB8000081C000FF9CB8080081C008009CB8000881C000089CB01080E8019CB00F80E00F9CB0FFFEC09CB000FEC89CB30380CB009CB30180F3009CCD",
+   "7FE6": "4C20000200020402940254020402140204021002840200020402",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

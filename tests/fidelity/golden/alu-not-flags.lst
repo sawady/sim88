@@ -1,0 +1,179 @@
+
+								p gina: 1 
+
+ Listado Fuente: P002.LST
+ Programa Fuente en: P002.ASM
+ Fecha: Mon Nov 02 15:53:20 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; NOT with the flags all clear and all set befor
+				e, on registers and memory:
+			      2	; which flags does MSX88's NOT change? (each PUS
+				HF keeps them)
+			      3	        ORG 1000H
+ 1000 00		      4	M8      DB 0
+			      5	        ORG 2000H
+ 2000 B8 00 00		      6	        MOV AX, 00000H
+ 2003 50		      7	        PUSH AX
+ 2004 9D		      8	        POPF
+ 2005 B3 00		      9	        MOV BL, 000H
+ 2007 F6 D3		     10	        NOT BL
+ 2009 9C		     11	        PUSHF
+ 200A B8 00 00		     12	        MOV AX, 00000H
+ 200D 50		     13	        PUSH AX
+ 200E 9D		     14	        POPF
+ 200F B3 FF		     15	        MOV BL, 0FFH
+ 2011 F6 D3		     16	        NOT BL
+ 2013 9C		     17	        PUSHF
+ 2014 B8 00 00		     18	        MOV AX, 00000H
+ 2017 50		     19	        PUSH AX
+ 2018 9D		     20	        POPF
+ 2019 B3 0F		     21	        MOV BL, 00FH
+ 201B F6 D3		     22	        NOT BL
+ 201D 9C		     23	        PUSHF
+ 201E B8 00 00		     24	        MOV AX, 00000H
+ 2021 50		     25	        PUSH AX
+ 2022 9D		     26	        POPF
+ 2023 B3 F0		     27	        MOV BL, 0F0H
+ 2025 F6 D3		     28	        NOT BL
+ 2027 9C		     29	        PUSHF
+ 2028 B8 00 00		     30	        MOV AX, 00000H
+ 202B 50		     31	        PUSH AX
+ 202C 9D		     32	        POPF
+ 202D B3 80		     33	        MOV BL, 080H
+ 202F F6 D3		     34	        NOT BL
+ 2031 9C		     35	        PUSHF
+ 2032 B8 00 00		     36	        MOV AX, 00000H
+ 2035 50		     37	        PUSH AX
+ 2036 9D		     38	        POPF
+ 2037 B3 01		     39	        MOV BL, 001H
+ 2039 F6 D3		     40	        NOT BL
+ 203B 9C		     41	        PUSHF
+ 203C B8 00 00		     42	        MOV AX, 00000H
+ 203F 50		     43	        PUSH AX
+ 2040 9D		     44	        POPF
+ 2041 BB 00 00		     45	        MOV BX, 00000H
+ 2044 F7 D3		     46	        NOT BX
+ 2046 9C		     47	        PUSHF
+ 2047 B8 00 00		     48	        MOV AX, 00000H
+ 204A 50		     49	        PUSH AX
+ 204B 9D		     50	        POPF
+ 204C BB FF FF		     51	        MOV BX, 0FFFFH
+ 204F F7 D3		     52	        NOT BX
+ 2051 9C		     53	        PUSHF
+
+
+
+								p gina: 2 
+
+ 2052 B8 00 00		     54	        MOV AX, 00000H
+ 2055 50		     55	        PUSH AX
+ 2056 9D		     56	        POPF
+ 2057 BB 34 12		     57	        MOV BX, 01234H
+ 205A F7 D3		     58	        NOT BX
+ 205C 9C		     59	        PUSHF
+ 205D B8 00 00		     60	        MOV AX, 00000H
+ 2060 50		     61	        PUSH AX
+ 2061 9D		     62	        POPF
+ 2062 BB 00 80		     63	        MOV BX, 08000H
+ 2065 F7 D3		     64	        NOT BX
+ 2067 9C		     65	        PUSHF
+ 2068 B8 00 00		     66	        MOV AX, 00000H
+ 206B 50		     67	        PUSH AX
+ 206C 9D		     68	        POPF
+ 206D C6 06 00 10 00	     69	        MOV M8, 000H
+ 2072 F6 16 00 10	     70	        NOT M8
+ 2076 9C		     71	        PUSHF
+ 2077 B8 00 00		     72	        MOV AX, 00000H
+ 207A 50		     73	        PUSH AX
+ 207B 9D		     74	        POPF
+ 207C C6 06 00 10 F0	     75	        MOV M8, 0F0H
+ 2081 F6 16 00 10	     76	        NOT M8
+ 2085 9C		     77	        PUSHF
+ 2086 B8 D5 08		     78	        MOV AX, 008D5H
+ 2089 50		     79	        PUSH AX
+ 208A 9D		     80	        POPF
+ 208B B3 00		     81	        MOV BL, 000H
+ 208D F6 D3		     82	        NOT BL
+ 208F 9C		     83	        PUSHF
+ 2090 B8 D5 08		     84	        MOV AX, 008D5H
+ 2093 50		     85	        PUSH AX
+ 2094 9D		     86	        POPF
+ 2095 B3 FF		     87	        MOV BL, 0FFH
+ 2097 F6 D3		     88	        NOT BL
+ 2099 9C		     89	        PUSHF
+ 209A B8 D5 08		     90	        MOV AX, 008D5H
+ 209D 50		     91	        PUSH AX
+ 209E 9D		     92	        POPF
+ 209F B3 0F		     93	        MOV BL, 00FH
+ 20A1 F6 D3		     94	        NOT BL
+ 20A3 9C		     95	        PUSHF
+ 20A4 B8 D5 08		     96	        MOV AX, 008D5H
+ 20A7 50		     97	        PUSH AX
+ 20A8 9D		     98	        POPF
+ 20A9 B3 F0		     99	        MOV BL, 0F0H
+ 20AB F6 D3		    100	        NOT BL
+ 20AD 9C		    101	        PUSHF
+ 20AE B8 D5 08		    102	        MOV AX, 008D5H
+ 20B1 50		    103	        PUSH AX
+ 20B2 9D		    104	        POPF
+ 20B3 B3 80		    105	        MOV BL, 080H
+ 20B5 F6 D3		    106	        NOT BL
+ 20B7 9C		    107	        PUSHF
+ 20B8 B8 D5 08		    108	        MOV AX, 008D5H
+ 20BB 50		    109	        PUSH AX
+ 20BC 9D		    110	        POPF
+ 20BD B3 01		    111	        MOV BL, 001H
+ 20BF F6 D3		    112	        NOT BL
+ 20C1 9C		    113	        PUSHF
+ 20C2 B8 D5 08		    114	        MOV AX, 008D5H
+
+
+
+								p gina: 3 
+
+ 20C5 50		    115	        PUSH AX
+ 20C6 9D		    116	        POPF
+ 20C7 BB 00 00		    117	        MOV BX, 00000H
+ 20CA F7 D3		    118	        NOT BX
+ 20CC 9C		    119	        PUSHF
+ 20CD B8 D5 08		    120	        MOV AX, 008D5H
+ 20D0 50		    121	        PUSH AX
+ 20D1 9D		    122	        POPF
+ 20D2 BB FF FF		    123	        MOV BX, 0FFFFH
+ 20D5 F7 D3		    124	        NOT BX
+ 20D7 9C		    125	        PUSHF
+ 20D8 B8 D5 08		    126	        MOV AX, 008D5H
+ 20DB 50		    127	        PUSH AX
+ 20DC 9D		    128	        POPF
+ 20DD BB 34 12		    129	        MOV BX, 01234H
+ 20E0 F7 D3		    130	        NOT BX
+ 20E2 9C		    131	        PUSHF
+ 20E3 B8 D5 08		    132	        MOV AX, 008D5H
+ 20E6 50		    133	        PUSH AX
+ 20E7 9D		    134	        POPF
+ 20E8 BB 00 80		    135	        MOV BX, 08000H
+ 20EB F7 D3		    136	        NOT BX
+ 20ED 9C		    137	        PUSHF
+ 20EE B8 D5 08		    138	        MOV AX, 008D5H
+ 20F1 50		    139	        PUSH AX
+ 20F2 9D		    140	        POPF
+ 20F3 C6 06 00 10 00	    141	        MOV M8, 000H
+ 20F8 F6 16 00 10	    142	        NOT M8
+ 20FC 9C		    143	        PUSHF
+ 20FD B8 D5 08		    144	        MOV AX, 008D5H
+ 2100 50		    145	        PUSH AX
+ 2101 9D		    146	        POPF
+ 2102 C6 06 00 10 F0	    147	        MOV M8, 0F0H
+ 2107 F6 16 00 10	    148	        NOT M8
+ 210B 9C		    149	        PUSHF
+ 210C CD 00		    150	        INT 0
+			    151	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ M8      	Byte		1000h

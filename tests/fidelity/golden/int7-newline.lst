@@ -1,0 +1,32 @@
+
+								p gina: 1 
+
+ Listado Fuente: P037.LST
+ Programa Fuente en: P037.ASM
+ Fecha: Mon Nov 02 15:34:49 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; INT 7 with CR and LF in the data: does the con
+				sole start a new line?
+			      2	        ORG 1000H
+ 1000 55 4E 4F 0D 0A 44	      3	TXT     DB "UNO", 0DH, 0AH, "DOS", 0AH, "TRES", 
+				0DH, "CUATRO"
+ 1006 4F 53 0A 54 52 45
+ 100C 53 0D 43 55 41 54
+ 1012 52 4F
+ 1014 55		      4	FIN     DB ?
+			      5	        ORG 2000H
+ 2000 BB 00 10		      6	        MOV BX, OFFSET TXT
+ 2003 B0 14		      7	        MOV AL, OFFSET FIN - OFFSET TXT
+ 2005 CD 07		      8	        INT 7
+ 2007 CD 00		      9	        INT 0
+			     10	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ TXT     	Byte		1000h
+ FIN     	Byte		1014h

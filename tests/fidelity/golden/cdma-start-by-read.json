@@ -1,0 +1,362 @@
+{
+ "program": "cdma-start-by-read.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "41",
+     "42",
+     "43",
+     "44",
+     "45",
+     "46"
+    ],
+    "line": 5
+   },
+   {
+    "address": "1006",
+    "bytes": [
+     "47",
+     "48"
+    ],
+    "line": 5
+   },
+   {
+    "address": "1008",
+    "bytes": [
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00"
+    ],
+    "line": 6,
+    "dup": 8
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "B0",
+     "FF"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "E6",
+     "21"
+    ],
+    "line": 9
+   },
+   {
+    "address": "2004",
+    "bytes": [
+     "B8",
+     "00",
+     "10"
+    ],
+    "line": 10
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "E6",
+     "50"
+    ],
+    "line": 11
+   },
+   {
+    "address": "2009",
+    "bytes": [
+     "8A",
+     "C4"
+    ],
+    "line": 12
+   },
+   {
+    "address": "200B",
+    "bytes": [
+     "E6",
+     "51"
+    ],
+    "line": 13
+   },
+   {
+    "address": "200D",
+    "bytes": [
+     "B8",
+     "08",
+     "10"
+    ],
+    "line": 14
+   },
+   {
+    "address": "2010",
+    "bytes": [
+     "E6",
+     "54"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2012",
+    "bytes": [
+     "8A",
+     "C4"
+    ],
+    "line": 16
+   },
+   {
+    "address": "2014",
+    "bytes": [
+     "E6",
+     "55"
+    ],
+    "line": 17
+   },
+   {
+    "address": "2016",
+    "bytes": [
+     "B0",
+     "08"
+    ],
+    "line": 18
+   },
+   {
+    "address": "2018",
+    "bytes": [
+     "E6",
+     "52"
+    ],
+    "line": 19
+   },
+   {
+    "address": "201A",
+    "bytes": [
+     "B0",
+     "00"
+    ],
+    "line": 20
+   },
+   {
+    "address": "201C",
+    "bytes": [
+     "E6",
+     "53"
+    ],
+    "line": 21
+   },
+   {
+    "address": "201E",
+    "bytes": [
+     "B0",
+     "0A"
+    ],
+    "line": 22
+   },
+   {
+    "address": "2020",
+    "bytes": [
+     "E6",
+     "56"
+    ],
+    "line": 23
+   },
+   {
+    "address": "2022",
+    "bytes": [
+     "E4",
+     "57"
+    ],
+    "line": 24
+   },
+   {
+    "address": "2024",
+    "bytes": [
+     "E4",
+     "56"
+    ],
+    "line": 25
+   },
+   {
+    "address": "2026",
+    "bytes": [
+     "8A",
+     "C8"
+    ],
+    "line": 26
+   },
+   {
+    "address": "2028",
+    "bytes": [
+     "90"
+    ],
+    "line": 27
+   },
+   {
+    "address": "2029",
+    "bytes": [
+     "90"
+    ],
+    "line": 28
+   },
+   {
+    "address": "202A",
+    "bytes": [
+     "90"
+    ],
+    "line": 29
+   },
+   {
+    "address": "202B",
+    "bytes": [
+     "90"
+    ],
+    "line": 30
+   },
+   {
+    "address": "202C",
+    "bytes": [
+     "90"
+    ],
+    "line": 31
+   },
+   {
+    "address": "202D",
+    "bytes": [
+     "90"
+    ],
+    "line": 32
+   },
+   {
+    "address": "202E",
+    "bytes": [
+     "90"
+    ],
+    "line": 33
+   },
+   {
+    "address": "202F",
+    "bytes": [
+     "90"
+    ],
+    "line": 34
+   },
+   {
+    "address": "2030",
+    "bytes": [
+     "90"
+    ],
+    "line": 35
+   },
+   {
+    "address": "2031",
+    "bytes": [
+     "90"
+    ],
+    "line": 36
+   },
+   {
+    "address": "2032",
+    "bytes": [
+     "E4",
+     "56"
+    ],
+    "line": 37
+   },
+   {
+    "address": "2034",
+    "bytes": [
+     "8A",
+     "E8"
+    ],
+    "line": 38
+   },
+   {
+    "address": "2036",
+    "bytes": [
+     "E4",
+     "52"
+    ],
+    "line": 39
+   },
+   {
+    "address": "2038",
+    "bytes": [
+     "8A",
+     "D0"
+    ],
+    "line": 40
+   },
+   {
+    "address": "203A",
+    "bytes": [
+     "E4",
+     "50"
+    ],
+    "line": 41
+   },
+   {
+    "address": "203C",
+    "bytes": [
+     "8A",
+     "F0"
+    ],
+    "line": 42
+   },
+   {
+    "address": "203E",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 43
+   }
+  ],
+  "symbols": [
+   {
+    "name": "SRC",
+    "type": "Byte",
+    "value": "1000"
+   },
+   {
+    "name": "DST",
+    "type": "Byte",
+    "value": "1008"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "1008",
+   "BX": "0000",
+   "CX": "8A8A",
+   "DX": "0800",
+   "IP": "2040",
+   "SP": "8000"
+  },
+  "flags": "0200",
+  "memory": {
+   "1000": "41424344454647484142434445464748",
+   "2000": "B0FFE621B80010E6508AC4E651B80810E6548AC4E655B008E652B000E653B00AE656E457E4568AC890909090909090909090E4568AE8E4528AD0E4508AF0CD",
+   "7FFC": "40200002",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

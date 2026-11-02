@@ -1,0 +1,87 @@
+
+								p gina: 1 
+
+ Listado Fuente: P042.LST
+ Programa Fuente en: P042.ASM
+ Fecha: Mon Nov 02 15:34:52 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; JMP and every conditional jump, taken and not 
+				taken. Each taken jump adds
+			      2	; a bit to DX; the not taken ones fall through t
+				o INC CX.
+			      3	        ORG 2000H
+ 2000 BA 00 00		      4	        MOV DX, 0
+ 2003 B9 00 00		      5	        MOV CX, 0
+ 2006 B0 00		      6	        MOV AL, 0
+ 2008 80 C0 00		      7	        ADD AL, 0          ; Z, P
+ 200B 74 02		      8	        JZ T1
+ 200D FF C1		      9	        INC CX
+ 200F 81 CA 01 00	     10	T1:     OR DX, 1
+ 2013 75 02		     11	        JNZ N1             ; Z is still 0 after 
+				OR: taken
+ 2015 FF C1		     12	        INC CX
+ 2017 B0 01		     13	N1:     MOV AL, 1
+ 2019 80 C0 00		     14	        ADD AL, 0          ; NZ
+ 201C 74 02		     15	        JZ T2              ; not taken
+ 201E FF C1		     16	        INC CX
+ 2020 75 02		     17	T2:     JNZ T3
+ 2022 FF C1		     18	        INC CX
+ 2024 81 CA 02 00	     19	T3:     OR DX, 2
+ 2028 B0 80		     20	        MOV AL, 80H
+ 202A 80 C0 00		     21	        ADD AL, 0          ; S
+ 202D 78 02		     22	        JS T4
+ 202F FF C1		     23	        INC CX
+ 2031 79 04		     24	T4:     JNS T5             ; not taken
+ 2033 81 CA 04 00	     25	        OR DX, 4
+ 2037 B0 FF		     26	T5:     MOV AL, 0FFH
+ 2039 80 C0 01		     27	        ADD AL, 1          ; C
+ 203C 72 02		     28	        JC T6
+ 203E FF C1		     29	        INC CX
+ 2040 73 04		     30	T6:     JNC T7             ; not taken
+ 2042 81 CA 08 00	     31	        OR DX, 8
+ 2046 B0 7F		     32	T7:     MOV AL, 7FH
+ 2048 80 C0 01		     33	        ADD AL, 1          ; O
+ 204B 70 02		     34	        JO T8
+ 204D FF C1		     35	        INC CX
+ 204F 71 04		     36	T8:     JNO T9             ; not taken
+ 2051 81 CA 10 00	     37	        OR DX, 10H
+ 2055 B0 01		     38	T9:     MOV AL, 1
+ 2057 80 C0 01		     39	        ADD AL, 1          ; no O, no C, no S
+ 205A 71 02		     40	        JNO T10
+ 205C FF C1		     41	        INC CX
+ 205E 73 02		     42	T10:    JNC T11
+ 2060 FF C1		     43	        INC CX
+ 2062 79 02		     44	T11:    JNS T12
+ 2064 FF C1		     45	        INC CX
+ 2066 E9 6D 20		     46	T12:    JMP FIN
+ 2069 FF C1		     47	        INC CX
+ 206B FF C1		     48	        INC CX
+ 206D CD 00		     49	FIN:    INT 0
+			     50	        END
+
+
+
+
+
+								p gina: 2 
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ T1      	Label		200Fh
+ N1      	Label		2017h
+ T2      	Label		2020h
+ T3      	Label		2024h
+ T4      	Label		2031h
+ T5      	Label		2037h
+ T6      	Label		2040h
+ T7      	Label		2046h
+ T8      	Label		204Fh
+ T9      	Label		2055h
+ T10     	Label		205Eh
+ T11     	Label		2062h
+ T12     	Label		2066h
+ FIN     	Label		206Dh

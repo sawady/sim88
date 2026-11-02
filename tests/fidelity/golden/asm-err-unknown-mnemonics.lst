@@ -1,0 +1,27 @@
+
+								p gina: 1 
+
+ Listado Fuente: P019.LST
+ Programa Fuente en: P019.ASM
+ Fecha: Mon Nov 02 15:34:44 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; run: no
+			      2	; Instructions of the 8086 that the SX88 does no
+				t have.
+			      3	        ORG 2000H
+			      4	        MUL BL
+Error: (null).
+			      5	        SHL AL, 1
+Error: (null).
+			      6	        LOOP 2000H
+Error: (null).
+			      7	        XCHG AX, BX
+Error: (null).
+			      8	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

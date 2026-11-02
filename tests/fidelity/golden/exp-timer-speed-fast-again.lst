@@ -1,0 +1,51 @@
+
+								p gina: 1 
+
+ Listado Fuente: P002.LST
+ Programa Fuente en: P002.ASM
+ Fecha: Mon Nov 02 15:50:19 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; compare: no
+			      2	;; timeout: 8
+			      3	; Experiment (not compared): the same as exp-tim
+				er-speed-fast, again; if the
+			      4	; count changes between runs the clock is real t
+				ime. In fast mode, how many loop turns run befor
+				e the
+			      5	; timer reaches COMP = 1? Tells whether the time
+				r's clock is real time.
+			      6	        ORG 1000H
+ 1000 00 00		      7	VUELTAS DW 0
+			      8	        ORG 44H
+ 0044 00 30		      9	        DW RUT
+			     10	        ORG 3000H
+ 3000 89 16 00 10	     11	RUT:    MOV VUELTAS, DX
+ 3004 B0 20		     12	        MOV AL, 20H
+ 3006 E6 20		     13	        OUT 20H, AL
+ 3008 CD 00		     14	        INT 0
+			     15	        ORG 2000H
+ 2000 FA		     16	        CLI
+ 2001 B0 11		     17	        MOV AL, 11H
+ 2003 E6 25		     18	        OUT 25H, AL
+ 2005 B0 FD		     19	        MOV AL, 0FDH
+ 2007 E6 21		     20	        OUT 21H, AL
+ 2009 B0 01		     21	        MOV AL, 1
+ 200B E6 11		     22	        OUT 11H, AL
+ 200D B0 00		     23	        MOV AL, 0
+ 200F E6 10		     24	        OUT 10H, AL
+ 2011 BA 00 00		     25	        MOV DX, 0
+ 2014 FB		     26	        STI
+ 2015 FF C2		     27	LAZO:   INC DX
+ 2017 E9 15 20		     28	        JMP LAZO
+			     29	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ VUELTAS 	Word		1000h
+ RUT     	Label		3000h
+ LAZO    	Label		2015h

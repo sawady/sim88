@@ -1,0 +1,33 @@
+
+								p gina: 1 
+
+ Listado Fuente: P036.LST
+ Programa Fuente en: P036.ASM
+ Fecha: Mon Nov 02 15:34:49 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; keys: 1.5:shift-a 1.5:b 1.5:ret
+			      2	; INT 6 reads one key into [BX]: is it echoed? T
+				hree keys: 'A', 'b', Enter.
+			      3	        ORG 1000H
+ 1000 3[		      4	TECLAS  DB 3 DUP (0)
+	     00
+		      ]
+			      5	        ORG 2000H
+ 2000 BB 00 10		      6	        MOV BX, OFFSET TECLAS
+ 2003 CD 06		      7	        INT 6
+ 2005 FF C3		      8	        INC BX
+ 2007 CD 06		      9	        INT 6
+ 2009 FF C3		     10	        INC BX
+ 200B CD 06		     11	        INT 6
+ 200D 8B CB		     12	        MOV CX, BX
+ 200F CD 00		     13	        INT 0
+			     14	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ TECLAS  	Byte		1000h

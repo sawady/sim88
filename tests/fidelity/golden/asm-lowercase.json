@@ -1,0 +1,59 @@
+{
+ "program": "asm-lowercase.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "0A"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "8A",
+     "06",
+     "00",
+     "10"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2004",
+    "bytes": [
+     "BB",
+     "00",
+     "10"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "02",
+     "07"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2009",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 9
+   }
+  ],
+  "symbols": [
+   {
+    "name": "var",
+    "type": "Byte",
+    "value": "1000"
+   }
+  ]
+ }
+}

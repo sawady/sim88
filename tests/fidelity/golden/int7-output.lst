@@ -1,0 +1,32 @@
+
+								p gina: 1 
+
+ Listado Fuente: P038.LST
+ Programa Fuente en: P038.ASM
+ Fecha: Mon Nov 02 15:34:50 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; INT 7 writes AL bytes from the address in BX; 
+				two calls in a row.
+			      2	        ORG 1000H
+ 1000 41 42 43		      3	UNO     DB "ABC"
+ 1003 78 79 7A 20 31 32	      4	DOS     DB "xyz 123"
+ 1009 33
+			      5	        ORG 2000H
+ 2000 BB 00 10		      6	        MOV BX, OFFSET UNO
+ 2003 B0 03		      7	        MOV AL, 3
+ 2005 CD 07		      8	        INT 7
+ 2007 BB 03 10		      9	        MOV BX, OFFSET DOS
+ 200A B0 07		     10	        MOV AL, 7
+ 200C CD 07		     11	        INT 7
+ 200E CD 00		     12	        INT 0
+			     13	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ UNO     	Byte		1000h
+ DOS     	Byte		1003h

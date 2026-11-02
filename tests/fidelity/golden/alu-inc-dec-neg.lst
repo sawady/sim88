@@ -1,0 +1,75 @@
+
+								p gina: 1 
+
+ Listado Fuente: P002.LST
+ Programa Fuente en: P002.ASM
+ Fecha: Mon Nov 02 15:34:41 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; INC and DEC keep C; NEG sets C unless the oper
+				and is 0; NEG 80h overflows.
+			      2	        ORG 1000H
+ 1000 FF		      3	B1      DB 0FFH
+ 1001 FF 7F		      4	W1      DW 7FFFH
+			      5	        ORG 2000H
+ 2000 B0 FF		      6	        MOV AL, 0FFH
+ 2002 80 C0 01		      7	        ADD AL, 1          ; sets C
+ 2005 B0 7F		      8	        MOV AL, 7FH
+ 2007 FE C0		      9	        INC AL             ; 80h: O, S, A, C kep
+				t
+ 2009 9C		     10	        PUSHF
+ 200A 50		     11	        PUSH AX
+ 200B B0 00		     12	        MOV AL, 0
+ 200D 80 E8 01		     13	        SUB AL, 1          ; sets C
+ 2010 B0 00		     14	        MOV AL, 0
+ 2012 80 C0 00		     15	        ADD AL, 0          ; clears C
+ 2015 B0 80		     16	        MOV AL, 80H
+ 2017 FE C8		     17	        DEC AL             ; 7Fh: O, A
+ 2019 9C		     18	        PUSHF
+ 201A 50		     19	        PUSH AX
+ 201B FE 06 00 10	     20	        INC B1             ; 00h: Z, A, P
+ 201F 9C		     21	        PUSHF
+ 2020 FF 0E 01 10	     22	        DEC W1             ; 7FFEh
+ 2024 9C		     23	        PUSHF
+ 2025 FF 06 01 10	     24	        INC W1             ; 7FFFh
+ 2029 9C		     25	        PUSHF
+ 202A FF 06 01 10	     26	        INC W1             ; 8000h: O
+ 202E 9C		     27	        PUSHF
+ 202F B0 01		     28	        MOV AL, 1
+ 2031 F6 D8		     29	        NEG AL             ; FFh: C, S, A, P
+ 2033 9C		     30	        PUSHF
+ 2034 50		     31	        PUSH AX
+ 2035 B0 00		     32	        MOV AL, 0
+ 2037 F6 D8		     33	        NEG AL             ; 00h: no C
+ 2039 9C		     34	        PUSHF
+ 203A 50		     35	        PUSH AX
+ 203B B0 80		     36	        MOV AL, 80H
+ 203D F6 D8		     37	        NEG AL             ; 80h: C, O
+ 203F 9C		     38	        PUSHF
+ 2040 50		     39	        PUSH AX
+ 2041 BB 01 00		     40	        MOV BX, 1
+ 2044 F7 DB		     41	        NEG BX             ; FFFFh
+ 2046 9C		     42	        PUSHF
+ 2047 53		     43	        PUSH BX
+ 2048 F6 1E 00 10	     44	        NEG B1             ; 00h
+ 204C 9C		     45	        PUSHF
+ 204D BA 00 00		     46	        MOV DX, 0
+ 2050 FF CA		     47	        DEC DX             ; FFFFh
+ 2052 9C		     48	        PUSHF
+ 2053 52		     49	        PUSH DX
+ 2054 CD 00		     50	        INT 0
+			     51	        END
+
+
+
+
+
+								p gina: 2 
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ B1      	Byte		1000h
+ W1      	Word		1001h

@@ -1,0 +1,57 @@
+{
+ "program": "modrm-si.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "B0",
+     "05"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "8A",
+     "04"
+    ],
+    "line": 5
+   },
+   {
+    "address": "2004",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 6
+   }
+  ],
+  "symbols": []
+ },
+ "run": {
+  "status": "error",
+  "window": [
+   ">G",
+   "Error en la ejecuci\ufffdn: c\ufffddigo 4 no reconocido.",
+   ">_",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0005",
+   "BX": "0000",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "2004",
+   "SP": "8000"
+  },
+  "flags": "0200",
+  "memory": {
+   "2000": "B0058A04CD"
+  }
+ }
+}

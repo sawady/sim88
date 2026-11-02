@@ -1,0 +1,36 @@
+
+								p gina: 1 
+
+ Listado Fuente: P033.LST
+ Programa Fuente en: P033.ASM
+ Fecha: Mon Nov 02 15:34:48 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; timeout: 6
+			      2	; A program that overwrites the vector of INT 7 
+				with its own routine: does
+			      3	; INT 7 still write on the screen, or does it ru
+				n the routine?
+			      4	        ORG 1000H
+ 1000 53 49 53 54 45 4D	      5	TXT     DB "SISTEMA"
+ 1006 41
+			      6	        ORG 1CH
+ 001C 00 30		      7	        DW PROPIA
+			      8	        ORG 3000H
+ 3000 BA 77 77		      9	PROPIA: MOV DX, 7777H
+ 3003 CF		     10	        IRET
+			     11	        ORG 2000H
+ 2000 BB 00 10		     12	        MOV BX, OFFSET TXT
+ 2003 B0 07		     13	        MOV AL, 7
+ 2005 CD 07		     14	        INT 7
+ 2007 CD 00		     15	        INT 0
+			     16	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ TXT     	Byte		1000h
+ PROPIA  	Label		3000h

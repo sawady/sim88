@@ -1,0 +1,41 @@
+
+								p gina: 1 
+
+ Listado Fuente: P000.LST
+ Programa Fuente en: P000.ASM
+ Fecha: Mon Nov 02 15:50:19 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; compare: no
+			      2	;; config: 2
+			      3	; Experiment (not compared): BUSY of the HAND af
+				ter sending one character,
+			      4	; read 16 times in a row (one IN per few instruc
+				tions).
+			      5	        ORG 1000H
+ 1000 10[		      6	EST     DB 16 DUP (0)
+	     00
+		      ]
+			      7	        ORG 2000H
+ 2000 B0 00		      8	        MOV AL, 0
+ 2002 E6 41		      9	        OUT 41H, AL
+ 2004 B0 41		     10	        MOV AL, 41H
+ 2006 E6 40		     11	        OUT 40H, AL
+ 2008 BB 00 10		     12	        MOV BX, OFFSET EST
+ 200B B1 10		     13	        MOV CL, 16
+ 200D E4 41		     14	LAZO:   IN AL, 41H
+ 200F 88 07		     15	        MOV [BX], AL
+ 2011 FF C3		     16	        INC BX
+ 2013 FE C9		     17	        DEC CL
+ 2015 75 F6		     18	        JNZ LAZO
+ 2017 CD 00		     19	        INT 0
+			     20	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ EST     	Byte		1000h
+ LAZO    	Label		200Dh

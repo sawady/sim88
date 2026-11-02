@@ -1,0 +1,58 @@
+
+								p gina: 1 
+
+ Listado Fuente: P041.LST
+ Programa Fuente en: P041.ASM
+ Fecha: Mon Nov 02 15:34:51 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; config: 3
+			      2	; Configuration 3: HAND and CDMA registers after
+				 a reset (57h is not read,
+			      3	; it may start a transfer).
+			      4	        ORG 1000H
+ 1000 C[		      5	TABLA   DB 12 DUP (0)
+	     00
+		      ]
+			      6	        ORG 2000H
+ 2000 BB 00 10		      7	        MOV BX, OFFSET TABLA
+ 2003 E4 40		      8	        IN AL, 40H
+ 2005 88 07		      9	        MOV [BX], AL
+ 2007 FF C3		     10	        INC BX
+ 2009 E4 41		     11	        IN AL, 41H
+ 200B 88 07		     12	        MOV [BX], AL
+ 200D FF C3		     13	        INC BX
+ 200F E4 50		     14	        IN AL, 50H
+ 2011 88 07		     15	        MOV [BX], AL
+ 2013 FF C3		     16	        INC BX
+ 2015 E4 51		     17	        IN AL, 51H
+ 2017 88 07		     18	        MOV [BX], AL
+ 2019 FF C3		     19	        INC BX
+ 201B E4 52		     20	        IN AL, 52H
+ 201D 88 07		     21	        MOV [BX], AL
+ 201F FF C3		     22	        INC BX
+ 2021 E4 53		     23	        IN AL, 53H
+ 2023 88 07		     24	        MOV [BX], AL
+ 2025 FF C3		     25	        INC BX
+ 2027 E4 54		     26	        IN AL, 54H
+ 2029 88 07		     27	        MOV [BX], AL
+ 202B FF C3		     28	        INC BX
+ 202D E4 55		     29	        IN AL, 55H
+ 202F 88 07		     30	        MOV [BX], AL
+ 2031 FF C3		     31	        INC BX
+ 2033 E4 56		     32	        IN AL, 56H
+ 2035 88 07		     33	        MOV [BX], AL
+ 2037 FF C3		     34	        INC BX
+ 2039 E4 30		     35	        IN AL, 30H          ; PIO: not connected
+				 in configuration 3
+ 203B 88 07		     36	        MOV [BX], AL
+ 203D CD 00		     37	        INT 0
+			     38	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ TABLA   	Byte		1000h

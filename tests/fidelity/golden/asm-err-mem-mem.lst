@@ -1,0 +1,26 @@
+
+								p gina: 1 
+
+ Listado Fuente: P014.LST
+ Programa Fuente en: P014.ASM
+ Fecha: Mon Nov 02 15:34:43 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; run: no
+			      2	; Memory to memory moves do not exist.
+			      3	        ORG 1000H
+ 1000 01		      4	B1      DB 1
+ 1001 02		      5	B2      DB 2
+			      6	        ORG 2000H
+ 2000 88 00 00 00 00 00	      7	        MOV B1, B2
+Error: Se espera dato inmediato.
+			      8	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ B1      	Byte		1000h
+ B2      	Byte		1001h

@@ -1,0 +1,30 @@
+
+								p gina: 1 
+
+ Listado Fuente: P039.LST
+ Programa Fuente en: P039.ASM
+ Fecha: Mon Nov 02 15:34:50 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; INT 7 with AL = 0 writes nothing; registers an
+				d flags survive INT 7.
+			      2	        ORG 1000H
+ 1000 4E 4F		      3	TXT     DB "NO"
+			      4	        ORG 2000H
+ 2000 B0 FF		      5	        MOV AL, 0FFH
+ 2002 80 C0 01		      6	        ADD AL, 1          ; C, Z, A, P
+ 2005 BB 00 10		      7	        MOV BX, OFFSET TXT
+ 2008 B0 00		      8	        MOV AL, 0
+ 200A B9 34 12		      9	        MOV CX, 1234H
+ 200D CD 07		     10	        INT 7
+ 200F 9C		     11	        PUSHF
+ 2010 CD 00		     12	        INT 0
+			     13	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ TXT     	Byte		1000h

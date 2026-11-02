@@ -1,0 +1,539 @@
+{
+ "program": "io-ports-initial-c0.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00"
+    ],
+    "line": 4,
+    "dup": 24
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "BB",
+     "00",
+     "10"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "E4",
+     "10"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 9
+   },
+   {
+    "address": "2009",
+    "bytes": [
+     "E4",
+     "11"
+    ],
+    "line": 10
+   },
+   {
+    "address": "200B",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 11
+   },
+   {
+    "address": "200D",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 12
+   },
+   {
+    "address": "200F",
+    "bytes": [
+     "E4",
+     "21"
+    ],
+    "line": 13
+   },
+   {
+    "address": "2011",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 14
+   },
+   {
+    "address": "2013",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2015",
+    "bytes": [
+     "E4",
+     "22"
+    ],
+    "line": 16
+   },
+   {
+    "address": "2017",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 17
+   },
+   {
+    "address": "2019",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 18
+   },
+   {
+    "address": "201B",
+    "bytes": [
+     "E4",
+     "23"
+    ],
+    "line": 19
+   },
+   {
+    "address": "201D",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 20
+   },
+   {
+    "address": "201F",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 21
+   },
+   {
+    "address": "2021",
+    "bytes": [
+     "E4",
+     "24"
+    ],
+    "line": 22
+   },
+   {
+    "address": "2023",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 23
+   },
+   {
+    "address": "2025",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 24
+   },
+   {
+    "address": "2027",
+    "bytes": [
+     "E4",
+     "25"
+    ],
+    "line": 25
+   },
+   {
+    "address": "2029",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 26
+   },
+   {
+    "address": "202B",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 27
+   },
+   {
+    "address": "202D",
+    "bytes": [
+     "E4",
+     "26"
+    ],
+    "line": 28
+   },
+   {
+    "address": "202F",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 29
+   },
+   {
+    "address": "2031",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 30
+   },
+   {
+    "address": "2033",
+    "bytes": [
+     "E4",
+     "27"
+    ],
+    "line": 31
+   },
+   {
+    "address": "2035",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 32
+   },
+   {
+    "address": "2037",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 33
+   },
+   {
+    "address": "2039",
+    "bytes": [
+     "E4",
+     "28"
+    ],
+    "line": 34
+   },
+   {
+    "address": "203B",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 35
+   },
+   {
+    "address": "203D",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 36
+   },
+   {
+    "address": "203F",
+    "bytes": [
+     "E4",
+     "2B"
+    ],
+    "line": 37
+   },
+   {
+    "address": "2041",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 38
+   },
+   {
+    "address": "2043",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 39
+   },
+   {
+    "address": "2045",
+    "bytes": [
+     "E4",
+     "30"
+    ],
+    "line": 40
+   },
+   {
+    "address": "2047",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 41
+   },
+   {
+    "address": "2049",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 42
+   },
+   {
+    "address": "204B",
+    "bytes": [
+     "E4",
+     "31"
+    ],
+    "line": 43
+   },
+   {
+    "address": "204D",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 44
+   },
+   {
+    "address": "204F",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 45
+   },
+   {
+    "address": "2051",
+    "bytes": [
+     "E4",
+     "32"
+    ],
+    "line": 46
+   },
+   {
+    "address": "2053",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 47
+   },
+   {
+    "address": "2055",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 48
+   },
+   {
+    "address": "2057",
+    "bytes": [
+     "E4",
+     "33"
+    ],
+    "line": 49
+   },
+   {
+    "address": "2059",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 50
+   },
+   {
+    "address": "205B",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 51
+   },
+   {
+    "address": "205D",
+    "bytes": [
+     "E4",
+     "40"
+    ],
+    "line": 52
+   },
+   {
+    "address": "205F",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 53
+   },
+   {
+    "address": "2061",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 54
+   },
+   {
+    "address": "2063",
+    "bytes": [
+     "E4",
+     "50"
+    ],
+    "line": 55
+   },
+   {
+    "address": "2065",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 56
+   },
+   {
+    "address": "2067",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 57
+   },
+   {
+    "address": "2069",
+    "bytes": [
+     "E4",
+     "F0"
+    ],
+    "line": 58
+   },
+   {
+    "address": "206B",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 59
+   },
+   {
+    "address": "206D",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 60
+   },
+   {
+    "address": "206F",
+    "bytes": [
+     "E5",
+     "30"
+    ],
+    "line": 61
+   },
+   {
+    "address": "2071",
+    "bytes": [
+     "89",
+     "07"
+    ],
+    "line": 62
+   },
+   {
+    "address": "2073",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 63
+   }
+  ],
+  "symbols": [
+   {
+    "name": "TABLA",
+    "type": "Byte",
+    "value": "1000"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0000",
+   "BX": "1012",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "2075",
+   "SP": "8000"
+  },
+  "flags": "0204",
+  "memory": {
+   "1002": "FF",
+   "100D": "FFFF",
+   "2000": "BB0010E4108807FFC3E4118807FFC3E4218807FFC3E4228807FFC3E4238807FFC3E4248807FFC3E4258807FFC3E4268807FFC3E4278807FFC3E4288807FFC3E42B8807FFC3E4308807FFC3E4318807FFC3E4328807FFC3E4338807FFC3E4408807FFC3E4508807FFC3E4F08807FFC3E5308907CD",
+   "7FFC": "75200402",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

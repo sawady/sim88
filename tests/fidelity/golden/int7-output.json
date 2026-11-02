@@ -1,0 +1,133 @@
+{
+ "program": "int7-output.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "41",
+     "42",
+     "43"
+    ],
+    "line": 3
+   },
+   {
+    "address": "1003",
+    "bytes": [
+     "78",
+     "79",
+     "7A",
+     "20",
+     "31",
+     "32"
+    ],
+    "line": 4
+   },
+   {
+    "address": "1009",
+    "bytes": [
+     "33"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "BB",
+     "00",
+     "10"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "B0",
+     "03"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "CD",
+     "07"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "BB",
+     "03",
+     "10"
+    ],
+    "line": 9
+   },
+   {
+    "address": "200A",
+    "bytes": [
+     "B0",
+     "07"
+    ],
+    "line": 10
+   },
+   {
+    "address": "200C",
+    "bytes": [
+     "CD",
+     "07"
+    ],
+    "line": 11
+   },
+   {
+    "address": "200E",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 12
+   }
+  ],
+  "symbols": [
+   {
+    "name": "UNO",
+    "type": "Byte",
+    "value": "1000"
+   },
+   {
+    "name": "DOS",
+    "type": "Byte",
+    "value": "1003"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   "ABC",
+   "xyz 123",
+   ">_",
+   ""
+  ],
+  "registers": {
+   "AX": "0007",
+   "BX": "1003",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "2010",
+   "SP": "8000"
+  },
+  "flags": "0200",
+  "memory": {
+   "1000": "41424378797A20313233",
+   "2000": "BB0010B003CD07BB0310B007CD07CD",
+   "7FFC": "10200002",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

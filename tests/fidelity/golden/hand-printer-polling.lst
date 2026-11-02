@@ -1,0 +1,40 @@
+
+								p gina: 1 
+
+ Listado Fuente: P028.LST
+ Programa Fuente en: P028.ASM
+ Fecha: Mon Nov 02 15:34:46 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; config: 2
+			      2	; Configuration 2: print "HOLA" through the HAND
+				, polling BUSY.
+			      3	        ORG 1000H
+ 1000 48 4F 4C 41	      4	MSG     DB "HOLA"
+			      5	        ORG 2000H
+ 2000 E4 41		      6	        IN AL, 41H
+ 2002 80 E0 7F		      7	        AND AL, 7FH
+ 2005 E6 41		      8	        OUT 41H, AL         ; no interrupts
+ 2007 BB 00 10		      9	        MOV BX, OFFSET MSG
+ 200A B1 04		     10	        MOV CL, 4
+ 200C E4 41		     11	LAZO:   IN AL, 41H
+ 200E 80 E0 01		     12	        AND AL, 1
+ 2011 75 F9		     13	        JNZ LAZO
+ 2013 8A 07		     14	        MOV AL, [BX]
+ 2015 E6 40		     15	        OUT 40H, AL
+ 2017 FF C3		     16	        INC BX
+ 2019 FE C9		     17	        DEC CL
+ 201B 75 EF		     18	        JNZ LAZO
+ 201D E4 41		     19	        IN AL, 41H
+ 201F 8A D0		     20	        MOV DL, AL
+ 2021 CD 00		     21	        INT 0
+			     22	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ MSG     	Byte		1000h
+ LAZO    	Label		200Ch

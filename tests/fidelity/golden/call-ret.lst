@@ -1,0 +1,43 @@
+
+								p gina: 1 
+
+ Listado Fuente: P023.LST
+ Programa Fuente en: P023.ASM
+ Fecha: Mon Nov 02 15:34:45 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; CALL and RET with nested subroutines in anothe
+				r ORG; parameters in
+			      2	; registers and through the stack.
+			      3	        ORG 1000H
+ 1000 CD CC		      4	RES     DW ?
+			      5	        ORG 3000H
+ 3000 03 C0		      6	DOBLE:  ADD AX, AX          ; AX = 2 * AX
+ 3002 C3		      7	        RET
+ 3003 50		      8	CUAD:   PUSH AX
+ 3004 E8 00 30		      9	        CALL DOBLE
+ 3007 E8 00 30		     10	        CALL DOBLE          ; AX = 4 * AX
+ 300A 5B		     11	        POP BX              ; original AX
+ 300B C3		     12	        RET
+ 300C 8B DC		     13	SUMA:   MOV BX, SP
+ 300E 8B 07		     14	        MOV AX, [BX]        ; return address
+ 3010 C3		     15	        RET
+			     16	        ORG 2000H
+ 2000 B8 05 00		     17	        MOV AX, 5
+ 2003 E8 03 30		     18	        CALL CUAD
+ 2006 89 06 00 10	     19	        MOV RES, AX
+ 200A E8 0C 30		     20	        CALL SUMA
+ 200D 8B CC		     21	        MOV CX, SP
+ 200F CD 00		     22	        INT 0
+			     23	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ RES     	Word		1000h
+ DOBLE   	Label		3000h
+ CUAD    	Label		3003h
+ SUMA    	Label		300Ch

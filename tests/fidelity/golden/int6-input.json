@@ -1,0 +1,117 @@
+{
+ "program": "int6-input.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "00",
+     "00",
+     "00"
+    ],
+    "line": 4,
+    "dup": 3
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "BB",
+     "00",
+     "10"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "CD",
+     "06"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "CD",
+     "06"
+    ],
+    "line": 9
+   },
+   {
+    "address": "2009",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 10
+   },
+   {
+    "address": "200B",
+    "bytes": [
+     "CD",
+     "06"
+    ],
+    "line": 11
+   },
+   {
+    "address": "200D",
+    "bytes": [
+     "8B",
+     "CB"
+    ],
+    "line": 12
+   },
+   {
+    "address": "200F",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 13
+   }
+  ],
+  "symbols": [
+   {
+    "name": "TECLAS",
+    "type": "Byte",
+    "value": "1000"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0000",
+   "BX": "1002",
+   "CX": "1002",
+   "DX": "0000",
+   "IP": "2011",
+   "SP": "8000"
+  },
+  "flags": "0200",
+  "memory": {
+   "1000": "41620D",
+   "2000": "BB0010CD06FFC3CD06FFC3CD068BCBCD",
+   "7FFC": "11200002",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

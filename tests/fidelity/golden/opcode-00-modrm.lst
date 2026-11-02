@@ -1,0 +1,27 @@
+
+								p gina: 1 
+
+ Listado Fuente: P007.LST
+ Programa Fuente en: P007.ASM
+ Fecha: Mon Nov 02 15:46:42 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; timeout: 4
+			      2	; 00 07 is ADD [BX], AL: does MSX88 run it when 
+				written as bytes?
+			      3	        ORG 1000H
+ 1000 01		      4	B1      DB 1
+			      5	        ORG 2000H
+ 2000 BB 00 10		      6	        MOV BX, OFFSET B1
+ 2003 B0 02		      7	        MOV AL, 2
+ 2005 00 07		      8	        DB 0, 7
+ 2007 CD 00		      9	        INT 0
+			     10	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ B1      	Byte		1000h

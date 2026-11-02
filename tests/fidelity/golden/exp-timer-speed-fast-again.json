@@ -1,0 +1,208 @@
+{
+ "program": "exp-timer-speed-fast-again.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "00",
+     "00"
+    ],
+    "line": 7
+   },
+   {
+    "address": "0044",
+    "bytes": [
+     "00",
+     "30"
+    ],
+    "line": 9
+   },
+   {
+    "address": "3000",
+    "bytes": [
+     "89",
+     "16",
+     "00",
+     "10"
+    ],
+    "line": 11
+   },
+   {
+    "address": "3004",
+    "bytes": [
+     "B0",
+     "20"
+    ],
+    "line": 12
+   },
+   {
+    "address": "3006",
+    "bytes": [
+     "E6",
+     "20"
+    ],
+    "line": 13
+   },
+   {
+    "address": "3008",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 14
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "FA"
+    ],
+    "line": 16
+   },
+   {
+    "address": "2001",
+    "bytes": [
+     "B0",
+     "11"
+    ],
+    "line": 17
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "E6",
+     "25"
+    ],
+    "line": 18
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "B0",
+     "FD"
+    ],
+    "line": 19
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "E6",
+     "21"
+    ],
+    "line": 20
+   },
+   {
+    "address": "2009",
+    "bytes": [
+     "B0",
+     "01"
+    ],
+    "line": 21
+   },
+   {
+    "address": "200B",
+    "bytes": [
+     "E6",
+     "11"
+    ],
+    "line": 22
+   },
+   {
+    "address": "200D",
+    "bytes": [
+     "B0",
+     "00"
+    ],
+    "line": 23
+   },
+   {
+    "address": "200F",
+    "bytes": [
+     "E6",
+     "10"
+    ],
+    "line": 24
+   },
+   {
+    "address": "2011",
+    "bytes": [
+     "BA",
+     "00",
+     "00"
+    ],
+    "line": 25
+   },
+   {
+    "address": "2014",
+    "bytes": [
+     "FB"
+    ],
+    "line": 26
+   },
+   {
+    "address": "2015",
+    "bytes": [
+     "FF",
+     "C2"
+    ],
+    "line": 27
+   },
+   {
+    "address": "2017",
+    "bytes": [
+     "E9",
+     "15",
+     "20"
+    ],
+    "line": 28
+   }
+  ],
+  "symbols": [
+   {
+    "name": "VUELTAS",
+    "type": "Word",
+    "value": "1000"
+   },
+   {
+    "name": "RUT",
+    "type": "Label",
+    "value": "3000"
+   },
+   {
+    "name": "LAZO",
+    "type": "Label",
+    "value": "2015"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0020",
+   "BX": "0000",
+   "CX": "0000",
+   "DX": "01BC",
+   "IP": "300A",
+   "SP": "7FFC"
+  },
+  "flags": "0000",
+  "memory": {
+   "0045": "30",
+   "1000": "BC01",
+   "2000": "FAB011E625B0FDE621B001E611B000E610BA0000FBFFC2E91520",
+   "3000": "89160010B020E620CD",
+   "7FF8": "0A30000015200002",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

@@ -1,0 +1,238 @@
+{
+ "program": "directives.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "01",
+     "0A",
+     "FF",
+     "F0",
+     "FF",
+     "80"
+    ],
+    "line": 5
+   },
+   {
+    "address": "1006",
+    "bytes": [
+     "7F"
+    ],
+    "line": 5
+   },
+   {
+    "address": "1007",
+    "bytes": [
+     "01",
+     "00",
+     "34",
+     "12",
+     "FF",
+     "FF"
+    ],
+    "line": 6
+   },
+   {
+    "address": "100D",
+    "bytes": [
+     "FF",
+     "FF"
+    ],
+    "line": 6
+   },
+   {
+    "address": "100F",
+    "bytes": [
+     "48",
+     "6F",
+     "6C",
+     "61",
+     "0D",
+     "0A"
+    ],
+    "line": 7
+   },
+   {
+    "address": "1015",
+    "bytes": [
+     "24"
+    ],
+    "line": 7
+   },
+   {
+    "address": "1016",
+    "bytes": [
+     "05",
+     "05",
+     "05"
+    ],
+    "line": 8,
+    "dup": 3
+   },
+   {
+    "address": "1019",
+    "bytes": [
+     "55",
+     "AA",
+     "55",
+     "AA"
+    ],
+    "line": 9,
+    "dup": 2
+   },
+   {
+    "address": "101D",
+    "bytes": [
+     "55",
+     "55",
+     "55",
+     "55"
+    ],
+    "line": 10,
+    "dup": 4
+   },
+   {
+    "address": "1021",
+    "bytes": [
+     "0F",
+     "10"
+    ],
+    "line": 11
+   },
+   {
+    "address": "1023",
+    "bytes": [
+     "07"
+    ],
+    "line": 12
+   },
+   {
+    "address": "1040",
+    "bytes": [
+     "05",
+     "02"
+    ],
+    "line": 14
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "B8",
+     "07",
+     "10"
+    ],
+    "line": 16
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "BB",
+     "10",
+     "10"
+    ],
+    "line": 17
+   },
+   {
+    "address": "2006",
+    "bytes": [
+     "B1",
+     "03"
+    ],
+    "line": 18
+   },
+   {
+    "address": "2008",
+    "bytes": [
+     "B5",
+     "07"
+    ],
+    "line": 19
+   },
+   {
+    "address": "200A",
+    "bytes": [
+     "8B",
+     "16",
+     "21",
+     "10"
+    ],
+    "line": 20
+   },
+   {
+    "address": "200E",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 21
+   }
+  ],
+  "symbols": [
+   {
+    "name": "CANT",
+    "type": "Number",
+    "value": "3"
+   },
+   {
+    "name": "BASE",
+    "type": "Number",
+    "value": "1000"
+   },
+   {
+    "name": "PALS",
+    "type": "Word",
+    "value": "1007"
+   },
+   {
+    "name": "MSG",
+    "type": "Byte",
+    "value": "100F"
+   },
+   {
+    "name": "RES",
+    "type": "Byte",
+    "value": "1016"
+   },
+   {
+    "name": "HUECO",
+    "type": "Byte",
+    "value": "101D"
+   },
+   {
+    "name": "DIR",
+    "type": "Word",
+    "value": "1021"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "1007",
+   "BX": "1010",
+   "CX": "0703",
+   "DX": "100F",
+   "IP": "2010",
+   "SP": "8000"
+  },
+  "flags": "0200",
+  "memory": {
+   "1000": "010AFFF0FF807F01003412FFFFFFFF486F6C610D0A2405050555AA55AA555555550F1007",
+   "1040": "0502",
+   "2000": "B80710BB1010B103B5078B162110CD",
+   "7FFC": "10200002",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

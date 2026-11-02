@@ -1,0 +1,81 @@
+
+								p gina: 1 
+
+ Listado Fuente: P004.LST
+ Programa Fuente en: P004.ASM
+ Fecha: Mon Nov 02 15:34:42 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; SUB, SBB and CMP on 8 and 16 bits: borrow, ove
+				rflow and aux carry.
+			      2	        ORG 1000H
+ 1000 10		      3	B1      DB 10H
+ 1001 00 80		      4	W1      DW 8000H
+			      5	        ORG 2000H
+ 2000 B0 00		      6	        MOV AL, 0
+ 2002 80 E8 01		      7	        SUB AL, 1          ; FFh: C, S, A, P
+ 2005 9C		      8	        PUSHF
+ 2006 50		      9	        PUSH AX
+ 2007 B0 80		     10	        MOV AL, 80H
+ 2009 80 E8 01		     11	        SUB AL, 1          ; 7Fh: O, A
+ 200C 9C		     12	        PUSHF
+ 200D 50		     13	        PUSH AX
+ 200E B0 7F		     14	        MOV AL, 7FH
+ 2010 80 E8 FF		     15	        SUB AL, 0FFH       ; 80h: C, O, S
+ 2013 9C		     16	        PUSHF
+ 2014 50		     17	        PUSH AX
+ 2015 B0 05		     18	        MOV AL, 5
+ 2017 80 E8 05		     19	        SUB AL, 5          ; 00h: Z, P
+ 201A 9C		     20	        PUSHF
+ 201B 50		     21	        PUSH AX
+ 201C B0 10		     22	        MOV AL, 10H
+ 201E 2A 06 00 10	     23	        SUB AL, B1         ; memory operand: 00h
+ 2022 9C		     24	        PUSHF
+ 2023 50		     25	        PUSH AX
+ 2024 80 2E 00 10 11	     26	        SUB B1, 11H        ; memory destination:
+				 FFh
+ 2029 9C		     27	        PUSHF
+ 202A B0 00		     28	        MOV AL, 0
+ 202C 80 E8 01		     29	        SUB AL, 1          ; sets C
+ 202F B0 10		     30	        MOV AL, 10H
+ 2031 80 D8 00		     31	        SBB AL, 0          ; 10h - 0 - 1 = 0Fh: 
+				A
+ 2034 9C		     32	        PUSHF
+ 2035 50		     33	        PUSH AX
+ 2036 B8 00 00		     34	        MOV AX, 0
+ 2039 81 E8 01 00	     35	        SUB AX, 1          ; FFFFh: C, S, A, P
+ 203D 9C		     36	        PUSHF
+ 203E 50		     37	        PUSH AX
+ 203F BB 00 80		     38	        MOV BX, 8000H
+ 2042 81 EB 01 00	     39	        SUB BX, 1          ; 7FFFh: O, A, P
+ 2046 9C		     40	        PUSHF
+ 2047 53		     41	        PUSH BX
+ 2048 81 1E 01 10 01 00	     42	        SBB W1, 1          ; C was 0: 7FFFh, O
+ 204E 9C		     43	        PUSHF
+ 204F B0 03		     44	        MOV AL, 3
+ 2051 80 F8 05		     45	        CMP AL, 5          ; flags of 3 - 5, AL 
+				unchanged
+ 2054 9C		     46	        PUSHF
+ 2055 50		     47	        PUSH AX
+ 2056 B9 00 80		     48	        MOV CX, 8000H
+ 2059 81 F9 01 00	     49	        CMP CX, 1          ; O
+ 205D 9C		     50	        PUSHF
+ 205E 51		     51	        PUSH CX
+
+
+
+								p gina: 2 
+
+ 205F 80 3E 00 10 FF	     52	        CMP B1, 0FFH       ; Z
+ 2064 9C		     53	        PUSHF
+ 2065 CD 00		     54	        INT 0
+			     55	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ B1      	Byte		1000h
+ W1      	Word		1001h

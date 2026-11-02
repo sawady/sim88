@@ -1,0 +1,37 @@
+
+								p gina: 1 
+
+ Listado Fuente: P032.LST
+ Programa Fuente en: P032.ASM
+ Fecha: Mon Nov 02 15:34:48 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; A software interrupt through the vector table:
+				 INT 10h with the routine
+			      2	; address at 40h. INT pushes the flags and IP an
+				d clears I; IRET restores them.
+			      3	        ORG 40H
+ 0040 00 30		      4	        DW RUTINA
+			      5	        ORG 3000H
+ 3000 8B DC		      6	RUTINA: MOV BX, SP
+ 3002 8B 0F		      7	        MOV CX, [BX]        ; return IP
+ 3004 9C		      8	        PUSHF
+ 3005 5A		      9	        POP DX              ; flags inside the r
+				outine (I cleared?)
+ 3006 B8 55 55		     10	        MOV AX, 5555H
+ 3009 CF		     11	        IRET
+			     12	        ORG 2000H
+ 2000 B0 FF		     13	        MOV AL, 0FFH
+ 2002 80 C0 01		     14	        ADD AL, 1          ; C, Z, A, P
+ 2005 CD 10		     15	        INT 10H
+ 2007 9C		     16	        PUSHF
+ 2008 CD 00		     17	        INT 0
+			     18	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ RUTINA  	Label		3000h

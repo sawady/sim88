@@ -27,12 +27,18 @@ Taken by Federico Sawady on 2026-11-02.
 2. **Real 8086 opcodes**, with a table-driven decoder that reads ModRM.
 3. **`END` and `HLT`**: `END` is an assembler directive that marks the end of the source and emits
    no code; `HLT` (F4) halts the CPU; `INT 0` also ends the program, as in MSX88. Opcode 00 decodes
-   as `ADD r/m8, r8`, as on an 8086.
+   as `ADD r/m8, r8`, as on an 8086. *Updated 2026-11-02 with the oracle (task 47):* `HLT` waits for
+   an interrupt even when none can come, as MSX88 does; `00 00` (`[BX+SI]`) is not an SX88
+   instruction and stops the program, as MSX88 does (`00 07`, `ADD [BX], AL`, runs).
 4. **64 KB of memory on a `Uint8Array`**, with a snapshot per step (enables "step back").
 5. **Fidelity rule** (adjusts decision 2): where MSX88 / ASM88 is documented, SIM88 copies
    MSX88 even when it differs from a real 8086; real 8086 opcodes are used only where MSX88 says
    nothing. Reason: students compare with the `.LST` listings and the course material. So `JMP`
    and `CALL` carry an absolute address (`E9`/`E8`, as ASM88) and `NOP` is 98h (MSX88 manual).
+   *Updated 2026-11-02:* the original MSX88 is now the reference ([docs/fidelity.md](docs/fidelity.md)):
+   ASM88 emits `NOP` as 90h, so SIM88 does too; where MSX88 differs from the 8086 and from its
+   own manual (ADC/SBB with carry, INC/DEC and C, NOT and the flags, `PUSH SP`), SIM88 copies
+   MSX88.
 6. **SIM88 extensions** (`'A'`, single-quoted strings, `[1000h]`, `*` and `/`) are kept and
    documented as extensions; **MSX88 strict mode** (a toggle in the UI) rejects them. The extra
    assembler errors (missing `END`, no code at 2000h) are kept.
@@ -178,51 +184,81 @@ Taken by Federico Sawady on 2026-11-02.
 - [ ] **46. A layout for phones** · Deps: 41
   Small screens stack the windows and scroll; a touch friendly layout (bigger keys, the function
   key bar as buttons) would help.
+- [x] **47. Fidelity checked against the original MSX88** · Deps: 18–31
+  `tools/oracle` runs MSX88 V-3.1, ASM88 and LINK88 (from `MSX88Portable.zip`, downloaded and
+  checked by hash, never committed) in QEMU + FreeDOS inside Docker, drives MSX88 with keys and
+  reads its state from its memory and screen. `tests/fidelity/programs` has 70 programs (every
+  instruction and addressing mode, flags at the edges, directives, stack, CALL/RET, jumps,
+  INT 0/3/6/7, PIO, PIC, timer, HAND, CDMA, assembler errors); their golden results are in
+  `tests/fidelity/golden` and `src/model/__tests__/fidelity.test.js` compares SIM88 with them.
+  Report: [docs/fidelity.md](docs/fidelity.md) (63 of 65 compared programs match).
+- [ ] **48. Read the printer's paper in the oracle** · Deps: 47
+  Compare what MSX88 prints (F5 shows the paper), the HAND by interrupts and the CDMA with the
+  printer; the PIO printer (configuration 1).
 
 ## Open questions (MSX88 fidelity)
 
-Behavior that MSX88's documentation does not settle. Each one is implemented in the most
-reasonable way and waits for confirmation. Sources (MSX88 manual v3 by R. de Diego, UNLP guides
-and practice sheets, ASM88 `.LST` listings) are listed in the project notes kept outside the
-repo.
+Since 2026-11-02 the questions are settled by running the original MSX88 (task 47): the
+evidence of each answer is a program in `tests/fidelity/programs`, and
+[docs/fidelity.md](docs/fidelity.md) has the full report.
 
-Resolved by Federico on 2026-11-02 (decisions 5 and 6): JMP/CALL absolute, NOP 98h, SP starts at
-8000h, extensions kept with a strict mode, extra assembler errors kept.
+Resolved by Federico on 2026-11-02 (decisions 5 and 6): JMP/CALL absolute, SP starts at 8000h,
+extensions kept with a strict mode, extra assembler errors kept.
 
-1. **Initial registers and flags** start at 0 (SP at 8000h, IP at 2000h). Not documented.
-2. **Names are case insensitive** (labels, variables, constants), as in MASM. Not documented;
-   the ASM88 symbol table keeps the case as written, which does not settle it.
-3. **INT 6 does not echo** the key. Not documented, but the UNLP practice programs always print
-   the key with INT 7 right after INT 6, which only makes sense without echo. Enter is 0Dh.
-4. **INT 3** pauses the simulation (the "Reanudar" button continues).
-5. **`DB ?` / `DW ?`** reserve memory without writing it. Memory starts zeroed in SIM88; on
-   MSX88 it holds whatever was there (the listings show leftover bytes).
-6. **Encodings MSX88 does not document** follow the 8086: the assembler uses the general forms,
-   as the listings do (no `A0`–`A3`, no accumulator immediates, no `40+r` INC), and `INT 3` is
-   `CD 03` (not `CC`). The decoder understands the short forms anyway, and the short `JMP` (EB)
-   stays relative.
-7. **INT n through the vector table** pushes the flags and IP (no CS: there are no segments),
-   clears I, and jumps to the word at 4·n. IRET pops IP and the flags. This matches the MSX88
-   manual; INT 0, 3, 6 and 7 are handled by the simulator itself (the "monitor").
-8. **Unmapped I/O ports** read FFh and ignore writes.
-9. **HLT** (rule given by Federico): if I = 1 and some PIC line with something connected (F10 and
-   the timer always; the HAND in configuration 2, the CDMA in 3) is unmasked, the CPU waits for
-   an interrupt, as the MSX88 manual says; otherwise the program ends.
-10. **Timer clock**: 1 Hz in real time while the program runs (not while paused), adjustable in
-    Options › Frequencies; the "Pulso" button gives a pulse by hand. The timer does not reset CONT by itself: the interrupt routine
-    writes 0, as the course programs do.
-11. **Printer speed**: it prints one character every 8 instructions (adjustable in Options ›
-    Frequencies); BUSY means its 5 character
-    buffer is full, and a character sent while BUSY is lost.
+Resolved with the oracle on 2026-11-02:
+
+1. **Initial registers and flags**: registers 0, SP 8000h, IP 2000h, **flags 0200h (I = 1)**.
+   Memory: zero except the monitor's vectors of INT 0/3/6/7 (`init-state`).
+2. **Names are case sensitive** in ASM88 (`asm-case-labels`): MSX88 strict mode is now too; the
+   default mode still ignores case. Mnemonics, registers and directives can be in lower case.
+3. **INT 6 does not echo** the key; Enter is 0Dh (`int6-input`).
+4. **INT 3** returns to the monitor with IP after it (`int3-breakpoint`); SIM88 pauses.
+5. **`DB ?`**: ASM88 puts in the executable whatever its buffer had (the bytes the `.LST`
+   shows), so MSX88 loads them. SIM88 leaves the memory alone (not compared).
+6. **Encodings**: ASM88 never emits the short forms, and `NOP` is 90h (`asm-encodings`, `nop`).
+   Whether MSX88 runs short forms written as bytes is still open.
+7. **INT 0/3/6/7 go through the stack**: the flags and IP are pushed, the vector leads to an IRET
+   the monitor keeps at 4n+2, and the monitor does its job in between (`int0-stack`,
+   `int7-zero`). A program that replaces the vector gets its own routine
+   (`int-vector-0-replaced`).
+8. **Unmapped I/O ports read 00h** (`io-ports-initial-c0`).
+9. **HLT** waits for an interrupt even with I = 0 or every line masked: only ESC ends it
+   (`hlt-cli`, `hlt-sti`).
+10. **Timer**: the clock is real time, not tied to the instructions (`exp-timer-speed-*`), and
+    the timer does not reset CONT by itself (`timer-cont-reset`).
+11. **Printer**: BUSY goes to 1 when the 4th character is waiting (`exp-printer-buffer`), and it
+    prints in real time.
+13. **CDMA**: reading 57h also starts a transfer; memory to memory in block mode moves the whole
+    block at once; CTRL reads 80h (TC = 1) after a reset (`cdma-*`, `io-ports-initial-c3`).
+14. **Hardware interrupts with type 0, 3, 6 or 7** go through the vector table and only run the
+    monitor's IRET: no end of program, no output (`pic-hw-type-0`, `pic-hw-type-7`).
+16. **The PIC masks every line after a reset** (IMR = FFh), and **PB of the PIO** reads back its
+    latch on every bit (`io-ports-initial-c0`, `pio-pb-input`).
+17. **INT 7** writes one line per call, shows CR and LF as symbols and wraps at 60 columns
+    (`int7-*`).
+
+Still open:
+
 12. **HAND interrupts** are level triggered: the request stays while bit 7 is set and the printer
-    is not busy (so after the EOI the next character is requested).
-13. **CDMA**: one byte per instruction (the CPU is not held); a transfer starts by writing port
-    57h (the manual says any access; reading 57h does not start it here). Peripheral to memory
-    reads the HAND's DATO.
-14. **Hardware interrupts** always go through the vector table, also for types 0, 3, 6 and 7.
-15. **Configuration 1 printer**: STROBE is PA1 and a character is taken on its rising edge.
+    is not busy (so after the EOI the next character is requested). Not checked yet (task 48).
+15. **Configuration 1 printer**: STROBE is PA1 and a character is taken on its rising edge. Not
+    checked yet (task 48).
+18. **Printer and timer speed**: MSX88 runs them on the wall clock; SIM88 keeps them on the
+    settings of Options › Frequencies (the printer by instructions). `hand-printer-polling`
+    differs because of that.
+19. **8086 short forms and BP/SI/DI written as bytes**: not known whether MSX88 runs them.
 
 ## Log
+
+- 2026-11-02: MSX88 oracle and fidelity corpus (task 47). SIM88 now follows MSX88 in: I = 1 at
+  start, the monitor's vectors and INT 0/3/6/7 through the stack, INT 7 one line per call, HLT
+  always waits, NOP 90h, ADC/SBB/INC/DEC/NOT flags, `PUSH SP`, unknown ModRM modes stop, case
+  sensitive names in strict mode, `DUP` without a count, IMR FFh, unmapped ports 00h, PB latch,
+  CDMA start by reading 57h and block mode at once, a printer buffer of 4.
+  *Note for the interface:* `machine.output` now ends every INT 7 call with `\n`, and `HLT`
+  leaves the machine RUNNING with `cpuHalted` (the "HLT: la CPU espera..." message) instead of
+  stopping it; the App and reducer tests were adjusted to that, and the printer speed test now
+  fills a 4 character buffer.
 
 - 2026-11-02: new text mode interface (tasks 41–42): VGA font, menus, function key bar, windows
   with double frames and shadows, dialogs, five themes and a CRT effect; Spanish and English

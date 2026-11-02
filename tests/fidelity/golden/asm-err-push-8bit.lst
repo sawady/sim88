@@ -1,0 +1,20 @@
+
+								p gina: 1 
+
+ Listado Fuente: P017.LST
+ Programa Fuente en: P017.ASM
+ Fecha: Mon Nov 02 15:34:44 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; run: no
+			      2	; PUSH and POP take 16 bit registers only.
+			      3	        ORG 2000H
+ 2000 50		      4	        PUSH AL
+Error: El registro debe ser de 16 bits.
+			      5	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

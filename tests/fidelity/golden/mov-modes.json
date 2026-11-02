@@ -1,0 +1,334 @@
+{
+ "program": "mov-modes.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "12"
+    ],
+    "line": 4
+   },
+   {
+    "address": "1001",
+    "bytes": [
+     "12"
+    ],
+    "line": 5
+   },
+   {
+    "address": "1002",
+    "bytes": [
+     "56",
+     "34"
+    ],
+    "line": 6
+   },
+   {
+    "address": "1004",
+    "bytes": [
+     "56",
+     "34"
+    ],
+    "line": 7
+   },
+   {
+    "address": "1006",
+    "bytes": [
+     "01",
+     "02",
+     "03",
+     "04"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "B0",
+     "0A"
+    ],
+    "line": 10
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "B4",
+     "0B"
+    ],
+    "line": 11
+   },
+   {
+    "address": "2004",
+    "bytes": [
+     "BB",
+     "34",
+     "12"
+    ],
+    "line": 12
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "8B",
+     "CB"
+    ],
+    "line": 13
+   },
+   {
+    "address": "2009",
+    "bytes": [
+     "8A",
+     "D0"
+    ],
+    "line": 14
+   },
+   {
+    "address": "200B",
+    "bytes": [
+     "8A",
+     "F4"
+    ],
+    "line": 15
+   },
+   {
+    "address": "200D",
+    "bytes": [
+     "8A",
+     "06",
+     "00",
+     "10"
+    ],
+    "line": 16
+   },
+   {
+    "address": "2011",
+    "bytes": [
+     "88",
+     "06",
+     "01",
+     "10"
+    ],
+    "line": 17
+   },
+   {
+    "address": "2015",
+    "bytes": [
+     "8B",
+     "0E",
+     "02",
+     "10"
+    ],
+    "line": 18
+   },
+   {
+    "address": "2019",
+    "bytes": [
+     "89",
+     "0E",
+     "04",
+     "10"
+    ],
+    "line": 19
+   },
+   {
+    "address": "201D",
+    "bytes": [
+     "BB",
+     "06",
+     "10"
+    ],
+    "line": 20
+   },
+   {
+    "address": "2020",
+    "bytes": [
+     "8A",
+     "07"
+    ],
+    "line": 21
+   },
+   {
+    "address": "2022",
+    "bytes": [
+     "8A",
+     "E0"
+    ],
+    "line": 22
+   },
+   {
+    "address": "2024",
+    "bytes": [
+     "88",
+     "27"
+    ],
+    "line": 23
+   },
+   {
+    "address": "2026",
+    "bytes": [
+     "8B",
+     "17"
+    ],
+    "line": 24
+   },
+   {
+    "address": "2028",
+    "bytes": [
+     "BB",
+     "04",
+     "10"
+    ],
+    "line": 25
+   },
+   {
+    "address": "202B",
+    "bytes": [
+     "89",
+     "17"
+    ],
+    "line": 26
+   },
+   {
+    "address": "202D",
+    "bytes": [
+     "C6",
+     "06",
+     "00",
+     "10",
+     "77"
+    ],
+    "line": 27
+   },
+   {
+    "address": "2032",
+    "bytes": [
+     "C7",
+     "06",
+     "02",
+     "10",
+     "CD",
+     "AB"
+    ],
+    "line": 28
+   },
+   {
+    "address": "2038",
+    "bytes": [
+     "BB",
+     "06",
+     "10"
+    ],
+    "line": 29
+   },
+   {
+    "address": "203B",
+    "bytes": [
+     "C6",
+     "07",
+     "99"
+    ],
+    "line": 30
+   },
+   {
+    "address": "203E",
+    "bytes": [
+     "BB",
+     "01",
+     "10"
+    ],
+    "line": 31
+   },
+   {
+    "address": "2041",
+    "bytes": [
+     "C7",
+     "07",
+     "EF",
+     "BE"
+    ],
+    "line": 32
+   },
+   {
+    "address": "2045",
+    "bytes": [
+     "BC",
+     "00",
+     "70"
+    ],
+    "line": 33
+   },
+   {
+    "address": "2048",
+    "bytes": [
+     "8B",
+     "C4"
+    ],
+    "line": 34
+   },
+   {
+    "address": "204A",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 35
+   }
+  ],
+  "symbols": [
+   {
+    "name": "B1",
+    "type": "Byte",
+    "value": "1000"
+   },
+   {
+    "name": "B2",
+    "type": "Byte",
+    "value": "1001"
+   },
+   {
+    "name": "W1",
+    "type": "Word",
+    "value": "1002"
+   },
+   {
+    "name": "W2",
+    "type": "Word",
+    "value": "1004"
+   },
+   {
+    "name": "TABLA",
+    "type": "Byte",
+    "value": "1006"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "7000",
+   "BX": "1001",
+   "CX": "3456",
+   "DX": "0201",
+   "IP": "204C",
+   "SP": "7000"
+  },
+  "flags": "0200",
+  "memory": {
+   "1000": "77EFBEAB010299020304",
+   "2000": "B00AB40BBB34128BCB8AD08AF48A060010880601108B0E0210890E0410BB06108A078AE088278B17BB04108917C606001077C7060210CDABBB0610C60799BB0110C707EFBEBC00708BC4CD",
+   "6FFC": "4C200002",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

@@ -1,0 +1,38 @@
+
+								p gina: 1 
+
+ Listado Fuente: P007.LST
+ Programa Fuente en: P007.ASM
+ Fecha: Mon Nov 02 15:50:20 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; Configuration 0: what IN returns for PB bits c
+				onfigured as inputs (the
+			      2	; LEDs are outputs only): write 0Fh with CB = F0
+				h (high nibble input).
+			      3	        ORG 2000H
+ 2000 B0 F0		      4	        MOV AL, 0F0H
+ 2002 E6 33		      5	        OUT 33H, AL
+ 2004 B0 0F		      6	        MOV AL, 0FH
+ 2006 E6 31		      7	        OUT 31H, AL
+ 2008 E4 31		      8	        IN AL, 31H
+ 200A 8A D8		      9	        MOV BL, AL
+ 200C B0 00		     10	        MOV AL, 0
+ 200E E6 31		     11	        OUT 31H, AL
+ 2010 E4 31		     12	        IN AL, 31H
+ 2012 8A F8		     13	        MOV BH, AL
+ 2014 B0 FF		     14	        MOV AL, 0FFH
+ 2016 E6 32		     15	        OUT 32H, AL
+ 2018 B0 AA		     16	        MOV AL, 0AAH
+ 201A E6 30		     17	        OUT 30H, AL         ; PA all input: the 
+				switches win?
+ 201C E4 30		     18	        IN AL, 30H
+ 201E 8A C8		     19	        MOV CL, AL
+ 2020 CD 00		     20	        INT 0
+			     21	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

@@ -1,0 +1,72 @@
+
+								p gina: 1 
+
+ Listado Fuente: P025.LST
+ Programa Fuente en: P025.ASM
+ Fecha: Mon Nov 02 15:34:45 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; config: 3
+			      2	; Configuration 3: CDMA memory to memory in bloc
+				k mode, started by reading 57h (IN).
+			      3	; The PIC is masked so TC does not interrupt.
+			      4	        ORG 1000H
+ 1000 41 42 43 44 45 46	      5	SRC     DB "ABCDEFGH"
+ 1006 47 48
+ 1008 8[		      6	DST     DB 8 DUP (0)
+	     00
+		      ]
+			      7	        ORG 2000H
+ 2000 B0 FF		      8	        MOV AL, 0FFH
+ 2002 E6 21		      9	        OUT 21H, AL
+ 2004 B8 00 10		     10	        MOV AX, OFFSET SRC
+ 2007 E6 50		     11	        OUT 50H, AL
+ 2009 8A C4		     12	        MOV AL, AH
+ 200B E6 51		     13	        OUT 51H, AL
+ 200D B8 08 10		     14	        MOV AX, OFFSET DST
+ 2010 E6 54		     15	        OUT 54H, AL
+ 2012 8A C4		     16	        MOV AL, AH
+ 2014 E6 55		     17	        OUT 55H, AL
+ 2016 B0 08		     18	        MOV AL, 8
+ 2018 E6 52		     19	        OUT 52H, AL
+ 201A B0 00		     20	        MOV AL, 0
+ 201C E6 53		     21	        OUT 53H, AL
+ 201E B0 0A		     22	        MOV AL, 0AH         ; TT = 1 (memory to 
+				memory), MT = 1 (block)
+ 2020 E6 56		     23	        OUT 56H, AL
+ 2022 E4 57		     24	        IN AL, 57H
+ 2024 E4 56		     25	        IN AL, 56H
+ 2026 8A C8		     26	        MOV CL, AL          ; CTRL right after s
+				tarting
+ 2028 90		     27	        NOP
+ 2029 90		     28	        NOP
+ 202A 90		     29	        NOP
+ 202B 90		     30	        NOP
+ 202C 90		     31	        NOP
+ 202D 90		     32	        NOP
+ 202E 90		     33	        NOP
+ 202F 90		     34	        NOP
+ 2030 90		     35	        NOP
+ 2031 90		     36	        NOP
+ 2032 E4 56		     37	        IN AL, 56H
+ 2034 8A E8		     38	        MOV CH, AL          ; CTRL later (TC?)
+ 2036 E4 52		     39	        IN AL, 52H
+ 2038 8A D0		     40	        MOV DL, AL          ; CONT
+ 203A E4 50		     41	        IN AL, 50H
+ 203C 8A F0		     42	        MOV DH, AL          ; RF low
+ 203E CD 00		     43	        INT 0
+			     44	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+
+
+								p gina: 2 
+
+
+ SRC     	Byte		1000h
+ DST     	Byte		1008h

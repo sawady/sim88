@@ -1,0 +1,128 @@
+{
+ "program": "pic-hw-type-7.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "48",
+     "57",
+     "37"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "FA"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2001",
+    "bytes": [
+     "B0",
+     "07"
+    ],
+    "line": 9
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "E6",
+     "24"
+    ],
+    "line": 10
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "B0",
+     "FE"
+    ],
+    "line": 11
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "E6",
+     "21"
+    ],
+    "line": 12
+   },
+   {
+    "address": "2009",
+    "bytes": [
+     "BB",
+     "00",
+     "10"
+    ],
+    "line": 13
+   },
+   {
+    "address": "200C",
+    "bytes": [
+     "B0",
+     "03"
+    ],
+    "line": 14
+   },
+   {
+    "address": "200E",
+    "bytes": [
+     "FB"
+    ],
+    "line": 15
+   },
+   {
+    "address": "200F",
+    "bytes": [
+     "E9",
+     "0F",
+     "20"
+    ],
+    "line": 16
+   }
+  ],
+  "symbols": [
+   {
+    "name": "TXT",
+    "type": "Byte",
+    "value": "1000"
+   },
+   {
+    "name": "LAZO",
+    "type": "Label",
+    "value": "200F"
+   }
+  ]
+ },
+ "run": {
+  "status": "timeout",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0003",
+   "BX": "1000",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "200F",
+   "SP": "8000"
+  },
+  "flags": "0200",
+  "memory": {
+   "1000": "485737",
+   "2000": "FAB007E624B0FEE621BB0010B003FBE90F20",
+   "7FFC": "0F200002",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

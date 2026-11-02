@@ -39,7 +39,13 @@ choice is remembered.
 
 SIM88 is **work in progress**; [PROGRESS.md](PROGRESS.md) has the plan and what is done.
 It follows the dialect and conventions of MSX88: data at `ORG 1000h`, code at `ORG 2000h`,
-`HLT` or `INT 0` to finish, `END` to close the source. What works today:
+`INT 0` to finish (`HLT` waits for an interrupt, as in MSX88), `END` to close the source.
+
+**Fidelity:** a corpus of test programs runs on the original MSX88 and on SIM88, and the
+results are compared in CI: see [docs/fidelity.md](docs/fidelity.md) (63 of 65 programs match;
+the 2 differences are explained there).
+
+What works today:
 
 - Assembler: labels (`LOOP:`), variables (`DB`, `DW`, `?`, lists, strings, `DUP`), constants
   (`EQU`), `ORG`, `OFFSET`, `BYTE PTR` / `WORD PTR`, expressions, and errors with the line.

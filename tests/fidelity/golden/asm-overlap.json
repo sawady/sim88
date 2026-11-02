@@ -1,0 +1,37 @@
+{
+ "program": "asm-overlap.asm",
+ "assembler": {
+  "errors": 1,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "B8",
+     "01",
+     "00"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "BB",
+     "02",
+     "00"
+    ],
+    "line": 5
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 7
+   }
+  ],
+  "symbols": []
+ }
+}

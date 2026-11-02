@@ -1,0 +1,40 @@
+
+								p gina: 1 
+
+ Listado Fuente: P006.LST
+ Programa Fuente en: P006.ASM
+ Fecha: Mon Nov 02 15:46:41 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; INT 7 with 70 characters: where the command wi
+				ndow wraps the line.
+			      2	        ORG 1000H
+ 1000 30 31 32 33 34 35	      3	TXT     DB "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
+				0123456789abcdefghijklmnopqrstuvwx"
+ 1006 36 37 38 39 41 42
+ 100C 43 44 45 46 47 48
+ 1012 49 4A 4B 4C 4D 4E
+ 1018 4F 50 51 52 53 54
+ 101E 55 56 57 58 59 5A
+ 1024 30 31 32 33 34 35
+ 102A 36 37 38 39 61 62
+ 1030 63 64 65 66 67 68
+ 1036 69 6A 6B 6C 6D 6E
+ 103C 6F 70 71 72 73 74
+ 1042 75 76 77 78
+ 1046 30		      4	FIN     DB ?
+			      5	        ORG 2000H
+ 2000 BB 00 10		      6	        MOV BX, OFFSET TXT
+ 2003 B0 46		      7	        MOV AL, OFFSET FIN - OFFSET TXT
+ 2005 CD 07		      8	        INT 7
+ 2007 CD 00		      9	        INT 0
+			     10	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ TXT     	Byte		1000h
+ FIN     	Byte		1046h

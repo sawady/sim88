@@ -1,0 +1,166 @@
+{
+ "program": "exp-printer-busy.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00"
+    ],
+    "line": 6,
+    "dup": 16
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "B0",
+     "00"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "E6",
+     "41"
+    ],
+    "line": 9
+   },
+   {
+    "address": "2004",
+    "bytes": [
+     "B0",
+     "41"
+    ],
+    "line": 10
+   },
+   {
+    "address": "2006",
+    "bytes": [
+     "E6",
+     "40"
+    ],
+    "line": 11
+   },
+   {
+    "address": "2008",
+    "bytes": [
+     "BB",
+     "00",
+     "10"
+    ],
+    "line": 12
+   },
+   {
+    "address": "200B",
+    "bytes": [
+     "B1",
+     "10"
+    ],
+    "line": 13
+   },
+   {
+    "address": "200D",
+    "bytes": [
+     "E4",
+     "41"
+    ],
+    "line": 14
+   },
+   {
+    "address": "200F",
+    "bytes": [
+     "88",
+     "07"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2011",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 16
+   },
+   {
+    "address": "2013",
+    "bytes": [
+     "FE",
+     "C9"
+    ],
+    "line": 17
+   },
+   {
+    "address": "2015",
+    "bytes": [
+     "75",
+     "F6"
+    ],
+    "line": 18
+   },
+   {
+    "address": "2017",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 19
+   }
+  ],
+  "symbols": [
+   {
+    "name": "EST",
+    "type": "Byte",
+    "value": "1000"
+   },
+   {
+    "name": "LAZO",
+    "type": "Label",
+    "value": "200D"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0000",
+   "BX": "1010",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "2019",
+   "SP": "8000"
+  },
+  "flags": "0244",
+  "memory": {
+   "2000": "B000E641B041E640BB0010B110E4418807FFC3FEC975F6CD",
+   "7FFC": "19204402",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

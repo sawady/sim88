@@ -1,0 +1,21 @@
+
+								p gina: 1 
+
+ Listado Fuente: P009.LST
+ Programa Fuente en: P009.ASM
+ Fecha: Mon Nov 02 15:34:43 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; run: no
+			      2	; [BX + displacement] is not an MSX88 addressing
+				 mode.
+			      3	        ORG 2000H
+			      4	        MOV AL, [BX + 2]
+Error: (null).
+			      5	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

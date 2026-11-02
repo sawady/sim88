@@ -1,0 +1,281 @@
+
+								p gina: 1 
+
+ Listado Fuente: P001.LST
+ Programa Fuente en: P001.ASM
+ Fecha: Mon Nov 02 15:53:20 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; INC and DEC with the flags all clear and all s
+				et before: what happens
+			      2	; to C (the 8086 keeps it) and to the other flag
+				s.
+			      3	        ORG 2000H
+ 2000 B8 00 00		      4	        MOV AX, 00000H
+ 2003 50		      5	        PUSH AX
+ 2004 9D		      6	        POPF
+ 2005 B1 00		      7	        MOV CL, 000H
+ 2007 FE C1		      8	        INC CL
+ 2009 9C		      9	        PUSHF
+ 200A B8 00 00		     10	        MOV AX, 00000H
+ 200D 50		     11	        PUSH AX
+ 200E 9D		     12	        POPF
+ 200F B1 7F		     13	        MOV CL, 07FH
+ 2011 FE C1		     14	        INC CL
+ 2013 9C		     15	        PUSHF
+ 2014 B8 00 00		     16	        MOV AX, 00000H
+ 2017 50		     17	        PUSH AX
+ 2018 9D		     18	        POPF
+ 2019 B1 80		     19	        MOV CL, 080H
+ 201B FE C1		     20	        INC CL
+ 201D 9C		     21	        PUSHF
+ 201E B8 00 00		     22	        MOV AX, 00000H
+ 2021 50		     23	        PUSH AX
+ 2022 9D		     24	        POPF
+ 2023 B1 FF		     25	        MOV CL, 0FFH
+ 2025 FE C1		     26	        INC CL
+ 2027 9C		     27	        PUSHF
+ 2028 B8 00 00		     28	        MOV AX, 00000H
+ 202B 50		     29	        PUSH AX
+ 202C 9D		     30	        POPF
+ 202D B1 0F		     31	        MOV CL, 00FH
+ 202F FE C1		     32	        INC CL
+ 2031 9C		     33	        PUSHF
+ 2032 B8 00 00		     34	        MOV AX, 00000H
+ 2035 50		     35	        PUSH AX
+ 2036 9D		     36	        POPF
+ 2037 B1 10		     37	        MOV CL, 010H
+ 2039 FE C1		     38	        INC CL
+ 203B 9C		     39	        PUSHF
+ 203C B8 00 00		     40	        MOV AX, 00000H
+ 203F 50		     41	        PUSH AX
+ 2040 9D		     42	        POPF
+ 2041 B9 00 00		     43	        MOV CX, 00000H
+ 2044 FF C1		     44	        INC CX
+ 2046 9C		     45	        PUSHF
+ 2047 B8 00 00		     46	        MOV AX, 00000H
+ 204A 50		     47	        PUSH AX
+ 204B 9D		     48	        POPF
+ 204C B9 FF 7F		     49	        MOV CX, 07FFFH
+ 204F FF C1		     50	        INC CX
+ 2051 9C		     51	        PUSHF
+ 2052 B8 00 00		     52	        MOV AX, 00000H
+ 2055 50		     53	        PUSH AX
+
+
+
+								p gina: 2 
+
+ 2056 9D		     54	        POPF
+ 2057 B9 FF FF		     55	        MOV CX, 0FFFFH
+ 205A FF C1		     56	        INC CX
+ 205C 9C		     57	        PUSHF
+ 205D B8 00 00		     58	        MOV AX, 00000H
+ 2060 50		     59	        PUSH AX
+ 2061 9D		     60	        POPF
+ 2062 B9 FF 00		     61	        MOV CX, 000FFH
+ 2065 FF C1		     62	        INC CX
+ 2067 9C		     63	        PUSHF
+ 2068 B8 00 00		     64	        MOV AX, 00000H
+ 206B 50		     65	        PUSH AX
+ 206C 9D		     66	        POPF
+ 206D B1 00		     67	        MOV CL, 000H
+ 206F FE C9		     68	        DEC CL
+ 2071 9C		     69	        PUSHF
+ 2072 B8 00 00		     70	        MOV AX, 00000H
+ 2075 50		     71	        PUSH AX
+ 2076 9D		     72	        POPF
+ 2077 B1 7F		     73	        MOV CL, 07FH
+ 2079 FE C9		     74	        DEC CL
+ 207B 9C		     75	        PUSHF
+ 207C B8 00 00		     76	        MOV AX, 00000H
+ 207F 50		     77	        PUSH AX
+ 2080 9D		     78	        POPF
+ 2081 B1 80		     79	        MOV CL, 080H
+ 2083 FE C9		     80	        DEC CL
+ 2085 9C		     81	        PUSHF
+ 2086 B8 00 00		     82	        MOV AX, 00000H
+ 2089 50		     83	        PUSH AX
+ 208A 9D		     84	        POPF
+ 208B B1 FF		     85	        MOV CL, 0FFH
+ 208D FE C9		     86	        DEC CL
+ 208F 9C		     87	        PUSHF
+ 2090 B8 00 00		     88	        MOV AX, 00000H
+ 2093 50		     89	        PUSH AX
+ 2094 9D		     90	        POPF
+ 2095 B1 0F		     91	        MOV CL, 00FH
+ 2097 FE C9		     92	        DEC CL
+ 2099 9C		     93	        PUSHF
+ 209A B8 00 00		     94	        MOV AX, 00000H
+ 209D 50		     95	        PUSH AX
+ 209E 9D		     96	        POPF
+ 209F B1 10		     97	        MOV CL, 010H
+ 20A1 FE C9		     98	        DEC CL
+ 20A3 9C		     99	        PUSHF
+ 20A4 B8 00 00		    100	        MOV AX, 00000H
+ 20A7 50		    101	        PUSH AX
+ 20A8 9D		    102	        POPF
+ 20A9 B9 00 00		    103	        MOV CX, 00000H
+ 20AC FF C9		    104	        DEC CX
+ 20AE 9C		    105	        PUSHF
+ 20AF B8 00 00		    106	        MOV AX, 00000H
+ 20B2 50		    107	        PUSH AX
+ 20B3 9D		    108	        POPF
+ 20B4 B9 FF 7F		    109	        MOV CX, 07FFFH
+ 20B7 FF C9		    110	        DEC CX
+ 20B9 9C		    111	        PUSHF
+ 20BA B8 00 00		    112	        MOV AX, 00000H
+ 20BD 50		    113	        PUSH AX
+ 20BE 9D		    114	        POPF
+
+
+
+								p gina: 3 
+
+ 20BF B9 FF FF		    115	        MOV CX, 0FFFFH
+ 20C2 FF C9		    116	        DEC CX
+ 20C4 9C		    117	        PUSHF
+ 20C5 B8 00 00		    118	        MOV AX, 00000H
+ 20C8 50		    119	        PUSH AX
+ 20C9 9D		    120	        POPF
+ 20CA B9 FF 00		    121	        MOV CX, 000FFH
+ 20CD FF C9		    122	        DEC CX
+ 20CF 9C		    123	        PUSHF
+ 20D0 B8 D5 08		    124	        MOV AX, 008D5H
+ 20D3 50		    125	        PUSH AX
+ 20D4 9D		    126	        POPF
+ 20D5 B1 00		    127	        MOV CL, 000H
+ 20D7 FE C1		    128	        INC CL
+ 20D9 9C		    129	        PUSHF
+ 20DA B8 D5 08		    130	        MOV AX, 008D5H
+ 20DD 50		    131	        PUSH AX
+ 20DE 9D		    132	        POPF
+ 20DF B1 7F		    133	        MOV CL, 07FH
+ 20E1 FE C1		    134	        INC CL
+ 20E3 9C		    135	        PUSHF
+ 20E4 B8 D5 08		    136	        MOV AX, 008D5H
+ 20E7 50		    137	        PUSH AX
+ 20E8 9D		    138	        POPF
+ 20E9 B1 80		    139	        MOV CL, 080H
+ 20EB FE C1		    140	        INC CL
+ 20ED 9C		    141	        PUSHF
+ 20EE B8 D5 08		    142	        MOV AX, 008D5H
+ 20F1 50		    143	        PUSH AX
+ 20F2 9D		    144	        POPF
+ 20F3 B1 FF		    145	        MOV CL, 0FFH
+ 20F5 FE C1		    146	        INC CL
+ 20F7 9C		    147	        PUSHF
+ 20F8 B8 D5 08		    148	        MOV AX, 008D5H
+ 20FB 50		    149	        PUSH AX
+ 20FC 9D		    150	        POPF
+ 20FD B1 0F		    151	        MOV CL, 00FH
+ 20FF FE C1		    152	        INC CL
+ 2101 9C		    153	        PUSHF
+ 2102 B8 D5 08		    154	        MOV AX, 008D5H
+ 2105 50		    155	        PUSH AX
+ 2106 9D		    156	        POPF
+ 2107 B1 10		    157	        MOV CL, 010H
+ 2109 FE C1		    158	        INC CL
+ 210B 9C		    159	        PUSHF
+ 210C B8 D5 08		    160	        MOV AX, 008D5H
+ 210F 50		    161	        PUSH AX
+ 2110 9D		    162	        POPF
+ 2111 B9 00 00		    163	        MOV CX, 00000H
+ 2114 FF C1		    164	        INC CX
+ 2116 9C		    165	        PUSHF
+ 2117 B8 D5 08		    166	        MOV AX, 008D5H
+ 211A 50		    167	        PUSH AX
+ 211B 9D		    168	        POPF
+ 211C B9 FF 7F		    169	        MOV CX, 07FFFH
+ 211F FF C1		    170	        INC CX
+ 2121 9C		    171	        PUSHF
+ 2122 B8 D5 08		    172	        MOV AX, 008D5H
+ 2125 50		    173	        PUSH AX
+ 2126 9D		    174	        POPF
+ 2127 B9 FF FF		    175	        MOV CX, 0FFFFH
+
+
+
+								p gina: 4 
+
+ 212A FF C1		    176	        INC CX
+ 212C 9C		    177	        PUSHF
+ 212D B8 D5 08		    178	        MOV AX, 008D5H
+ 2130 50		    179	        PUSH AX
+ 2131 9D		    180	        POPF
+ 2132 B9 FF 00		    181	        MOV CX, 000FFH
+ 2135 FF C1		    182	        INC CX
+ 2137 9C		    183	        PUSHF
+ 2138 B8 D5 08		    184	        MOV AX, 008D5H
+ 213B 50		    185	        PUSH AX
+ 213C 9D		    186	        POPF
+ 213D B1 00		    187	        MOV CL, 000H
+ 213F FE C9		    188	        DEC CL
+ 2141 9C		    189	        PUSHF
+ 2142 B8 D5 08		    190	        MOV AX, 008D5H
+ 2145 50		    191	        PUSH AX
+ 2146 9D		    192	        POPF
+ 2147 B1 7F		    193	        MOV CL, 07FH
+ 2149 FE C9		    194	        DEC CL
+ 214B 9C		    195	        PUSHF
+ 214C B8 D5 08		    196	        MOV AX, 008D5H
+ 214F 50		    197	        PUSH AX
+ 2150 9D		    198	        POPF
+ 2151 B1 80		    199	        MOV CL, 080H
+ 2153 FE C9		    200	        DEC CL
+ 2155 9C		    201	        PUSHF
+ 2156 B8 D5 08		    202	        MOV AX, 008D5H
+ 2159 50		    203	        PUSH AX
+ 215A 9D		    204	        POPF
+ 215B B1 FF		    205	        MOV CL, 0FFH
+ 215D FE C9		    206	        DEC CL
+ 215F 9C		    207	        PUSHF
+ 2160 B8 D5 08		    208	        MOV AX, 008D5H
+ 2163 50		    209	        PUSH AX
+ 2164 9D		    210	        POPF
+ 2165 B1 0F		    211	        MOV CL, 00FH
+ 2167 FE C9		    212	        DEC CL
+ 2169 9C		    213	        PUSHF
+ 216A B8 D5 08		    214	        MOV AX, 008D5H
+ 216D 50		    215	        PUSH AX
+ 216E 9D		    216	        POPF
+ 216F B1 10		    217	        MOV CL, 010H
+ 2171 FE C9		    218	        DEC CL
+ 2173 9C		    219	        PUSHF
+ 2174 B8 D5 08		    220	        MOV AX, 008D5H
+ 2177 50		    221	        PUSH AX
+ 2178 9D		    222	        POPF
+ 2179 B9 00 00		    223	        MOV CX, 00000H
+ 217C FF C9		    224	        DEC CX
+ 217E 9C		    225	        PUSHF
+ 217F B8 D5 08		    226	        MOV AX, 008D5H
+ 2182 50		    227	        PUSH AX
+ 2183 9D		    228	        POPF
+ 2184 B9 FF 7F		    229	        MOV CX, 07FFFH
+ 2187 FF C9		    230	        DEC CX
+ 2189 9C		    231	        PUSHF
+ 218A B8 D5 08		    232	        MOV AX, 008D5H
+ 218D 50		    233	        PUSH AX
+ 218E 9D		    234	        POPF
+ 218F B9 FF FF		    235	        MOV CX, 0FFFFH
+ 2192 FF C9		    236	        DEC CX
+
+
+
+								p gina: 5 
+
+ 2194 9C		    237	        PUSHF
+ 2195 B8 D5 08		    238	        MOV AX, 008D5H
+ 2198 50		    239	        PUSH AX
+ 2199 9D		    240	        POPF
+ 219A B9 FF 00		    241	        MOV CX, 000FFH
+ 219D FF C9		    242	        DEC CX
+ 219F 9C		    243	        PUSHF
+ 21A0 CD 00		    244	        INT 0
+			    245	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

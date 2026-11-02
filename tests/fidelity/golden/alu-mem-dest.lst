@@ -1,0 +1,40 @@
+
+								p gina: 1 
+
+ Listado Fuente: P000.LST
+ Programa Fuente en: P000.ASM
+ Fecha: Mon Nov 02 15:46:41 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; ALU operations with a memory destination and a
+				 register source (opcodes
+			      2	; 00h-3Bh with ModRM), directly and through BX.
+			      3	        ORG 1000H
+ 1000 10		      4	B1      DB 10H
+ 1001 00 10		      5	W1      DW 1000H
+			      6	        ORG 2000H
+ 2000 B0 05		      7	        MOV AL, 5
+ 2002 00 06 00 10	      8	        ADD B1, AL          ; 00 06 lo hi
+ 2006 BB 00 10		      9	        MOV BX, OFFSET B1
+ 2009 00 07		     10	        ADD [BX], AL        ; 00 07
+ 200B B8 00 F0		     11	        MOV AX, 0F000H
+ 200E 01 06 01 10	     12	        ADD W1, AX          ; 01 06 lo hi
+ 2012 28 06 00 10	     13	        SUB B1, AL
+ 2016 21 06 01 10	     14	        AND W1, AX
+ 201A 08 06 00 10	     15	        OR B1, AL
+ 201E 31 06 01 10	     16	        XOR W1, AX
+ 2022 38 06 00 10	     17	        CMP B1, AL
+ 2026 10 06 00 10	     18	        ADC B1, AL
+ 202A 19 06 01 10	     19	        SBB W1, AX
+ 202E 9C		     20	        PUSHF
+ 202F CD 00		     21	        INT 0
+			     22	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ B1      	Byte		1000h
+ W1      	Word		1001h

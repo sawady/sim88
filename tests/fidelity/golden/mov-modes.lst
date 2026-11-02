@@ -1,0 +1,59 @@
+
+								p gina: 1 
+
+ Listado Fuente: P044.LST
+ Programa Fuente en: P044.ASM
+ Fecha: Mon Nov 02 15:34:52 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; MOV with every MSX88 addressing mode: immediat
+				e, register, direct,
+			      2	; indirect through BX, and immediate to memory (
+				with and without PTR).
+			      3	        ORG 1000H
+ 1000 12		      4	B1      DB 12H
+ 1001 12		      5	B2      DB ?
+ 1002 56 34		      6	W1      DW 3456H
+ 1004 56 34		      7	W2      DW ?
+ 1006 01 02 03 04	      8	TABLA   DB 1, 2, 3, 4
+			      9	        ORG 2000H
+ 2000 B0 0A		     10	        MOV AL, 0AH
+ 2002 B4 0B		     11	        MOV AH, 0BH
+ 2004 BB 34 12		     12	        MOV BX, 1234H
+ 2007 8B CB		     13	        MOV CX, BX
+ 2009 8A D0		     14	        MOV DL, AL
+ 200B 8A F4		     15	        MOV DH, AH
+ 200D 8A 06 00 10	     16	        MOV AL, B1          ; direct, byte
+ 2011 88 06 01 10	     17	        MOV B2, AL
+ 2015 8B 0E 02 10	     18	        MOV CX, W1          ; direct, word
+ 2019 89 0E 04 10	     19	        MOV W2, CX
+ 201D BB 06 10		     20	        MOV BX, OFFSET TABLA
+ 2020 8A 07		     21	        MOV AL, [BX]        ; indirect, byte
+ 2022 8A E0		     22	        MOV AH, AL
+ 2024 88 27		     23	        MOV [BX], AH
+ 2026 8B 17		     24	        MOV DX, [BX]        ; indirect, word
+ 2028 BB 04 10		     25	        MOV BX, OFFSET W2
+ 202B 89 17		     26	        MOV [BX], DX
+ 202D C6 06 00 10 77	     27	        MOV B1, 77H         ; immediate to a var
+				iable
+ 2032 C7 06 02 10 CD AB	     28	        MOV W1, 0ABCDH
+ 2038 BB 06 10		     29	        MOV BX, OFFSET TABLA
+ 203B C6 07 99		     30	        MOV BYTE PTR [BX], 99H
+ 203E BB 01 10		     31	        MOV BX, OFFSET B2
+ 2041 C7 07 EF BE	     32	        MOV WORD PTR [BX], 0BEEFH
+ 2045 BC 00 70		     33	        MOV SP, 7000H
+ 2048 8B C4		     34	        MOV AX, SP
+ 204A CD 00		     35	        INT 0
+			     36	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ B1      	Byte		1000h
+ B2      	Byte		1001h
+ W1      	Word		1002h
+ W2      	Word		1004h
+ TABLA   	Byte		1006h

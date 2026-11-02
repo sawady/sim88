@@ -1,0 +1,56 @@
+
+								p gina: 1 
+
+ Listado Fuente: P027.LST
+ Programa Fuente en: P027.ASM
+ Fecha: Mon Nov 02 15:34:46 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; Parity looks at the low byte only; aux carry i
+				s the carry out of bit 3,
+			      2	; also on 16 bit operations.
+			      3	        ORG 2000H
+ 2000 B8 00 00		      4	        MOV AX, 0
+ 2003 81 C0 03 01	      5	        ADD AX, 0103H      ; low byte 03h: even
+ 2007 9C		      6	        PUSHF
+ 2008 B8 00 00		      7	        MOV AX, 0
+ 200B 81 C0 07 01	      8	        ADD AX, 0107H      ; low byte 07h: odd
+ 200F 9C		      9	        PUSHF
+ 2010 B8 00 00		     10	        MOV AX, 0
+ 2013 81 C0 00 FF	     11	        ADD AX, 0FF00H     ; low byte 00h: even,
+				 S
+ 2017 9C		     12	        PUSHF
+ 2018 B8 08 00		     13	        MOV AX, 0008H
+ 201B 81 C0 08 00	     14	        ADD AX, 0008H      ; 0010h: A
+ 201F 9C		     15	        PUSHF
+ 2020 B8 00 08		     16	        MOV AX, 0800H
+ 2023 81 C0 00 08	     17	        ADD AX, 0800H      ; 1000h: no A (carry 
+				out of bit 11)
+ 2027 9C		     18	        PUSHF
+ 2028 B0 10		     19	        MOV AL, 10H
+ 202A 80 E8 01		     20	        SUB AL, 1          ; 0Fh: A (borrow into
+				 bit 4)
+ 202D 9C		     21	        PUSHF
+ 202E B0 0F		     22	        MOV AL, 0FH
+ 2030 80 E0 0F		     23	        AND AL, 0FH        ; logic: A?
+ 2033 9C		     24	        PUSHF
+ 2034 B0 FF		     25	        MOV AL, 0FFH
+ 2036 FE C0		     26	        INC AL             ; 00h: A, Z, P
+ 2038 9C		     27	        PUSHF
+ 2039 B0 00		     28	        MOV AL, 0
+ 203B FE C8		     29	        DEC AL             ; FFh: A, S, P
+ 203D 9C		     30	        PUSHF
+ 203E B3 03		     31	        MOV BL, 3
+ 2040 80 CB 00		     32	        OR BL, 0           ; 03h: P
+ 2043 9C		     33	        PUSHF
+ 2044 B3 01		     34	        MOV BL, 1
+ 2046 80 F3 00		     35	        XOR BL, 0          ; 01h: odd
+ 2049 9C		     36	        PUSHF
+ 204A CD 00		     37	        INT 0
+			     38	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

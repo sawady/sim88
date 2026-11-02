@@ -1,0 +1,92 @@
+{
+ "program": "stack-wrap.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "BC",
+     "00",
+     "00"
+    ],
+    "line": 3
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "B8",
+     "34",
+     "12"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2006",
+    "bytes": [
+     "50"
+    ],
+    "line": 5
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "8B",
+     "DC"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2009",
+    "bytes": [
+     "59"
+    ],
+    "line": 7
+   },
+   {
+    "address": "200A",
+    "bytes": [
+     "BC",
+     "00",
+     "80"
+    ],
+    "line": 8
+   },
+   {
+    "address": "200D",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 9
+   }
+  ],
+  "symbols": []
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "1234",
+   "BX": "FFFE",
+   "CX": "1234",
+   "DX": "0000",
+   "IP": "200F",
+   "SP": "8000"
+  },
+  "flags": "0200",
+  "memory": {
+   "2000": "BC0000B83412508BDC59BC0080CD",
+   "7FFC": "0F200002",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

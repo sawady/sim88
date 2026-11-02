@@ -1,0 +1,15 @@
+{
+ "program": "asm-err-unknown-mnemonics.asm",
+ "assembler": {
+  "errors": 4,
+  "warnings": 0,
+  "messages": [
+   "(linea 4)Error: (null).",
+   "(linea 5)Error: (null).",
+   "(linea 6)Error: (null).",
+   "(linea 7)Error: (null)."
+  ],
+  "listing": [],
+  "symbols": []
+ }
+}

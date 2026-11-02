@@ -1,0 +1,25 @@
+
+								p gina: 1 
+
+ Listado Fuente: P008.LST
+ Programa Fuente en: P008.ASM
+ Fecha: Mon Nov 02 15:46:42 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; PUSH SP: which value goes to the stack (the 80
+				86 pushes SP after the
+			      2	; decrement, the 80286 before).
+			      3	        ORG 2000H
+ 2000 B8 34 12		      4	        MOV AX, 1234H
+ 2003 BC 00 70		      5	        MOV SP, 7000H
+ 2006 54		      6	        PUSH SP
+ 2007 5B		      7	        POP BX
+ 2008 BC 00 80		      8	        MOV SP, 8000H
+ 200B CD 00		      9	        INT 0
+			     10	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

@@ -1,0 +1,22 @@
+
+								p gina: 1 
+
+ Listado Fuente: P005.LST
+ Programa Fuente en: P005.ASM
+ Fecha: Mon Nov 02 15:50:19 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; timeout: 4
+			      2	; 8A 04 is MOV AL, [SI] on an 8086 (the SX88 has
+				 no SI): does MSX88 run it?
+			      3	        ORG 2000H
+ 2000 B0 05		      4	        MOV AL, 5
+ 2002 8A 04		      5	        DB 8AH, 04H
+ 2004 CD 00		      6	        INT 0
+			      7	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

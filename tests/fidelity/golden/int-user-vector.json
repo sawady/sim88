@@ -1,0 +1,137 @@
+{
+ "program": "int-user-vector.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "0040",
+    "bytes": [
+     "00",
+     "30"
+    ],
+    "line": 4
+   },
+   {
+    "address": "3000",
+    "bytes": [
+     "8B",
+     "DC"
+    ],
+    "line": 6
+   },
+   {
+    "address": "3002",
+    "bytes": [
+     "8B",
+     "0F"
+    ],
+    "line": 7
+   },
+   {
+    "address": "3004",
+    "bytes": [
+     "9C"
+    ],
+    "line": 8
+   },
+   {
+    "address": "3005",
+    "bytes": [
+     "5A"
+    ],
+    "line": 9
+   },
+   {
+    "address": "3006",
+    "bytes": [
+     "B8",
+     "55",
+     "55"
+    ],
+    "line": 10
+   },
+   {
+    "address": "3009",
+    "bytes": [
+     "CF"
+    ],
+    "line": 11
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "B0",
+     "FF"
+    ],
+    "line": 13
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "80",
+     "C0",
+     "01"
+    ],
+    "line": 14
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "CD",
+     "10"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "9C"
+    ],
+    "line": 16
+   },
+   {
+    "address": "2008",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 17
+   }
+  ],
+  "symbols": [
+   {
+    "name": "RUTINA",
+    "type": "Label",
+    "value": "3000"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "5555",
+   "BX": "7FFC",
+   "CX": "2007",
+   "DX": "0055",
+   "IP": "200A",
+   "SP": "7FFE"
+  },
+  "flags": "0255",
+  "memory": {
+   "0041": "30",
+   "2000": "B0FF80C001CD109CCD",
+   "3000": "8BDC8B0F9C5AB85555CF",
+   "7FFA": "0A2055025502",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

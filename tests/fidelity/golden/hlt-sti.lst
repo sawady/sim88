@@ -1,0 +1,24 @@
+
+								p gina: 1 
+
+ Listado Fuente: P030.LST
+ Programa Fuente en: P030.ASM
+ Fecha: Mon Nov 02 15:34:47 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; timeout: 4
+			      2	; HLT with I = 1 and nothing pressed: the CPU wa
+				its for an interrupt.
+			      3	        ORG 2000H
+ 2000 B8 01 00		      4	        MOV AX, 1
+ 2003 FB		      5	        STI
+ 2004 F4		      6	        HLT
+ 2005 B8 02 00		      7	        MOV AX, 2
+ 2008 CD 00		      8	        INT 0
+			      9	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

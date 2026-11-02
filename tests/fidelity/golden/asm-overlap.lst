@@ -1,0 +1,22 @@
+
+								p gina: 1 
+
+ Listado Fuente: P022.LST
+ Programa Fuente en: P022.ASM
+ Fecha: Mon Nov 02 15:34:45 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; run: no
+			      2	; Two ORG blocks that overlap.
+			      3	        ORG 2000H
+ 2000 B8 01 00		      4	        MOV AX, 1
+ 2003 BB 02 00		      5	        MOV BX, 2
+			      6	        ORG 2002H
+ 2002 CD 00		      7	        INT 0
+			      8	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

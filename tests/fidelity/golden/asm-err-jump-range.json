@@ -1,0 +1,35 @@
+{
+ "program": "asm-err-jump-range.asm",
+ "assembler": {
+  "errors": 1,
+  "warnings": 0,
+  "messages": [
+   "(linea 4)Error: Salto fuera de rango."
+  ],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "74",
+     "00"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2100",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 6
+   }
+  ],
+  "symbols": [
+   {
+    "name": "LEJOS",
+    "type": "Label",
+    "value": "2100"
+   }
+  ]
+ }
+}

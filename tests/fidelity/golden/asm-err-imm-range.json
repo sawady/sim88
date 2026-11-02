@@ -1,0 +1,21 @@
+{
+ "program": "asm-err-imm-range.asm",
+ "assembler": {
+  "errors": 1,
+  "warnings": 0,
+  "messages": [
+   "(linea 4)Error: Valor de expresion fuera de rango."
+  ],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "B0",
+     "00"
+    ],
+    "line": 4
+   }
+  ],
+  "symbols": []
+ }
+}

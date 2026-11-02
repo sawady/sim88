@@ -1,0 +1,188 @@
+{
+ "program": "hand-printer-polling.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "48",
+     "4F",
+     "4C",
+     "41"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "E4",
+     "41"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "80",
+     "E0",
+     "7F"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "E6",
+     "41"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "BB",
+     "00",
+     "10"
+    ],
+    "line": 9
+   },
+   {
+    "address": "200A",
+    "bytes": [
+     "B1",
+     "04"
+    ],
+    "line": 10
+   },
+   {
+    "address": "200C",
+    "bytes": [
+     "E4",
+     "41"
+    ],
+    "line": 11
+   },
+   {
+    "address": "200E",
+    "bytes": [
+     "80",
+     "E0",
+     "01"
+    ],
+    "line": 12
+   },
+   {
+    "address": "2011",
+    "bytes": [
+     "75",
+     "F9"
+    ],
+    "line": 13
+   },
+   {
+    "address": "2013",
+    "bytes": [
+     "8A",
+     "07"
+    ],
+    "line": 14
+   },
+   {
+    "address": "2015",
+    "bytes": [
+     "E6",
+     "40"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2017",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 16
+   },
+   {
+    "address": "2019",
+    "bytes": [
+     "FE",
+     "C9"
+    ],
+    "line": 17
+   },
+   {
+    "address": "201B",
+    "bytes": [
+     "75",
+     "EF"
+    ],
+    "line": 18
+   },
+   {
+    "address": "201D",
+    "bytes": [
+     "E4",
+     "41"
+    ],
+    "line": 19
+   },
+   {
+    "address": "201F",
+    "bytes": [
+     "8A",
+     "D0"
+    ],
+    "line": 20
+   },
+   {
+    "address": "2021",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 21
+   }
+  ],
+  "symbols": [
+   {
+    "name": "MSG",
+    "type": "Byte",
+    "value": "1000"
+   },
+   {
+    "name": "LAZO",
+    "type": "Label",
+    "value": "200C"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0001",
+   "BX": "1004",
+   "CX": "0000",
+   "DX": "0001",
+   "IP": "2023",
+   "SP": "8000"
+  },
+  "flags": "0244",
+  "memory": {
+   "1000": "484F4C41",
+   "2000": "E44180E07FE641BB0010B104E44180E00175F98A07E640FFC3FEC975EFE4418AD0CD",
+   "7FFC": "23204402",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

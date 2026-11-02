@@ -1,0 +1,70 @@
+
+								p gina: 1 
+
+ Listado Fuente: P003.LST
+ Programa Fuente en: P003.ASM
+ Fecha: Mon Nov 02 15:34:41 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; AND, OR, XOR and NOT: C and O cleared, Z S P f
+				rom the result; NOT changes
+			      2	; no flag. A first ADD leaves C, O and A set to 
+				see what the logic ops do to them.
+			      3	        ORG 1000H
+ 1000 F0		      4	B1      DB 0F0H
+ 1001 00 FF		      5	W1      DW 0FF00H
+			      6	        ORG 2000H
+ 2000 B0 FF		      7	        MOV AL, 0FFH
+ 2002 80 C0 81		      8	        ADD AL, 81H        ; C, O? (FFh+81h = 80
+				h): C, S, A
+ 2005 B0 F0		      9	        MOV AL, 0F0H
+ 2007 80 E0 0F		     10	        AND AL, 0FH        ; 00h
+ 200A 9C		     11	        PUSHF
+ 200B 50		     12	        PUSH AX
+ 200C B0 7F		     13	        MOV AL, 7FH
+ 200E 80 C0 01		     14	        ADD AL, 1          ; O, S, A
+ 2011 B0 F0		     15	        MOV AL, 0F0H
+ 2013 80 C8 0F		     16	        OR AL, 0FH         ; FFh
+ 2016 9C		     17	        PUSHF
+ 2017 50		     18	        PUSH AX
+ 2018 B0 AA		     19	        MOV AL, 0AAH
+ 201A 80 F0 FF		     20	        XOR AL, 0FFH       ; 55h
+ 201D 9C		     21	        PUSHF
+ 201E 50		     22	        PUSH AX
+ 201F B0 81		     23	        MOV AL, 81H
+ 2021 80 F0 81		     24	        XOR AL, 81H        ; 00h
+ 2024 9C		     25	        PUSHF
+ 2025 50		     26	        PUSH AX
+ 2026 B8 34 12		     27	        MOV AX, 1234H
+ 2029 F7 D0		     28	        NOT AX             ; EDCBh, flags unchan
+				ged
+ 202B 9C		     29	        PUSHF
+ 202C 50		     30	        PUSH AX
+ 202D F6 16 00 10	     31	        NOT B1             ; 0Fh
+ 2031 9C		     32	        PUSHF
+ 2032 81 26 01 10 0F 0F	     33	        AND W1, 0F0FH      ; 0F00h
+ 2038 9C		     34	        PUSHF
+ 2039 BB 00 F0		     35	        MOV BX, 0F000H
+ 203C 0B 1E 01 10	     36	        OR BX, W1          ; FF00h
+ 2040 9C		     37	        PUSHF
+ 2041 53		     38	        PUSH BX
+ 2042 B1 03		     39	        MOV CL, 3
+ 2044 32 0E 00 10	     40	        XOR CL, B1         ; 0Ch
+ 2048 9C		     41	        PUSHF
+ 2049 51		     42	        PUSH CX
+ 204A CD 00		     43	        INT 0
+			     44	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ B1      	Byte		1000h
+
+
+
+								p gina: 2 
+
+ W1      	Word		1001h

@@ -1,0 +1,31 @@
+
+								p gina: 1 
+
+ Listado Fuente: P006.LST
+ Programa Fuente en: P006.ASM
+ Fecha: Mon Nov 02 15:50:20 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; keys: 2:f10
+			      2	;; timeout: 8
+			      3	;; sim88: f10@1000
+			      4	; A hardware interrupt with type 0: does it end 
+				the program like INT 0?
+			      5	        ORG 2000H
+ 2000 FA		      6	        CLI
+ 2001 B0 00		      7	        MOV AL, 0
+ 2003 E6 24		      8	        OUT 24H, AL
+ 2005 B0 FE		      9	        MOV AL, 0FEH
+ 2007 E6 21		     10	        OUT 21H, AL
+ 2009 BA 34 12		     11	        MOV DX, 1234H
+ 200C FB		     12	        STI
+ 200D E9 0D 20		     13	LAZO:   JMP LAZO
+			     14	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ LAZO    	Label		200Dh

@@ -1,0 +1,203 @@
+{
+ "program": "pio-switches-leds.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "B0",
+     "FF"
+    ],
+    "line": 5
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "E6",
+     "32"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2004",
+    "bytes": [
+     "B0",
+     "00"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2006",
+    "bytes": [
+     "E6",
+     "33"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2008",
+    "bytes": [
+     "E4",
+     "30"
+    ],
+    "line": 9
+   },
+   {
+    "address": "200A",
+    "bytes": [
+     "8A",
+     "D8"
+    ],
+    "line": 10
+   },
+   {
+    "address": "200C",
+    "bytes": [
+     "B0",
+     "A5"
+    ],
+    "line": 11
+   },
+   {
+    "address": "200E",
+    "bytes": [
+     "E6",
+     "31"
+    ],
+    "line": 12
+   },
+   {
+    "address": "2010",
+    "bytes": [
+     "E4",
+     "31"
+    ],
+    "line": 13
+   },
+   {
+    "address": "2012",
+    "bytes": [
+     "8A",
+     "F8"
+    ],
+    "line": 14
+   },
+   {
+    "address": "2014",
+    "bytes": [
+     "E4",
+     "32"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2016",
+    "bytes": [
+     "8A",
+     "C8"
+    ],
+    "line": 16
+   },
+   {
+    "address": "2018",
+    "bytes": [
+     "E4",
+     "33"
+    ],
+    "line": 17
+   },
+   {
+    "address": "201A",
+    "bytes": [
+     "8A",
+     "E8"
+    ],
+    "line": 18
+   },
+   {
+    "address": "201C",
+    "bytes": [
+     "B0",
+     "F0"
+    ],
+    "line": 19
+   },
+   {
+    "address": "201E",
+    "bytes": [
+     "E6",
+     "33"
+    ],
+    "line": 20
+   },
+   {
+    "address": "2020",
+    "bytes": [
+     "B0",
+     "FF"
+    ],
+    "line": 21
+   },
+   {
+    "address": "2022",
+    "bytes": [
+     "E6",
+     "31"
+    ],
+    "line": 22
+   },
+   {
+    "address": "2024",
+    "bytes": [
+     "E4",
+     "31"
+    ],
+    "line": 23
+   },
+   {
+    "address": "2026",
+    "bytes": [
+     "8A",
+     "D0"
+    ],
+    "line": 24
+   },
+   {
+    "address": "2028",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 25
+   }
+  ],
+  "symbols": []
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "00FF",
+   "BX": "A55A",
+   "CX": "00FF",
+   "DX": "00FF",
+   "IP": "202A",
+   "SP": "8000"
+  },
+  "flags": "0200",
+  "memory": {
+   "2000": "B0FFE632B000E633E4308AD8B0A5E631E4318AF8E4328AC8E4338AE8B0F0E633B0FFE631E4318AD0CD",
+   "7FFC": "2A200002",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

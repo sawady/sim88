@@ -1,0 +1,42 @@
+
+								p gina: 1 
+
+ Listado Fuente: P050.LST
+ Programa Fuente en: P050.ASM
+ Fecha: Mon Nov 02 15:34:55 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; monitor: M 5A
+			      2	; Configuration 0: switches (set to 5Ah from the
+				 monitor) on PA, LEDs on PB.
+			      3	; Registers written and read back.
+			      4	        ORG 2000H
+ 2000 B0 FF		      5	        MOV AL, 0FFH
+ 2002 E6 32		      6	        OUT 32H, AL         ; CA: PA all input
+ 2004 B0 00		      7	        MOV AL, 0
+ 2006 E6 33		      8	        OUT 33H, AL         ; CB: PB all output
+ 2008 E4 30		      9	        IN AL, 30H          ; switches
+ 200A 8A D8		     10	        MOV BL, AL
+ 200C B0 A5		     11	        MOV AL, 0A5H
+ 200E E6 31		     12	        OUT 31H, AL         ; LEDs
+ 2010 E4 31		     13	        IN AL, 31H
+ 2012 8A F8		     14	        MOV BH, AL
+ 2014 E4 32		     15	        IN AL, 32H
+ 2016 8A C8		     16	        MOV CL, AL
+ 2018 E4 33		     17	        IN AL, 33H
+ 201A 8A E8		     18	        MOV CH, AL
+ 201C B0 F0		     19	        MOV AL, 0F0H
+ 201E E6 33		     20	        OUT 33H, AL         ; PB high nibble inp
+				ut, low nibble output
+ 2020 B0 FF		     21	        MOV AL, 0FFH
+ 2022 E6 31		     22	        OUT 31H, AL
+ 2024 E4 31		     23	        IN AL, 31H
+ 2026 8A D0		     24	        MOV DL, AL
+ 2028 CD 00		     25	        INT 0
+			     26	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

@@ -1,0 +1,26 @@
+
+								p gina: 1 
+
+ Listado Fuente: P007.LST
+ Programa Fuente en: P007.ASM
+ Fecha: Mon Nov 02 15:34:42 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; run: no
+			      2	; DUP without a count.
+			      3	        ORG 1000H
+ 1000 1[		      4	T       DB DUP (2, 4)
+	     02
+	     04
+		      ]
+			      5	        ORG 2000H
+ 2000 CD 00		      6	        INT 0
+			      7	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ T       	Byte		1000h	No usado

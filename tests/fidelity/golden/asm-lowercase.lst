@@ -1,0 +1,27 @@
+
+								p gina: 1 
+
+ Listado Fuente: P020.LST
+ Programa Fuente en: P020.ASM
+ Fecha: Mon Nov 02 15:34:44 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; run: no
+			      2	; Lower case mnemonics, registers and directives
+				.
+			      3	        org 1000h
+ 1000 0A		      4	var     db 0ah
+			      5	        org 2000h
+ 2000 8A 06 00 10	      6	        mov al, var
+ 2004 BB 00 10		      7	        mov bx, offset var
+ 2007 02 07		      8	        add al, [bx]
+ 2009 CD 00		      9	        int 0
+			     10	        end
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ var     	Byte		1000h

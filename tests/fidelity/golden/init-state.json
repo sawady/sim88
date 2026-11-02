@@ -1,0 +1,43 @@
+{
+ "program": "init-state.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 4
+   }
+  ],
+  "symbols": []
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0000",
+   "BX": "0000",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "2002",
+   "SP": "8000"
+  },
+  "flags": "0200",
+  "memory": {
+   "2000": "CD",
+   "7FFC": "02200002",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

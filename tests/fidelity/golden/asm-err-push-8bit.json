@@ -1,0 +1,20 @@
+{
+ "program": "asm-err-push-8bit.asm",
+ "assembler": {
+  "errors": 1,
+  "warnings": 0,
+  "messages": [
+   "(linea 4)Error: El registro debe ser de 16 bits."
+  ],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "50"
+    ],
+    "line": 4
+   }
+  ],
+  "symbols": []
+ }
+}

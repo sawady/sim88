@@ -1,0 +1,12 @@
+{
+ "program": "asm-err-char-literal.asm",
+ "assembler": {
+  "errors": 1,
+  "warnings": 0,
+  "messages": [
+   "(linea 4)Error: (null)."
+  ],
+  "listing": [],
+  "symbols": []
+ }
+}

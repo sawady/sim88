@@ -1,0 +1,60 @@
+
+								p gina: 1 
+
+ Listado Fuente: P000.LST
+ Programa Fuente en: P000.ASM
+ Fecha: Mon Nov 02 15:34:41 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; ADD and ADC on 16 bits (registers and memory) 
+				at the flag edges.
+			      2	        ORG 1000H
+ 1000 FF 7F		      3	W1      DW 7FFFH
+ 1002 FF FF		      4	W2      DW 0FFFFH
+ 1004 34 12		      5	W3      DW 1234H
+			      6	        ORG 2000H
+ 2000 B8 FF 7F		      7	        MOV AX, 7FFFH
+ 2003 81 C0 01 00	      8	        ADD AX, 1          ; 8000h: O, S, A
+ 2007 9C		      9	        PUSHF
+ 2008 50		     10	        PUSH AX
+ 2009 B8 FF FF		     11	        MOV AX, 0FFFFH
+ 200C 81 C0 01 00	     12	        ADD AX, 1          ; 0000h: C, Z, A, P
+ 2010 9C		     13	        PUSHF
+ 2011 50		     14	        PUSH AX
+ 2012 BB 00 80		     15	        MOV BX, 8000H
+ 2015 B9 00 80		     16	        MOV CX, 8000H
+ 2018 03 D9		     17	        ADD BX, CX         ; 0000h: C, O, Z, P
+ 201A 9C		     18	        PUSHF
+ 201B 53		     19	        PUSH BX
+ 201C BA FF 00		     20	        MOV DX, 00FFH
+ 201F 81 C2 01 00	     21	        ADD DX, 1          ; 0100h: A, P (low by
+				te 00h)
+ 2023 9C		     22	        PUSHF
+ 2024 52		     23	        PUSH DX
+ 2025 81 06 00 10 01 00	     24	        ADD W1, 1          ; memory: 8000h
+ 202B 9C		     25	        PUSHF
+ 202C 8B 06 02 10	     26	        MOV AX, W2
+ 2030 03 06 04 10	     27	        ADD AX, W3         ; FFFFh + 1234h = 123
+				3h, C
+ 2034 9C		     28	        PUSHF
+ 2035 50		     29	        PUSH AX
+ 2036 81 16 04 10 00 00	     30	        ADC W3, 0          ; 1234h + C = 1235h
+ 203C 9C		     31	        PUSHF
+ 203D B9 FF FF		     32	        MOV CX, 0FFFFH
+ 2040 81 C1 01 00	     33	        ADD CX, 1          ; sets C
+ 2044 B9 FF 7F		     34	        MOV CX, 7FFFH
+ 2047 81 D1 00 00	     35	        ADC CX, 0          ; 8000h: O, S
+ 204B 9C		     36	        PUSHF
+ 204C 51		     37	        PUSH CX
+ 204D CD 00		     38	        INT 0
+			     39	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ W1      	Word		1000h
+ W2      	Word		1002h
+ W3      	Word		1004h

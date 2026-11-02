@@ -1,0 +1,105 @@
+{
+ "program": "pic-hw-type-0.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "FA"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2001",
+    "bytes": [
+     "B0",
+     "00"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "E6",
+     "24"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "B0",
+     "FE"
+    ],
+    "line": 9
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "E6",
+     "21"
+    ],
+    "line": 10
+   },
+   {
+    "address": "2009",
+    "bytes": [
+     "BA",
+     "34",
+     "12"
+    ],
+    "line": 11
+   },
+   {
+    "address": "200C",
+    "bytes": [
+     "FB"
+    ],
+    "line": 12
+   },
+   {
+    "address": "200D",
+    "bytes": [
+     "E9",
+     "0D",
+     "20"
+    ],
+    "line": 13
+   }
+  ],
+  "symbols": [
+   {
+    "name": "LAZO",
+    "type": "Label",
+    "value": "200D"
+   }
+  ]
+ },
+ "run": {
+  "status": "timeout",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "00FE",
+   "BX": "0000",
+   "CX": "0000",
+   "DX": "1234",
+   "IP": "200D",
+   "SP": "8000"
+  },
+  "flags": "0200",
+  "memory": {
+   "2000": "FAB000E624B0FEE621BA3412FBE90D20",
+   "7FFC": "0D200002",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

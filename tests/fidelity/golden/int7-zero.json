@@ -1,0 +1,116 @@
+{
+ "program": "int7-zero.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "4E",
+     "4F"
+    ],
+    "line": 3
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "B0",
+     "FF"
+    ],
+    "line": 5
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "80",
+     "C0",
+     "01"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "BB",
+     "00",
+     "10"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2008",
+    "bytes": [
+     "B0",
+     "00"
+    ],
+    "line": 8
+   },
+   {
+    "address": "200A",
+    "bytes": [
+     "B9",
+     "34",
+     "12"
+    ],
+    "line": 9
+   },
+   {
+    "address": "200D",
+    "bytes": [
+     "CD",
+     "07"
+    ],
+    "line": 10
+   },
+   {
+    "address": "200F",
+    "bytes": [
+     "9C"
+    ],
+    "line": 11
+   },
+   {
+    "address": "2010",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 12
+   }
+  ],
+  "symbols": [
+   {
+    "name": "TXT",
+    "type": "Byte",
+    "value": "1000"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   "",
+   ">_",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0000",
+   "BX": "1000",
+   "CX": "1234",
+   "DX": "0000",
+   "IP": "2012",
+   "SP": "7FFE"
+  },
+  "flags": "0255",
+  "memory": {
+   "1000": "4E4F",
+   "2000": "B0FF80C001BB0010B000B93412CD079CCD",
+   "7FFA": "122055025502",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

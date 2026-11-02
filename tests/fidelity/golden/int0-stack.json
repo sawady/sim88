@@ -1,0 +1,87 @@
+{
+ "program": "int0-stack.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "BC",
+     "00",
+     "60"
+    ],
+    "line": 3
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "B0",
+     "7F"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "80",
+     "C0",
+     "01"
+    ],
+    "line": 5
+   },
+   {
+    "address": "2008",
+    "bytes": [
+     "BA",
+     "CD",
+     "AB"
+    ],
+    "line": 6
+   },
+   {
+    "address": "200B",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 7
+   },
+   {
+    "address": "200D",
+    "bytes": [
+     "BA",
+     "00",
+     "00"
+    ],
+    "line": 8
+   }
+  ],
+  "symbols": []
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0080",
+   "BX": "0000",
+   "CX": "0000",
+   "DX": "ABCD",
+   "IP": "200D",
+   "SP": "6000"
+  },
+  "flags": "0A90",
+  "memory": {
+   "2000": "BC0060B07F80C001BACDABCD00BA",
+   "5FFC": "0D20900A",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

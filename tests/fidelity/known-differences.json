@@ -1,0 +1,10 @@
+{
+  "asm-no-end": {
+    "kind": "on purpose",
+    "reason": "ASM88 only warns when END is missing; SIM88 makes it an error (decision 6 in PROGRESS.md)."
+  },
+  "hand-printer-polling": {
+    "kind": "pending",
+    "reason": "MSX88 prints in real time, so BUSY is still 1 after the 4th character; SIM88 prints one character every N instructions (the printer speed setting)."
+  }
+}

@@ -1,0 +1,24 @@
+
+								p gina: 1 
+
+ Listado Fuente: P034.LST
+ Programa Fuente en: P034.ASM
+ Fecha: Mon Nov 02 15:34:48 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; INT 0 after changing SP and the flags: what IN
+				T 0 leaves on the stack.
+			      2	        ORG 2000H
+ 2000 BC 00 60		      3	        MOV SP, 6000H
+ 2003 B0 7F		      4	        MOV AL, 7FH
+ 2005 80 C0 01		      5	        ADD AL, 1          ; O, S, A
+ 2008 BA CD AB		      6	        MOV DX, 0ABCDH
+ 200B CD 00		      7	        INT 0
+ 200D BA 00 00		      8	        MOV DX, 0           ; never runs
+			      9	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

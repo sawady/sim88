@@ -1,0 +1,171 @@
+{
+ "program": "pio-pb-input.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "B0",
+     "F0"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "E6",
+     "33"
+    ],
+    "line": 5
+   },
+   {
+    "address": "2004",
+    "bytes": [
+     "B0",
+     "0F"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2006",
+    "bytes": [
+     "E6",
+     "31"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2008",
+    "bytes": [
+     "E4",
+     "31"
+    ],
+    "line": 8
+   },
+   {
+    "address": "200A",
+    "bytes": [
+     "8A",
+     "D8"
+    ],
+    "line": 9
+   },
+   {
+    "address": "200C",
+    "bytes": [
+     "B0",
+     "00"
+    ],
+    "line": 10
+   },
+   {
+    "address": "200E",
+    "bytes": [
+     "E6",
+     "31"
+    ],
+    "line": 11
+   },
+   {
+    "address": "2010",
+    "bytes": [
+     "E4",
+     "31"
+    ],
+    "line": 12
+   },
+   {
+    "address": "2012",
+    "bytes": [
+     "8A",
+     "F8"
+    ],
+    "line": 13
+   },
+   {
+    "address": "2014",
+    "bytes": [
+     "B0",
+     "FF"
+    ],
+    "line": 14
+   },
+   {
+    "address": "2016",
+    "bytes": [
+     "E6",
+     "32"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2018",
+    "bytes": [
+     "B0",
+     "AA"
+    ],
+    "line": 16
+   },
+   {
+    "address": "201A",
+    "bytes": [
+     "E6",
+     "30"
+    ],
+    "line": 17
+   },
+   {
+    "address": "201C",
+    "bytes": [
+     "E4",
+     "30"
+    ],
+    "line": 18
+   },
+   {
+    "address": "201E",
+    "bytes": [
+     "8A",
+     "C8"
+    ],
+    "line": 19
+   },
+   {
+    "address": "2020",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 20
+   }
+  ],
+  "symbols": []
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0000",
+   "BX": "000F",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "2022",
+   "SP": "8000"
+  },
+  "flags": "0200",
+  "memory": {
+   "2000": "B0F0E633B00FE631E4318AD8B000E631E4318AF8B0FFE632B0AAE630E4308AC8CD",
+   "7FFC": "22200002",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

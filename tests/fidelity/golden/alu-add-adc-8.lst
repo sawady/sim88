@@ -1,0 +1,74 @@
+
+								p gina: 1 
+
+ Listado Fuente: P001.LST
+ Programa Fuente en: P001.ASM
+ Fecha: Mon Nov 02 15:34:41 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; ADD and ADC on 8 bits at the flag edges. After
+				 each operation the flags
+			      2	; and AX are pushed, so the stack keeps a trace 
+				of every result.
+			      3	        ORG 2000H
+ 2000 B0 7F		      4	        MOV AL, 7FH
+ 2002 80 C0 01		      5	        ADD AL, 1          ; 80h: O, S, A
+ 2005 9C		      6	        PUSHF
+ 2006 50		      7	        PUSH AX
+ 2007 B0 FF		      8	        MOV AL, 0FFH
+ 2009 80 C0 01		      9	        ADD AL, 1          ; 00h: C, Z, A, P
+ 200C 9C		     10	        PUSHF
+ 200D 50		     11	        PUSH AX
+ 200E B0 80		     12	        MOV AL, 80H
+ 2010 80 C0 80		     13	        ADD AL, 80H        ; 00h: C, O, Z, P
+ 2013 9C		     14	        PUSHF
+ 2014 50		     15	        PUSH AX
+ 2015 B0 0F		     16	        MOV AL, 0FH
+ 2017 80 C0 01		     17	        ADD AL, 1          ; 10h: A
+ 201A 9C		     18	        PUSHF
+ 201B 50		     19	        PUSH AX
+ 201C B0 01		     20	        MOV AL, 1
+ 201E 80 C0 02		     21	        ADD AL, 2          ; 03h: P
+ 2021 9C		     22	        PUSHF
+ 2022 50		     23	        PUSH AX
+ 2023 B3 F0		     24	        MOV BL, 0F0H
+ 2025 B0 0F		     25	        MOV AL, 0FH
+ 2027 02 C3		     26	        ADD AL, BL         ; FFh: S, P
+ 2029 9C		     27	        PUSHF
+ 202A 50		     28	        PUSH AX
+ 202B B0 FF		     29	        MOV AL, 0FFH
+ 202D 80 C0 FF		     30	        ADD AL, 0FFH       ; FEh: C, S, A
+ 2030 9C		     31	        PUSHF
+ 2031 50		     32	        PUSH AX
+ 2032 B0 00		     33	        MOV AL, 0
+ 2034 80 C0 FF		     34	        ADD AL, 0FFH       ; C = 0 here
+ 2037 80 D0 01		     35	        ADC AL, 1          ; FFh + 1 + C(0)
+ 203A 9C		     36	        PUSHF
+ 203B 50		     37	        PUSH AX
+ 203C B0 FF		     38	        MOV AL, 0FFH
+ 203E 80 C0 01		     39	        ADD AL, 1          ; sets C
+ 2041 B0 7E		     40	        MOV AL, 7EH
+ 2043 80 D0 01		     41	        ADC AL, 1          ; 7Eh + 1 + 1 = 80h: 
+				O, S
+ 2046 9C		     42	        PUSHF
+ 2047 50		     43	        PUSH AX
+ 2048 B0 FF		     44	        MOV AL, 0FFH
+ 204A 80 C0 01		     45	        ADD AL, 1          ; sets C
+ 204D B0 FF		     46	        MOV AL, 0FFH
+ 204F 80 D0 00		     47	        ADC AL, 0          ; FFh + 0 + 1 = 00h: 
+				C, Z, A
+ 2052 9C		     48	        PUSHF
+ 2053 50		     49	        PUSH AX
+ 2054 CD 00		     50	        INT 0
+			     51	        END
+
+
+
+								p gina: 2 
+
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

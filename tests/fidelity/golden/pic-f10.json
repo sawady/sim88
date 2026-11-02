@@ -1,0 +1,311 @@
+{
+ "program": "pic-f10.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "00"
+    ],
+    "line": 6
+   },
+   {
+    "address": "1001",
+    "bytes": [
+     "00",
+     "00",
+     "00"
+    ],
+    "line": 7
+   },
+   {
+    "address": "0040",
+    "bytes": [
+     "00",
+     "30"
+    ],
+    "line": 9
+   },
+   {
+    "address": "3000",
+    "bytes": [
+     "50"
+    ],
+    "line": 11
+   },
+   {
+    "address": "3001",
+    "bytes": [
+     "E4",
+     "23"
+    ],
+    "line": 12
+   },
+   {
+    "address": "3003",
+    "bytes": [
+     "88",
+     "06",
+     "01",
+     "10"
+    ],
+    "line": 13
+   },
+   {
+    "address": "3007",
+    "bytes": [
+     "E4",
+     "22"
+    ],
+    "line": 14
+   },
+   {
+    "address": "3009",
+    "bytes": [
+     "88",
+     "06",
+     "02",
+     "10"
+    ],
+    "line": 15
+   },
+   {
+    "address": "300D",
+    "bytes": [
+     "9C"
+    ],
+    "line": 16
+   },
+   {
+    "address": "300E",
+    "bytes": [
+     "58"
+    ],
+    "line": 17
+   },
+   {
+    "address": "300F",
+    "bytes": [
+     "88",
+     "26",
+     "03",
+     "10"
+    ],
+    "line": 18
+   },
+   {
+    "address": "3013",
+    "bytes": [
+     "FE",
+     "06",
+     "00",
+     "10"
+    ],
+    "line": 19
+   },
+   {
+    "address": "3017",
+    "bytes": [
+     "B0",
+     "20"
+    ],
+    "line": 20
+   },
+   {
+    "address": "3019",
+    "bytes": [
+     "E6",
+     "20"
+    ],
+    "line": 21
+   },
+   {
+    "address": "301B",
+    "bytes": [
+     "58"
+    ],
+    "line": 22
+   },
+   {
+    "address": "301C",
+    "bytes": [
+     "CF"
+    ],
+    "line": 23
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "FA"
+    ],
+    "line": 25
+   },
+   {
+    "address": "2001",
+    "bytes": [
+     "B0",
+     "10"
+    ],
+    "line": 26
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "E6",
+     "24"
+    ],
+    "line": 27
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "B0",
+     "FE"
+    ],
+    "line": 28
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "E6",
+     "21"
+    ],
+    "line": 29
+   },
+   {
+    "address": "2009",
+    "bytes": [
+     "FB"
+    ],
+    "line": 30
+   },
+   {
+    "address": "200A",
+    "bytes": [
+     "80",
+     "3E",
+     "00",
+     "10",
+     "02"
+    ],
+    "line": 31
+   },
+   {
+    "address": "200F",
+    "bytes": [
+     "75",
+     "F9"
+    ],
+    "line": 32
+   },
+   {
+    "address": "2011",
+    "bytes": [
+     "E4",
+     "21"
+    ],
+    "line": 33
+   },
+   {
+    "address": "2013",
+    "bytes": [
+     "8A",
+     "D8"
+    ],
+    "line": 34
+   },
+   {
+    "address": "2015",
+    "bytes": [
+     "E4",
+     "22"
+    ],
+    "line": 35
+   },
+   {
+    "address": "2017",
+    "bytes": [
+     "8A",
+     "F8"
+    ],
+    "line": 36
+   },
+   {
+    "address": "2019",
+    "bytes": [
+     "E4",
+     "23"
+    ],
+    "line": 37
+   },
+   {
+    "address": "201B",
+    "bytes": [
+     "8A",
+     "C8"
+    ],
+    "line": 38
+   },
+   {
+    "address": "201D",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 39
+   }
+  ],
+  "symbols": [
+   {
+    "name": "CUENTA",
+    "type": "Byte",
+    "value": "1000"
+   },
+   {
+    "name": "EN_RUT",
+    "type": "Byte",
+    "value": "1001"
+   },
+   {
+    "name": "RUT",
+    "type": "Label",
+    "value": "3000"
+   },
+   {
+    "name": "LAZO",
+    "type": "Label",
+    "value": "200A"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0000",
+   "BX": "00FE",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "201F",
+   "SP": "8000"
+  },
+  "flags": "0244",
+  "memory": {
+   "0041": "30",
+   "1000": "0201",
+   "2000": "FAB010E624B0FEE621FB803E00100275F9E4218AD8E4228AF8E4238AC8CD",
+   "3000": "50E42388060110E422880602109C5888260310FE060010B020E62058CF",
+   "7FF8": "9500FE001F204402",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

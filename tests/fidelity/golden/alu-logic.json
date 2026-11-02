@@ -1,0 +1,360 @@
+{
+ "program": "alu-logic.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "F0"
+    ],
+    "line": 4
+   },
+   {
+    "address": "1001",
+    "bytes": [
+     "00",
+     "FF"
+    ],
+    "line": 5
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "B0",
+     "FF"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "80",
+     "C0",
+     "81"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "B0",
+     "F0"
+    ],
+    "line": 9
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "80",
+     "E0",
+     "0F"
+    ],
+    "line": 10
+   },
+   {
+    "address": "200A",
+    "bytes": [
+     "9C"
+    ],
+    "line": 11
+   },
+   {
+    "address": "200B",
+    "bytes": [
+     "50"
+    ],
+    "line": 12
+   },
+   {
+    "address": "200C",
+    "bytes": [
+     "B0",
+     "7F"
+    ],
+    "line": 13
+   },
+   {
+    "address": "200E",
+    "bytes": [
+     "80",
+     "C0",
+     "01"
+    ],
+    "line": 14
+   },
+   {
+    "address": "2011",
+    "bytes": [
+     "B0",
+     "F0"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2013",
+    "bytes": [
+     "80",
+     "C8",
+     "0F"
+    ],
+    "line": 16
+   },
+   {
+    "address": "2016",
+    "bytes": [
+     "9C"
+    ],
+    "line": 17
+   },
+   {
+    "address": "2017",
+    "bytes": [
+     "50"
+    ],
+    "line": 18
+   },
+   {
+    "address": "2018",
+    "bytes": [
+     "B0",
+     "AA"
+    ],
+    "line": 19
+   },
+   {
+    "address": "201A",
+    "bytes": [
+     "80",
+     "F0",
+     "FF"
+    ],
+    "line": 20
+   },
+   {
+    "address": "201D",
+    "bytes": [
+     "9C"
+    ],
+    "line": 21
+   },
+   {
+    "address": "201E",
+    "bytes": [
+     "50"
+    ],
+    "line": 22
+   },
+   {
+    "address": "201F",
+    "bytes": [
+     "B0",
+     "81"
+    ],
+    "line": 23
+   },
+   {
+    "address": "2021",
+    "bytes": [
+     "80",
+     "F0",
+     "81"
+    ],
+    "line": 24
+   },
+   {
+    "address": "2024",
+    "bytes": [
+     "9C"
+    ],
+    "line": 25
+   },
+   {
+    "address": "2025",
+    "bytes": [
+     "50"
+    ],
+    "line": 26
+   },
+   {
+    "address": "2026",
+    "bytes": [
+     "B8",
+     "34",
+     "12"
+    ],
+    "line": 27
+   },
+   {
+    "address": "2029",
+    "bytes": [
+     "F7",
+     "D0"
+    ],
+    "line": 28
+   },
+   {
+    "address": "202B",
+    "bytes": [
+     "9C"
+    ],
+    "line": 29
+   },
+   {
+    "address": "202C",
+    "bytes": [
+     "50"
+    ],
+    "line": 30
+   },
+   {
+    "address": "202D",
+    "bytes": [
+     "F6",
+     "16",
+     "00",
+     "10"
+    ],
+    "line": 31
+   },
+   {
+    "address": "2031",
+    "bytes": [
+     "9C"
+    ],
+    "line": 32
+   },
+   {
+    "address": "2032",
+    "bytes": [
+     "81",
+     "26",
+     "01",
+     "10",
+     "0F",
+     "0F"
+    ],
+    "line": 33
+   },
+   {
+    "address": "2038",
+    "bytes": [
+     "9C"
+    ],
+    "line": 34
+   },
+   {
+    "address": "2039",
+    "bytes": [
+     "BB",
+     "00",
+     "F0"
+    ],
+    "line": 35
+   },
+   {
+    "address": "203C",
+    "bytes": [
+     "0B",
+     "1E",
+     "01",
+     "10"
+    ],
+    "line": 36
+   },
+   {
+    "address": "2040",
+    "bytes": [
+     "9C"
+    ],
+    "line": 37
+   },
+   {
+    "address": "2041",
+    "bytes": [
+     "53"
+    ],
+    "line": 38
+   },
+   {
+    "address": "2042",
+    "bytes": [
+     "B1",
+     "03"
+    ],
+    "line": 39
+   },
+   {
+    "address": "2044",
+    "bytes": [
+     "32",
+     "0E",
+     "00",
+     "10"
+    ],
+    "line": 40
+   },
+   {
+    "address": "2048",
+    "bytes": [
+     "9C"
+    ],
+    "line": 41
+   },
+   {
+    "address": "2049",
+    "bytes": [
+     "51"
+    ],
+    "line": 42
+   },
+   {
+    "address": "204A",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 43
+   }
+  ],
+  "symbols": [
+   {
+    "name": "B1",
+    "type": "Byte",
+    "value": "1000"
+   },
+   {
+    "name": "W1",
+    "type": "Word",
+    "value": "1001"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "EDCB",
+   "BX": "FF00",
+   "CX": "000C",
+   "DX": "0000",
+   "IP": "204C",
+   "SP": "7FE0"
+  },
+  "flags": "0204",
+  "memory": {
+   "1000": "0F000F",
+   "2000": "B0FF80C081B0F080E00F9C50B07F80C001B0F080C80F9C50B0AA80F0FF9C50B08180F0819C50B83412F7D09C50F61600109C812601100F0F9CBB00F00B1E01109C53B103320E00109C51CD",
+   "7FDC": "4C2004020C00040200FF840204024402CBED00020000440255000402FF00840200004402",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

@@ -1,0 +1,659 @@
+{
+ "program": "asm-encodings.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "00"
+    ],
+    "line": 4
+   },
+   {
+    "address": "1001",
+    "bytes": [
+     "00",
+     "00"
+    ],
+    "line": 5
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "B0",
+     "05"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "B8",
+     "05",
+     "00"
+    ],
+    "line": 9
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "8A",
+     "DD"
+    ],
+    "line": 10
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "8B",
+     "E0"
+    ],
+    "line": 11
+   },
+   {
+    "address": "2009",
+    "bytes": [
+     "8A",
+     "06",
+     "00",
+     "10"
+    ],
+    "line": 12
+   },
+   {
+    "address": "200D",
+    "bytes": [
+     "88",
+     "06",
+     "00",
+     "10"
+    ],
+    "line": 13
+   },
+   {
+    "address": "2011",
+    "bytes": [
+     "8B",
+     "06",
+     "01",
+     "10"
+    ],
+    "line": 14
+   },
+   {
+    "address": "2015",
+    "bytes": [
+     "89",
+     "06",
+     "01",
+     "10"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2019",
+    "bytes": [
+     "8A",
+     "07"
+    ],
+    "line": 16
+   },
+   {
+    "address": "201B",
+    "bytes": [
+     "89",
+     "07"
+    ],
+    "line": 17
+   },
+   {
+    "address": "201D",
+    "bytes": [
+     "C6",
+     "06",
+     "00",
+     "10",
+     "05"
+    ],
+    "line": 18
+   },
+   {
+    "address": "2022",
+    "bytes": [
+     "C7",
+     "06",
+     "01",
+     "10",
+     "05",
+     "00"
+    ],
+    "line": 19
+   },
+   {
+    "address": "2028",
+    "bytes": [
+     "80",
+     "C0",
+     "05"
+    ],
+    "line": 20
+   },
+   {
+    "address": "202B",
+    "bytes": [
+     "81",
+     "C0",
+     "05",
+     "00"
+    ],
+    "line": 21
+   },
+   {
+    "address": "202F",
+    "bytes": [
+     "81",
+     "C0",
+     "00",
+     "05"
+    ],
+    "line": 22
+   },
+   {
+    "address": "2033",
+    "bytes": [
+     "80",
+     "06",
+     "00",
+     "10",
+     "05"
+    ],
+    "line": 23
+   },
+   {
+    "address": "2038",
+    "bytes": [
+     "81",
+     "06",
+     "01",
+     "10",
+     "00",
+     "05"
+    ],
+    "line": 24
+   },
+   {
+    "address": "203E",
+    "bytes": [
+     "02",
+     "06",
+     "00",
+     "10"
+    ],
+    "line": 25
+   },
+   {
+    "address": "2042",
+    "bytes": [
+     "01",
+     "06",
+     "01",
+     "10"
+    ],
+    "line": 26
+   },
+   {
+    "address": "2046",
+    "bytes": [
+     "02",
+     "07"
+    ],
+    "line": 27
+   },
+   {
+    "address": "2048",
+    "bytes": [
+     "80",
+     "D1",
+     "01"
+    ],
+    "line": 28
+   },
+   {
+    "address": "204B",
+    "bytes": [
+     "2B",
+     "D1"
+    ],
+    "line": 29
+   },
+   {
+    "address": "204D",
+    "bytes": [
+     "1A",
+     "E0"
+    ],
+    "line": 30
+   },
+   {
+    "address": "204F",
+    "bytes": [
+     "80",
+     "F8",
+     "05"
+    ],
+    "line": 31
+   },
+   {
+    "address": "2052",
+    "bytes": [
+     "81",
+     "F8",
+     "05",
+     "00"
+    ],
+    "line": 32
+   },
+   {
+    "address": "2056",
+    "bytes": [
+     "80",
+     "3E",
+     "00",
+     "10",
+     "05"
+    ],
+    "line": 33
+   },
+   {
+    "address": "205B",
+    "bytes": [
+     "80",
+     "E0",
+     "7F"
+    ],
+    "line": 34
+   },
+   {
+    "address": "205E",
+    "bytes": [
+     "81",
+     "C8",
+     "00",
+     "80"
+    ],
+    "line": 35
+   },
+   {
+    "address": "2062",
+    "bytes": [
+     "32",
+     "DB"
+    ],
+    "line": 36
+   },
+   {
+    "address": "2064",
+    "bytes": [
+     "F6",
+     "D0"
+    ],
+    "line": 37
+   },
+   {
+    "address": "2066",
+    "bytes": [
+     "F7",
+     "16",
+     "01",
+     "10"
+    ],
+    "line": 38
+   },
+   {
+    "address": "206A",
+    "bytes": [
+     "F7",
+     "DB"
+    ],
+    "line": 39
+   },
+   {
+    "address": "206C",
+    "bytes": [
+     "F6",
+     "1E",
+     "00",
+     "10"
+    ],
+    "line": 40
+   },
+   {
+    "address": "2070",
+    "bytes": [
+     "FE",
+     "C0"
+    ],
+    "line": 41
+   },
+   {
+    "address": "2072",
+    "bytes": [
+     "FF",
+     "C0"
+    ],
+    "line": 42
+   },
+   {
+    "address": "2074",
+    "bytes": [
+     "FE",
+     "06",
+     "00",
+     "10"
+    ],
+    "line": 43
+   },
+   {
+    "address": "2078",
+    "bytes": [
+     "FF",
+     "06",
+     "01",
+     "10"
+    ],
+    "line": 44
+   },
+   {
+    "address": "207C",
+    "bytes": [
+     "FE",
+     "C9"
+    ],
+    "line": 45
+   },
+   {
+    "address": "207E",
+    "bytes": [
+     "FF",
+     "CC"
+    ],
+    "line": 46
+   },
+   {
+    "address": "2080",
+    "bytes": [
+     "50"
+    ],
+    "line": 47
+   },
+   {
+    "address": "2081",
+    "bytes": [
+     "54"
+    ],
+    "line": 48
+   },
+   {
+    "address": "2082",
+    "bytes": [
+     "5A"
+    ],
+    "line": 49
+   },
+   {
+    "address": "2083",
+    "bytes": [
+     "9C"
+    ],
+    "line": 50
+   },
+   {
+    "address": "2084",
+    "bytes": [
+     "9D"
+    ],
+    "line": 51
+   },
+   {
+    "address": "2085",
+    "bytes": [
+     "E4",
+     "30"
+    ],
+    "line": 52
+   },
+   {
+    "address": "2087",
+    "bytes": [
+     "E5",
+     "30"
+    ],
+    "line": 53
+   },
+   {
+    "address": "2089",
+    "bytes": [
+     "EC"
+    ],
+    "line": 54
+   },
+   {
+    "address": "208A",
+    "bytes": [
+     "ED"
+    ],
+    "line": 55
+   },
+   {
+    "address": "208B",
+    "bytes": [
+     "E6",
+     "30"
+    ],
+    "line": 56
+   },
+   {
+    "address": "208D",
+    "bytes": [
+     "E7",
+     "31"
+    ],
+    "line": 57
+   },
+   {
+    "address": "208F",
+    "bytes": [
+     "EE"
+    ],
+    "line": 58
+   },
+   {
+    "address": "2090",
+    "bytes": [
+     "EF"
+    ],
+    "line": 59
+   },
+   {
+    "address": "2091",
+    "bytes": [
+     "CD",
+     "03"
+    ],
+    "line": 60
+   },
+   {
+    "address": "2093",
+    "bytes": [
+     "CD",
+     "07"
+    ],
+    "line": 61
+   },
+   {
+    "address": "2095",
+    "bytes": [
+     "CF"
+    ],
+    "line": 62
+   },
+   {
+    "address": "2096",
+    "bytes": [
+     "FA"
+    ],
+    "line": 63
+   },
+   {
+    "address": "2097",
+    "bytes": [
+     "FB"
+    ],
+    "line": 64
+   },
+   {
+    "address": "2098",
+    "bytes": [
+     "90"
+    ],
+    "line": 65
+   },
+   {
+    "address": "2099",
+    "bytes": [
+     "F4"
+    ],
+    "line": 66
+   },
+   {
+    "address": "209A",
+    "bytes": [
+     "C3"
+    ],
+    "line": 67
+   },
+   {
+    "address": "209B",
+    "bytes": [
+     "E8",
+     "00",
+     "30"
+    ],
+    "line": 68
+   },
+   {
+    "address": "209E",
+    "bytes": [
+     "E9",
+     "00",
+     "20"
+    ],
+    "line": 69
+   },
+   {
+    "address": "20A1",
+    "bytes": [
+     "74",
+     "0E"
+    ],
+    "line": 70
+   },
+   {
+    "address": "20A3",
+    "bytes": [
+     "75",
+     "0C"
+    ],
+    "line": 71
+   },
+   {
+    "address": "20A5",
+    "bytes": [
+     "78",
+     "0A"
+    ],
+    "line": 72
+   },
+   {
+    "address": "20A7",
+    "bytes": [
+     "79",
+     "08"
+    ],
+    "line": 73
+   },
+   {
+    "address": "20A9",
+    "bytes": [
+     "72",
+     "06"
+    ],
+    "line": 74
+   },
+   {
+    "address": "20AB",
+    "bytes": [
+     "73",
+     "04"
+    ],
+    "line": 75
+   },
+   {
+    "address": "20AD",
+    "bytes": [
+     "70",
+     "02"
+    ],
+    "line": 76
+   },
+   {
+    "address": "20AF",
+    "bytes": [
+     "71",
+     "00"
+    ],
+    "line": 77
+   },
+   {
+    "address": "20B1",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 78
+   },
+   {
+    "address": "3000",
+    "bytes": [
+     "C3"
+    ],
+    "line": 80
+   }
+  ],
+  "symbols": [
+   {
+    "name": "B",
+    "type": "Byte",
+    "value": "1000"
+   },
+   {
+    "name": "W",
+    "type": "Word",
+    "value": "1001"
+   },
+   {
+    "name": "P",
+    "type": "Number",
+    "value": "30"
+   },
+   {
+    "name": "AQUI",
+    "type": "Label",
+    "value": "20B1"
+   }
+  ]
+ }
+}

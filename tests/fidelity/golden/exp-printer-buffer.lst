@@ -1,0 +1,72 @@
+
+								p gina: 1 
+
+ Listado Fuente: P000.LST
+ Programa Fuente en: P000.ASM
+ Fecha: Mon Nov 02 15:58:14 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; compare: no
+			      2	;; config: 2
+			      3	; Experiment (not compared): send 7 characters t
+				o the HAND without waiting
+			      4	; and read its status after each one: when does 
+				BUSY go to 1?
+			      5	        ORG 1000H
+ 1000 7[		      6	EST     DB 7 DUP (0)
+	     00
+		      ]
+			      7	        ORG 2000H
+ 2000 B0 00		      8	        MOV AL, 0
+ 2002 E6 41		      9	        OUT 41H, AL
+ 2004 BB 00 10		     10	        MOV BX, OFFSET EST
+ 2007 B0 41		     11	        MOV AL, 41H
+ 2009 E6 40		     12	        OUT 40H, AL
+ 200B E4 41		     13	        IN AL, 41H
+ 200D 88 07		     14	        MOV [BX], AL
+ 200F FF C3		     15	        INC BX
+ 2011 B0 42		     16	        MOV AL, 42H
+ 2013 E6 40		     17	        OUT 40H, AL
+ 2015 E4 41		     18	        IN AL, 41H
+ 2017 88 07		     19	        MOV [BX], AL
+ 2019 FF C3		     20	        INC BX
+ 201B B0 43		     21	        MOV AL, 43H
+ 201D E6 40		     22	        OUT 40H, AL
+ 201F E4 41		     23	        IN AL, 41H
+ 2021 88 07		     24	        MOV [BX], AL
+ 2023 FF C3		     25	        INC BX
+ 2025 B0 44		     26	        MOV AL, 44H
+ 2027 E6 40		     27	        OUT 40H, AL
+ 2029 E4 41		     28	        IN AL, 41H
+ 202B 88 07		     29	        MOV [BX], AL
+ 202D FF C3		     30	        INC BX
+ 202F B0 45		     31	        MOV AL, 45H
+ 2031 E6 40		     32	        OUT 40H, AL
+ 2033 E4 41		     33	        IN AL, 41H
+ 2035 88 07		     34	        MOV [BX], AL
+ 2037 FF C3		     35	        INC BX
+ 2039 B0 46		     36	        MOV AL, 46H
+ 203B E6 40		     37	        OUT 40H, AL
+ 203D E4 41		     38	        IN AL, 41H
+ 203F 88 07		     39	        MOV [BX], AL
+ 2041 FF C3		     40	        INC BX
+ 2043 B0 47		     41	        MOV AL, 47H
+ 2045 E6 40		     42	        OUT 40H, AL
+ 2047 E4 41		     43	        IN AL, 41H
+ 2049 88 07		     44	        MOV [BX], AL
+ 204B FF C3		     45	        INC BX
+ 204D CD 00		     46	        INT 0
+			     47	        END
+
+
+ S I M B O L O S:
+
+
+
+
+								p gina: 2 
+
+ Nombre:	Tipo:		Valor:
+
+ EST     	Byte		1000h

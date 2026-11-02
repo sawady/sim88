@@ -1,0 +1,38 @@
+
+								p gina: 1 
+
+ Listado Fuente: P043.LST
+ Programa Fuente en: P043.ASM
+ Fecha: Mon Nov 02 15:34:52 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; timeout: 4
+			      2	; The typical first program: add the bytes of a 
+				table with a counted loop.
+			      3	        ORG 1000H
+ 1000 02 04 06 08 0A 0C	      4	TABLA   DB 2, 4, 6, 8, 10, 12, 14, 16, 18, 20
+ 1006 0E 10 12 14
+ 100A 02		      5	FIN     DB ?
+ 100B 02		      6	TOTAL   DB ?
+			      7	        ORG 2000H
+ 2000 B0 00		      8	        MOV AL, 0
+ 2002 B1 0A		      9	        MOV CL, OFFSET FIN - OFFSET TABLA
+ 2004 BB 00 10		     10	        MOV BX, OFFSET TABLA
+ 2007 02 07		     11	LAZO:   ADD AL, [BX]
+ 2009 FF C3		     12	        INC BX
+ 200B FE C9		     13	        DEC CL
+ 200D 75 F8		     14	        JNZ LAZO
+ 200F 88 06 0B 10	     15	        MOV TOTAL, AL
+ 2013 F4		     16	        HLT
+			     17	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ TABLA   	Byte		1000h
+ FIN     	Byte		100Ah
+ TOTAL   	Byte		100Bh
+ LAZO    	Label		2007h

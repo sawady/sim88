@@ -1,0 +1,26 @@
+
+								p gina: 1 
+
+ Listado Fuente: P004.LST
+ Programa Fuente en: P004.ASM
+ Fecha: Mon Nov 02 15:50:19 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; timeout: 4
+			      2	; 8A 47 02 is MOV AL, [BX+2] on an 8086: does MS
+				X88 run it?
+			      3	        ORG 1000H
+ 1000 01 02 03		      4	T       DB 1, 2, 3
+			      5	        ORG 2000H
+ 2000 BB 00 10		      6	        MOV BX, OFFSET T
+ 2003 8A 47 02		      7	        DB 8AH, 47H, 02H
+ 2006 CD 00		      8	        INT 0
+			      9	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ T       	Byte		1000h

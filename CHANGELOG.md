@@ -8,7 +8,30 @@ tagged releases yet. The planned work and its status live in [PROGRESS.md](PROGR
 
 ## [Unreleased]
 
+### Changed (to match MSX88, with the oracle's evidence)
+
+- The machine starts with I = 1 and with the monitor's vectors of INT 0/3/6/7 in memory.
+- INT 0/3/6/7 push the flags and IP and return through the monitor's IRET, as MSX88 does; a
+  program that replaces one of those vectors gets its own routine.
+- INT 7 writes one line per call; CR and LF are shown as symbols.
+- `HLT` always waits for an interrupt (Esc ends it), as MSX88.
+- `NOP` is assembled as `90h` (ASM88), not `98h` (the manual).
+- ADC/SBB with carry, INC/DEC and NOT set the flags as MSX88 does (see docs/fidelity.md);
+  `PUSH SP` pushes 0.
+- ModRM memory modes the SX88 does not have (`[BX+SI]`, `[BX+n]`, ...) stop the program with an
+  error, as MSX88.
+- Names are case sensitive in MSX88 strict mode; `DUP` without a count is one copy.
+- After a reset the PIC masks every line (IMR = FFh) and the CDMA reads TC = 1; ports with
+  nothing connected read 00h; PB of the PIO reads back its latch; reading 57h starts the CDMA;
+  memory to memory DMA in block mode moves the whole block at once; the printer's buffer holds
+  4 characters.
+
 ### Added
+
+- Fidelity checked against the original MSX88 V-3.1: `tools/oracle` runs MSX88, ASM88 and
+  LINK88 in an emulated PC (QEMU + FreeDOS in Docker), a corpus of 70 programs in
+  `tests/fidelity` keeps what they did, and the test suite compares SIM88 with it.
+  Report: [docs/fidelity.md](docs/fidelity.md).
 
 - Text mode interface in the style of the MS-DOS tools of the time: IBM VGA 8x16 font on a
   character grid scaled by whole factors, menu bar with pull-down menus (Alt + letter, arrows,
@@ -26,7 +49,7 @@ tagged releases yet. The planned work and its status live in [PROGRESS.md](PROGR
   LEDs, PIC (F10 requests INT0, priorities, EOI), timer at 1 Hz with a "Pulso" button, printer
   through the PIO or the handshake (HAND), and the DMA controller (CDMA). A peripherals panel
   shows their registers, and step back undoes I/O, interrupts and DMA too.
-- `HLT` waits for an interrupt when one can arrive; otherwise it ends the program.
+- `HLT` waits for an interrupt.
 - MSX88 strict mode (toolbar toggle) that rejects SIM88 extensions: `'A'`, single-quoted
   strings, `[1000h]`, `*` and `/`.
 - "Ejemplos" menu with 9 example programs, one per course topic, each tested in strict mode.

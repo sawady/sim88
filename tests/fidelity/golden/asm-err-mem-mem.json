@@ -1,0 +1,50 @@
+{
+ "program": "asm-err-mem-mem.asm",
+ "assembler": {
+  "errors": 1,
+  "warnings": 0,
+  "messages": [
+   "(linea 7)Error: Se espera dato inmediato."
+  ],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "01"
+    ],
+    "line": 4
+   },
+   {
+    "address": "1001",
+    "bytes": [
+     "02"
+    ],
+    "line": 5
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "88",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00"
+    ],
+    "line": 7
+   }
+  ],
+  "symbols": [
+   {
+    "name": "B1",
+    "type": "Byte",
+    "value": "1000"
+   },
+   {
+    "name": "B2",
+    "type": "Byte",
+    "value": "1001"
+   }
+  ]
+ }
+}

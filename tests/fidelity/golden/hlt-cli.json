@@ -1,0 +1,74 @@
+{
+ "program": "hlt-cli.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "B8",
+     "01",
+     "00"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "FA"
+    ],
+    "line": 5
+   },
+   {
+    "address": "2004",
+    "bytes": [
+     "F4"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "B8",
+     "02",
+     "00"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2008",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 8
+   }
+  ],
+  "symbols": []
+ },
+ "run": {
+  "status": "timeout",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0001",
+   "BX": "0000",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "2005",
+   "SP": "8000"
+  },
+  "flags": "0000",
+  "memory": {
+   "2000": "B80100FAF4B80200CD",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

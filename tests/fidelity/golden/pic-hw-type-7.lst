@@ -1,0 +1,36 @@
+
+								p gina: 1 
+
+ Listado Fuente: P049.LST
+ Programa Fuente en: P049.ASM
+ Fecha: Mon Nov 02 15:34:55 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; keys: 2:f10
+			      2	;; timeout: 8
+			      3	; A hardware interrupt with type 7 (INT0 of the 
+				PIC -> vector 7, the one of
+			      4	; INT 7): does the monitor write AL bytes from B
+				X, or only run the vector?
+			      5	        ORG 1000H
+ 1000 48 57 37		      6	TXT     DB "HW7"
+			      7	        ORG 2000H
+ 2000 FA		      8	        CLI
+ 2001 B0 07		      9	        MOV AL, 7
+ 2003 E6 24		     10	        OUT 24H, AL
+ 2005 B0 FE		     11	        MOV AL, 0FEH
+ 2007 E6 21		     12	        OUT 21H, AL
+ 2009 BB 00 10		     13	        MOV BX, OFFSET TXT
+ 200C B0 03		     14	        MOV AL, 3
+ 200E FB		     15	        STI
+ 200F E9 0F 20		     16	LAZO:   JMP LAZO
+			     17	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ TXT     	Byte		1000h
+ LAZO    	Label		200Fh

@@ -1,0 +1,21 @@
+{
+ "program": "asm-no-end.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 1,
+  "messages": [
+   "(linea 5)Aviso: falta la directiva 'END'."
+  ],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 4
+   }
+  ],
+  "symbols": []
+ }
+}

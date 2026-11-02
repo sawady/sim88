@@ -1,0 +1,23 @@
+{
+ "program": "asm-err-no-ptr.asm",
+ "assembler": {
+  "errors": 1,
+  "warnings": 0,
+  "messages": [
+   "(linea 4)Error: Operando indefinido. Usar PTR."
+  ],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "88",
+     "00",
+     "00",
+     "00"
+    ],
+    "line": 4
+   }
+  ],
+  "symbols": []
+ }
+}

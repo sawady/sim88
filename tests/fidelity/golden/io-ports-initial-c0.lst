@@ -1,0 +1,92 @@
+
+								p gina: 1 
+
+ Listado Fuente: P040.LST
+ Programa Fuente en: P040.ASM
+ Fecha: Mon Nov 02 15:34:51 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; Configuration 0: the value of every port after
+				 a reset (timer, PIC, PIO)
+			      2	; and of ports with nothing connected. Each IN g
+				oes to a table.
+			      3	        ORG 1000H
+ 1000 18[		      4	TABLA   DB 24 DUP (0)
+	     00
+		      ]
+			      5	        ORG 2000H
+ 2000 BB 00 10		      6	        MOV BX, OFFSET TABLA
+ 2003 E4 10		      7	        IN AL, 10H
+ 2005 88 07		      8	        MOV [BX], AL
+ 2007 FF C3		      9	        INC BX
+ 2009 E4 11		     10	        IN AL, 11H
+ 200B 88 07		     11	        MOV [BX], AL
+ 200D FF C3		     12	        INC BX
+ 200F E4 21		     13	        IN AL, 21H
+ 2011 88 07		     14	        MOV [BX], AL
+ 2013 FF C3		     15	        INC BX
+ 2015 E4 22		     16	        IN AL, 22H
+ 2017 88 07		     17	        MOV [BX], AL
+ 2019 FF C3		     18	        INC BX
+ 201B E4 23		     19	        IN AL, 23H
+ 201D 88 07		     20	        MOV [BX], AL
+ 201F FF C3		     21	        INC BX
+ 2021 E4 24		     22	        IN AL, 24H
+ 2023 88 07		     23	        MOV [BX], AL
+ 2025 FF C3		     24	        INC BX
+ 2027 E4 25		     25	        IN AL, 25H
+ 2029 88 07		     26	        MOV [BX], AL
+ 202B FF C3		     27	        INC BX
+ 202D E4 26		     28	        IN AL, 26H
+ 202F 88 07		     29	        MOV [BX], AL
+ 2031 FF C3		     30	        INC BX
+ 2033 E4 27		     31	        IN AL, 27H
+ 2035 88 07		     32	        MOV [BX], AL
+ 2037 FF C3		     33	        INC BX
+ 2039 E4 28		     34	        IN AL, 28H
+ 203B 88 07		     35	        MOV [BX], AL
+ 203D FF C3		     36	        INC BX
+ 203F E4 2B		     37	        IN AL, 2BH
+ 2041 88 07		     38	        MOV [BX], AL
+ 2043 FF C3		     39	        INC BX
+ 2045 E4 30		     40	        IN AL, 30H
+ 2047 88 07		     41	        MOV [BX], AL
+ 2049 FF C3		     42	        INC BX
+ 204B E4 31		     43	        IN AL, 31H
+ 204D 88 07		     44	        MOV [BX], AL
+ 204F FF C3		     45	        INC BX
+ 2051 E4 32		     46	        IN AL, 32H
+ 2053 88 07		     47	        MOV [BX], AL
+ 2055 FF C3		     48	        INC BX
+ 2057 E4 33		     49	        IN AL, 33H
+ 2059 88 07		     50	        MOV [BX], AL
+ 205B FF C3		     51	        INC BX
+
+
+
+								p gina: 2 
+
+ 205D E4 40		     52	        IN AL, 40H          ; HAND: not connecte
+				d in configuration 0
+ 205F 88 07		     53	        MOV [BX], AL
+ 2061 FF C3		     54	        INC BX
+ 2063 E4 50		     55	        IN AL, 50H          ; CDMA: not connecte
+				d in configuration 0
+ 2065 88 07		     56	        MOV [BX], AL
+ 2067 FF C3		     57	        INC BX
+ 2069 E4 F0		     58	        IN AL, 0F0H         ; nothing
+ 206B 88 07		     59	        MOV [BX], AL
+ 206D FF C3		     60	        INC BX
+ 206F E5 30		     61	        IN AX, 30H          ; 16 bit IN: PA and 
+				PB
+ 2071 89 07		     62	        MOV [BX], AX
+ 2073 CD 00		     63	        INT 0
+			     64	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ TABLA   	Byte		1000h

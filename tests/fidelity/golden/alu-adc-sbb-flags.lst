@@ -1,0 +1,381 @@
+
+								p gina: 1 
+
+ Listado Fuente: P000.LST
+ Programa Fuente en: P000.ASM
+ Fecha: Mon Nov 02 15:53:20 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; ADC and SBB with C = 0 and C = 1 at the edges:
+				 result and flags of each
+			      2	; case on the stack.
+			      3	        ORG 2000H
+ 2000 B8 00 00		      4	        MOV AX, 00000H
+ 2003 50		      5	        PUSH AX
+ 2004 9D		      6	        POPF
+ 2005 B2 FF		      7	        MOV DL, 0FFH
+ 2007 80 D2 00		      8	        ADC DL, 000H
+ 200A 9C		      9	        PUSHF
+ 200B 52		     10	        PUSH DX
+ 200C B8 00 00		     11	        MOV AX, 00000H
+ 200F 50		     12	        PUSH AX
+ 2010 9D		     13	        POPF
+ 2011 B2 FF		     14	        MOV DL, 0FFH
+ 2013 80 D2 01		     15	        ADC DL, 001H
+ 2016 9C		     16	        PUSHF
+ 2017 52		     17	        PUSH DX
+ 2018 B8 00 00		     18	        MOV AX, 00000H
+ 201B 50		     19	        PUSH AX
+ 201C 9D		     20	        POPF
+ 201D B2 7F		     21	        MOV DL, 07FH
+ 201F 80 D2 00		     22	        ADC DL, 000H
+ 2022 9C		     23	        PUSHF
+ 2023 52		     24	        PUSH DX
+ 2024 B8 00 00		     25	        MOV AX, 00000H
+ 2027 50		     26	        PUSH AX
+ 2028 9D		     27	        POPF
+ 2029 B2 00		     28	        MOV DL, 000H
+ 202B 80 D2 FF		     29	        ADC DL, 0FFH
+ 202E 9C		     30	        PUSHF
+ 202F 52		     31	        PUSH DX
+ 2030 B8 00 00		     32	        MOV AX, 00000H
+ 2033 50		     33	        PUSH AX
+ 2034 9D		     34	        POPF
+ 2035 B2 80		     35	        MOV DL, 080H
+ 2037 80 D2 7F		     36	        ADC DL, 07FH
+ 203A 9C		     37	        PUSHF
+ 203B 52		     38	        PUSH DX
+ 203C B8 00 00		     39	        MOV AX, 00000H
+ 203F 50		     40	        PUSH AX
+ 2040 9D		     41	        POPF
+ 2041 B2 0F		     42	        MOV DL, 00FH
+ 2043 80 D2 00		     43	        ADC DL, 000H
+ 2046 9C		     44	        PUSHF
+ 2047 52		     45	        PUSH DX
+ 2048 B8 00 00		     46	        MOV AX, 00000H
+ 204B 50		     47	        PUSH AX
+ 204C 9D		     48	        POPF
+ 204D B2 F0		     49	        MOV DL, 0F0H
+ 204F 80 D2 20		     50	        ADC DL, 020H
+ 2052 9C		     51	        PUSHF
+ 2053 52		     52	        PUSH DX
+ 2054 B8 00 00		     53	        MOV AX, 00000H
+ 2057 50		     54	        PUSH AX
+
+
+
+								p gina: 2 
+
+ 2058 9D		     55	        POPF
+ 2059 B2 00		     56	        MOV DL, 000H
+ 205B 80 D2 00		     57	        ADC DL, 000H
+ 205E 9C		     58	        PUSHF
+ 205F 52		     59	        PUSH DX
+ 2060 B8 00 00		     60	        MOV AX, 00000H
+ 2063 50		     61	        PUSH AX
+ 2064 9D		     62	        POPF
+ 2065 BA FF FF		     63	        MOV DX, 0FFFFH
+ 2068 81 D2 00 00	     64	        ADC DX, 00000H
+ 206C 9C		     65	        PUSHF
+ 206D 52		     66	        PUSH DX
+ 206E B8 00 00		     67	        MOV AX, 00000H
+ 2071 50		     68	        PUSH AX
+ 2072 9D		     69	        POPF
+ 2073 BA FF 7F		     70	        MOV DX, 07FFFH
+ 2076 81 D2 00 00	     71	        ADC DX, 00000H
+ 207A 9C		     72	        PUSHF
+ 207B 52		     73	        PUSH DX
+ 207C B8 00 00		     74	        MOV AX, 00000H
+ 207F 50		     75	        PUSH AX
+ 2080 9D		     76	        POPF
+ 2081 BA 00 00		     77	        MOV DX, 00000H
+ 2084 81 D2 FF FF	     78	        ADC DX, 0FFFFH
+ 2088 9C		     79	        PUSHF
+ 2089 52		     80	        PUSH DX
+ 208A B8 00 00		     81	        MOV AX, 00000H
+ 208D 50		     82	        PUSH AX
+ 208E 9D		     83	        POPF
+ 208F BA 00 00		     84	        MOV DX, 00000H
+ 2092 81 D2 00 00	     85	        ADC DX, 00000H
+ 2096 9C		     86	        PUSHF
+ 2097 52		     87	        PUSH DX
+ 2098 B8 00 00		     88	        MOV AX, 00000H
+ 209B 50		     89	        PUSH AX
+ 209C 9D		     90	        POPF
+ 209D B2 FF		     91	        MOV DL, 0FFH
+ 209F 80 DA 00		     92	        SBB DL, 000H
+ 20A2 9C		     93	        PUSHF
+ 20A3 52		     94	        PUSH DX
+ 20A4 B8 00 00		     95	        MOV AX, 00000H
+ 20A7 50		     96	        PUSH AX
+ 20A8 9D		     97	        POPF
+ 20A9 B2 FF		     98	        MOV DL, 0FFH
+ 20AB 80 DA 01		     99	        SBB DL, 001H
+ 20AE 9C		    100	        PUSHF
+ 20AF 52		    101	        PUSH DX
+ 20B0 B8 00 00		    102	        MOV AX, 00000H
+ 20B3 50		    103	        PUSH AX
+ 20B4 9D		    104	        POPF
+ 20B5 B2 7F		    105	        MOV DL, 07FH
+ 20B7 80 DA 00		    106	        SBB DL, 000H
+ 20BA 9C		    107	        PUSHF
+ 20BB 52		    108	        PUSH DX
+ 20BC B8 00 00		    109	        MOV AX, 00000H
+ 20BF 50		    110	        PUSH AX
+ 20C0 9D		    111	        POPF
+ 20C1 B2 00		    112	        MOV DL, 000H
+ 20C3 80 DA FF		    113	        SBB DL, 0FFH
+ 20C6 9C		    114	        PUSHF
+ 20C7 52		    115	        PUSH DX
+
+
+
+								p gina: 3 
+
+ 20C8 B8 00 00		    116	        MOV AX, 00000H
+ 20CB 50		    117	        PUSH AX
+ 20CC 9D		    118	        POPF
+ 20CD B2 80		    119	        MOV DL, 080H
+ 20CF 80 DA 7F		    120	        SBB DL, 07FH
+ 20D2 9C		    121	        PUSHF
+ 20D3 52		    122	        PUSH DX
+ 20D4 B8 00 00		    123	        MOV AX, 00000H
+ 20D7 50		    124	        PUSH AX
+ 20D8 9D		    125	        POPF
+ 20D9 B2 0F		    126	        MOV DL, 00FH
+ 20DB 80 DA 00		    127	        SBB DL, 000H
+ 20DE 9C		    128	        PUSHF
+ 20DF 52		    129	        PUSH DX
+ 20E0 B8 00 00		    130	        MOV AX, 00000H
+ 20E3 50		    131	        PUSH AX
+ 20E4 9D		    132	        POPF
+ 20E5 B2 F0		    133	        MOV DL, 0F0H
+ 20E7 80 DA 20		    134	        SBB DL, 020H
+ 20EA 9C		    135	        PUSHF
+ 20EB 52		    136	        PUSH DX
+ 20EC B8 00 00		    137	        MOV AX, 00000H
+ 20EF 50		    138	        PUSH AX
+ 20F0 9D		    139	        POPF
+ 20F1 B2 00		    140	        MOV DL, 000H
+ 20F3 80 DA 00		    141	        SBB DL, 000H
+ 20F6 9C		    142	        PUSHF
+ 20F7 52		    143	        PUSH DX
+ 20F8 B8 00 00		    144	        MOV AX, 00000H
+ 20FB 50		    145	        PUSH AX
+ 20FC 9D		    146	        POPF
+ 20FD BA FF FF		    147	        MOV DX, 0FFFFH
+ 2100 81 DA 00 00	    148	        SBB DX, 00000H
+ 2104 9C		    149	        PUSHF
+ 2105 52		    150	        PUSH DX
+ 2106 B8 00 00		    151	        MOV AX, 00000H
+ 2109 50		    152	        PUSH AX
+ 210A 9D		    153	        POPF
+ 210B BA FF 7F		    154	        MOV DX, 07FFFH
+ 210E 81 DA 00 00	    155	        SBB DX, 00000H
+ 2112 9C		    156	        PUSHF
+ 2113 52		    157	        PUSH DX
+ 2114 B8 00 00		    158	        MOV AX, 00000H
+ 2117 50		    159	        PUSH AX
+ 2118 9D		    160	        POPF
+ 2119 BA 00 00		    161	        MOV DX, 00000H
+ 211C 81 DA FF FF	    162	        SBB DX, 0FFFFH
+ 2120 9C		    163	        PUSHF
+ 2121 52		    164	        PUSH DX
+ 2122 B8 00 00		    165	        MOV AX, 00000H
+ 2125 50		    166	        PUSH AX
+ 2126 9D		    167	        POPF
+ 2127 BA 00 00		    168	        MOV DX, 00000H
+ 212A 81 DA 00 00	    169	        SBB DX, 00000H
+ 212E 9C		    170	        PUSHF
+ 212F 52		    171	        PUSH DX
+ 2130 B8 01 00		    172	        MOV AX, 00001H
+ 2133 50		    173	        PUSH AX
+ 2134 9D		    174	        POPF
+ 2135 B2 FF		    175	        MOV DL, 0FFH
+ 2137 80 D2 00		    176	        ADC DL, 000H
+
+
+
+								p gina: 4 
+
+ 213A 9C		    177	        PUSHF
+ 213B 52		    178	        PUSH DX
+ 213C B8 01 00		    179	        MOV AX, 00001H
+ 213F 50		    180	        PUSH AX
+ 2140 9D		    181	        POPF
+ 2141 B2 FF		    182	        MOV DL, 0FFH
+ 2143 80 D2 01		    183	        ADC DL, 001H
+ 2146 9C		    184	        PUSHF
+ 2147 52		    185	        PUSH DX
+ 2148 B8 01 00		    186	        MOV AX, 00001H
+ 214B 50		    187	        PUSH AX
+ 214C 9D		    188	        POPF
+ 214D B2 7F		    189	        MOV DL, 07FH
+ 214F 80 D2 00		    190	        ADC DL, 000H
+ 2152 9C		    191	        PUSHF
+ 2153 52		    192	        PUSH DX
+ 2154 B8 01 00		    193	        MOV AX, 00001H
+ 2157 50		    194	        PUSH AX
+ 2158 9D		    195	        POPF
+ 2159 B2 00		    196	        MOV DL, 000H
+ 215B 80 D2 FF		    197	        ADC DL, 0FFH
+ 215E 9C		    198	        PUSHF
+ 215F 52		    199	        PUSH DX
+ 2160 B8 01 00		    200	        MOV AX, 00001H
+ 2163 50		    201	        PUSH AX
+ 2164 9D		    202	        POPF
+ 2165 B2 80		    203	        MOV DL, 080H
+ 2167 80 D2 7F		    204	        ADC DL, 07FH
+ 216A 9C		    205	        PUSHF
+ 216B 52		    206	        PUSH DX
+ 216C B8 01 00		    207	        MOV AX, 00001H
+ 216F 50		    208	        PUSH AX
+ 2170 9D		    209	        POPF
+ 2171 B2 0F		    210	        MOV DL, 00FH
+ 2173 80 D2 00		    211	        ADC DL, 000H
+ 2176 9C		    212	        PUSHF
+ 2177 52		    213	        PUSH DX
+ 2178 B8 01 00		    214	        MOV AX, 00001H
+ 217B 50		    215	        PUSH AX
+ 217C 9D		    216	        POPF
+ 217D B2 F0		    217	        MOV DL, 0F0H
+ 217F 80 D2 20		    218	        ADC DL, 020H
+ 2182 9C		    219	        PUSHF
+ 2183 52		    220	        PUSH DX
+ 2184 B8 01 00		    221	        MOV AX, 00001H
+ 2187 50		    222	        PUSH AX
+ 2188 9D		    223	        POPF
+ 2189 B2 00		    224	        MOV DL, 000H
+ 218B 80 D2 00		    225	        ADC DL, 000H
+ 218E 9C		    226	        PUSHF
+ 218F 52		    227	        PUSH DX
+ 2190 B8 01 00		    228	        MOV AX, 00001H
+ 2193 50		    229	        PUSH AX
+ 2194 9D		    230	        POPF
+ 2195 BA FF FF		    231	        MOV DX, 0FFFFH
+ 2198 81 D2 00 00	    232	        ADC DX, 00000H
+ 219C 9C		    233	        PUSHF
+ 219D 52		    234	        PUSH DX
+ 219E B8 01 00		    235	        MOV AX, 00001H
+ 21A1 50		    236	        PUSH AX
+ 21A2 9D		    237	        POPF
+
+
+
+								p gina: 5 
+
+ 21A3 BA FF 7F		    238	        MOV DX, 07FFFH
+ 21A6 81 D2 00 00	    239	        ADC DX, 00000H
+ 21AA 9C		    240	        PUSHF
+ 21AB 52		    241	        PUSH DX
+ 21AC B8 01 00		    242	        MOV AX, 00001H
+ 21AF 50		    243	        PUSH AX
+ 21B0 9D		    244	        POPF
+ 21B1 BA 00 00		    245	        MOV DX, 00000H
+ 21B4 81 D2 FF FF	    246	        ADC DX, 0FFFFH
+ 21B8 9C		    247	        PUSHF
+ 21B9 52		    248	        PUSH DX
+ 21BA B8 01 00		    249	        MOV AX, 00001H
+ 21BD 50		    250	        PUSH AX
+ 21BE 9D		    251	        POPF
+ 21BF BA 00 00		    252	        MOV DX, 00000H
+ 21C2 81 D2 00 00	    253	        ADC DX, 00000H
+ 21C6 9C		    254	        PUSHF
+ 21C7 52		    255	        PUSH DX
+ 21C8 B8 01 00		    256	        MOV AX, 00001H
+ 21CB 50		    257	        PUSH AX
+ 21CC 9D		    258	        POPF
+ 21CD B2 FF		    259	        MOV DL, 0FFH
+ 21CF 80 DA 00		    260	        SBB DL, 000H
+ 21D2 9C		    261	        PUSHF
+ 21D3 52		    262	        PUSH DX
+ 21D4 B8 01 00		    263	        MOV AX, 00001H
+ 21D7 50		    264	        PUSH AX
+ 21D8 9D		    265	        POPF
+ 21D9 B2 FF		    266	        MOV DL, 0FFH
+ 21DB 80 DA 01		    267	        SBB DL, 001H
+ 21DE 9C		    268	        PUSHF
+ 21DF 52		    269	        PUSH DX
+ 21E0 B8 01 00		    270	        MOV AX, 00001H
+ 21E3 50		    271	        PUSH AX
+ 21E4 9D		    272	        POPF
+ 21E5 B2 7F		    273	        MOV DL, 07FH
+ 21E7 80 DA 00		    274	        SBB DL, 000H
+ 21EA 9C		    275	        PUSHF
+ 21EB 52		    276	        PUSH DX
+ 21EC B8 01 00		    277	        MOV AX, 00001H
+ 21EF 50		    278	        PUSH AX
+ 21F0 9D		    279	        POPF
+ 21F1 B2 00		    280	        MOV DL, 000H
+ 21F3 80 DA FF		    281	        SBB DL, 0FFH
+ 21F6 9C		    282	        PUSHF
+ 21F7 52		    283	        PUSH DX
+ 21F8 B8 01 00		    284	        MOV AX, 00001H
+ 21FB 50		    285	        PUSH AX
+ 21FC 9D		    286	        POPF
+ 21FD B2 80		    287	        MOV DL, 080H
+ 21FF 80 DA 7F		    288	        SBB DL, 07FH
+ 2202 9C		    289	        PUSHF
+ 2203 52		    290	        PUSH DX
+ 2204 B8 01 00		    291	        MOV AX, 00001H
+ 2207 50		    292	        PUSH AX
+ 2208 9D		    293	        POPF
+ 2209 B2 0F		    294	        MOV DL, 00FH
+ 220B 80 DA 00		    295	        SBB DL, 000H
+ 220E 9C		    296	        PUSHF
+ 220F 52		    297	        PUSH DX
+ 2210 B8 01 00		    298	        MOV AX, 00001H
+
+
+
+								p gina: 6 
+
+ 2213 50		    299	        PUSH AX
+ 2214 9D		    300	        POPF
+ 2215 B2 F0		    301	        MOV DL, 0F0H
+ 2217 80 DA 20		    302	        SBB DL, 020H
+ 221A 9C		    303	        PUSHF
+ 221B 52		    304	        PUSH DX
+ 221C B8 01 00		    305	        MOV AX, 00001H
+ 221F 50		    306	        PUSH AX
+ 2220 9D		    307	        POPF
+ 2221 B2 00		    308	        MOV DL, 000H
+ 2223 80 DA 00		    309	        SBB DL, 000H
+ 2226 9C		    310	        PUSHF
+ 2227 52		    311	        PUSH DX
+ 2228 B8 01 00		    312	        MOV AX, 00001H
+ 222B 50		    313	        PUSH AX
+ 222C 9D		    314	        POPF
+ 222D BA FF FF		    315	        MOV DX, 0FFFFH
+ 2230 81 DA 00 00	    316	        SBB DX, 00000H
+ 2234 9C		    317	        PUSHF
+ 2235 52		    318	        PUSH DX
+ 2236 B8 01 00		    319	        MOV AX, 00001H
+ 2239 50		    320	        PUSH AX
+ 223A 9D		    321	        POPF
+ 223B BA FF 7F		    322	        MOV DX, 07FFFH
+ 223E 81 DA 00 00	    323	        SBB DX, 00000H
+ 2242 9C		    324	        PUSHF
+ 2243 52		    325	        PUSH DX
+ 2244 B8 01 00		    326	        MOV AX, 00001H
+ 2247 50		    327	        PUSH AX
+ 2248 9D		    328	        POPF
+ 2249 BA 00 00		    329	        MOV DX, 00000H
+ 224C 81 DA FF FF	    330	        SBB DX, 0FFFFH
+ 2250 9C		    331	        PUSHF
+ 2251 52		    332	        PUSH DX
+ 2252 B8 01 00		    333	        MOV AX, 00001H
+ 2255 50		    334	        PUSH AX
+ 2256 9D		    335	        POPF
+ 2257 BA 00 00		    336	        MOV DX, 00000H
+ 225A 81 DA 00 00	    337	        SBB DX, 00000H
+ 225E 9C		    338	        PUSHF
+ 225F 52		    339	        PUSH DX
+ 2260 CD 00		    340	        INT 0
+			    341	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

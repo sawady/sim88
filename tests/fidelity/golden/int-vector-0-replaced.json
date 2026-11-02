@@ -1,0 +1,125 @@
+{
+ "program": "int-vector-0-replaced.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "53",
+     "49",
+     "53",
+     "54",
+     "45",
+     "4D"
+    ],
+    "line": 5
+   },
+   {
+    "address": "1006",
+    "bytes": [
+     "41"
+    ],
+    "line": 5
+   },
+   {
+    "address": "001C",
+    "bytes": [
+     "00",
+     "30"
+    ],
+    "line": 7
+   },
+   {
+    "address": "3000",
+    "bytes": [
+     "BA",
+     "77",
+     "77"
+    ],
+    "line": 9
+   },
+   {
+    "address": "3003",
+    "bytes": [
+     "CF"
+    ],
+    "line": 10
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "BB",
+     "00",
+     "10"
+    ],
+    "line": 12
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "B0",
+     "07"
+    ],
+    "line": 13
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "CD",
+     "07"
+    ],
+    "line": 14
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 15
+   }
+  ],
+  "symbols": [
+   {
+    "name": "TXT",
+    "type": "Byte",
+    "value": "1000"
+   },
+   {
+    "name": "PROPIA",
+    "type": "Label",
+    "value": "3000"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0007",
+   "BX": "1000",
+   "CX": "0000",
+   "DX": "7777",
+   "IP": "2009",
+   "SP": "8000"
+  },
+  "flags": "0200",
+  "memory": {
+   "001C": "0030",
+   "1000": "53495354454D41",
+   "2000": "BB0010B007CD07CD",
+   "3000": "BA7777CF",
+   "7FFC": "09200002",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

@@ -1,0 +1,106 @@
+
+								p gina: 1 
+
+ Listado Fuente: P008.LST
+ Programa Fuente en: P008.ASM
+ Fecha: Mon Nov 02 15:34:42 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; run: no
+			      2	; Encodings: one line per instruction form, to c
+				ompare bytes with ASM88.
+			      3	        ORG 1000H
+ 1000 00		      4	B       DB 0
+ 1001 00 00		      5	W       DW 0
+			      6	P       EQU 30H
+			      7	        ORG 2000H
+ 2000 B0 05		      8	        MOV AL, 5
+ 2002 B8 05 00		      9	        MOV AX, 5
+ 2005 8A DD		     10	        MOV BL, CH
+ 2007 8B E0		     11	        MOV SP, AX
+ 2009 8A 06 00 10	     12	        MOV AL, B
+ 200D 88 06 00 10	     13	        MOV B, AL
+ 2011 8B 06 01 10	     14	        MOV AX, W
+ 2015 89 06 01 10	     15	        MOV W, AX
+ 2019 8A 07		     16	        MOV AL, [BX]
+ 201B 89 07		     17	        MOV [BX], AX
+ 201D C6 06 00 10 05	     18	        MOV B, 5
+ 2022 C7 06 01 10 05 00	     19	        MOV W, 5
+ 2028 80 C0 05		     20	        ADD AL, 5
+ 202B 81 C0 05 00	     21	        ADD AX, 5
+ 202F 81 C0 00 05	     22	        ADD AX, 500H
+ 2033 80 06 00 10 05	     23	        ADD B, 5
+ 2038 81 06 01 10 00 05	     24	        ADD W, 500H
+ 203E 02 06 00 10	     25	        ADD AL, B
+ 2042 01 06 01 10	     26	        ADD W, AX
+ 2046 02 07		     27	        ADD AL, [BX]
+ 2048 80 D1 01		     28	        ADC CL, 1
+ 204B 2B D1		     29	        SUB DX, CX
+ 204D 1A E0		     30	        SBB AH, AL
+ 204F 80 F8 05		     31	        CMP AL, 5
+ 2052 81 F8 05 00	     32	        CMP AX, 5
+ 2056 80 3E 00 10 05	     33	        CMP B, 5
+ 205B 80 E0 7F		     34	        AND AL, 7FH
+ 205E 81 C8 00 80	     35	        OR AX, 8000H
+ 2062 32 DB		     36	        XOR BL, BL
+ 2064 F6 D0		     37	        NOT AL
+ 2066 F7 16 01 10	     38	        NOT W
+ 206A F7 DB		     39	        NEG BX
+ 206C F6 1E 00 10	     40	        NEG B
+ 2070 FE C0		     41	        INC AL
+ 2072 FF C0		     42	        INC AX
+ 2074 FE 06 00 10	     43	        INC B
+ 2078 FF 06 01 10	     44	        INC W
+ 207C FE C9		     45	        DEC CL
+ 207E FF CC		     46	        DEC SP
+ 2080 50		     47	        PUSH AX
+ 2081 54		     48	        PUSH SP
+ 2082 5A		     49	        POP DX
+ 2083 9C		     50	        PUSHF
+ 2084 9D		     51	        POPF
+ 2085 E4 30		     52	        IN AL, P
+ 2087 E5 30		     53	        IN AX, 30H
+ 2089 EC		     54	        IN AL, DX
+
+
+
+								p gina: 2 
+
+ 208A ED		     55	        IN AX, DX
+ 208B E6 30		     56	        OUT P, AL
+ 208D E7 31		     57	        OUT 31H, AX
+ 208F EE		     58	        OUT DX, AL
+ 2090 EF		     59	        OUT DX, AX
+ 2091 CD 03		     60	        INT 3
+ 2093 CD 07		     61	        INT 7
+ 2095 CF		     62	        IRET
+ 2096 FA		     63	        CLI
+ 2097 FB		     64	        STI
+ 2098 90		     65	        NOP
+ 2099 F4		     66	        HLT
+ 209A C3		     67	        RET
+ 209B E8 00 30		     68	        CALL 3000H
+ 209E E9 00 20		     69	        JMP 2000H
+ 20A1 74 0E		     70	        JZ AQUI
+ 20A3 75 0C		     71	        JNZ AQUI
+ 20A5 78 0A		     72	        JS AQUI
+ 20A7 79 08		     73	        JNS AQUI
+ 20A9 72 06		     74	        JC AQUI
+ 20AB 73 04		     75	        JNC AQUI
+ 20AD 70 02		     76	        JO AQUI
+ 20AF 71 00		     77	        JNO AQUI
+ 20B1 CD 00		     78	AQUI:   INT 0
+			     79	        ORG 3000H
+ 3000 C3		     80	        RET
+			     81	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ B       	Byte		1000h
+ W       	Word		1001h
+ P       	Number		  30h
+ AQUI    	Label		20B1h

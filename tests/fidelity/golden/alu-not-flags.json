@@ -1,0 +1,1191 @@
+{
+ "program": "alu-not-flags.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "00"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "B8",
+     "00",
+     "00"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "50"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2004",
+    "bytes": [
+     "9D"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "B3",
+     "00"
+    ],
+    "line": 9
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "F6",
+     "D3"
+    ],
+    "line": 10
+   },
+   {
+    "address": "2009",
+    "bytes": [
+     "9C"
+    ],
+    "line": 11
+   },
+   {
+    "address": "200A",
+    "bytes": [
+     "B8",
+     "00",
+     "00"
+    ],
+    "line": 12
+   },
+   {
+    "address": "200D",
+    "bytes": [
+     "50"
+    ],
+    "line": 13
+   },
+   {
+    "address": "200E",
+    "bytes": [
+     "9D"
+    ],
+    "line": 14
+   },
+   {
+    "address": "200F",
+    "bytes": [
+     "B3",
+     "FF"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2011",
+    "bytes": [
+     "F6",
+     "D3"
+    ],
+    "line": 16
+   },
+   {
+    "address": "2013",
+    "bytes": [
+     "9C"
+    ],
+    "line": 17
+   },
+   {
+    "address": "2014",
+    "bytes": [
+     "B8",
+     "00",
+     "00"
+    ],
+    "line": 18
+   },
+   {
+    "address": "2017",
+    "bytes": [
+     "50"
+    ],
+    "line": 19
+   },
+   {
+    "address": "2018",
+    "bytes": [
+     "9D"
+    ],
+    "line": 20
+   },
+   {
+    "address": "2019",
+    "bytes": [
+     "B3",
+     "0F"
+    ],
+    "line": 21
+   },
+   {
+    "address": "201B",
+    "bytes": [
+     "F6",
+     "D3"
+    ],
+    "line": 22
+   },
+   {
+    "address": "201D",
+    "bytes": [
+     "9C"
+    ],
+    "line": 23
+   },
+   {
+    "address": "201E",
+    "bytes": [
+     "B8",
+     "00",
+     "00"
+    ],
+    "line": 24
+   },
+   {
+    "address": "2021",
+    "bytes": [
+     "50"
+    ],
+    "line": 25
+   },
+   {
+    "address": "2022",
+    "bytes": [
+     "9D"
+    ],
+    "line": 26
+   },
+   {
+    "address": "2023",
+    "bytes": [
+     "B3",
+     "F0"
+    ],
+    "line": 27
+   },
+   {
+    "address": "2025",
+    "bytes": [
+     "F6",
+     "D3"
+    ],
+    "line": 28
+   },
+   {
+    "address": "2027",
+    "bytes": [
+     "9C"
+    ],
+    "line": 29
+   },
+   {
+    "address": "2028",
+    "bytes": [
+     "B8",
+     "00",
+     "00"
+    ],
+    "line": 30
+   },
+   {
+    "address": "202B",
+    "bytes": [
+     "50"
+    ],
+    "line": 31
+   },
+   {
+    "address": "202C",
+    "bytes": [
+     "9D"
+    ],
+    "line": 32
+   },
+   {
+    "address": "202D",
+    "bytes": [
+     "B3",
+     "80"
+    ],
+    "line": 33
+   },
+   {
+    "address": "202F",
+    "bytes": [
+     "F6",
+     "D3"
+    ],
+    "line": 34
+   },
+   {
+    "address": "2031",
+    "bytes": [
+     "9C"
+    ],
+    "line": 35
+   },
+   {
+    "address": "2032",
+    "bytes": [
+     "B8",
+     "00",
+     "00"
+    ],
+    "line": 36
+   },
+   {
+    "address": "2035",
+    "bytes": [
+     "50"
+    ],
+    "line": 37
+   },
+   {
+    "address": "2036",
+    "bytes": [
+     "9D"
+    ],
+    "line": 38
+   },
+   {
+    "address": "2037",
+    "bytes": [
+     "B3",
+     "01"
+    ],
+    "line": 39
+   },
+   {
+    "address": "2039",
+    "bytes": [
+     "F6",
+     "D3"
+    ],
+    "line": 40
+   },
+   {
+    "address": "203B",
+    "bytes": [
+     "9C"
+    ],
+    "line": 41
+   },
+   {
+    "address": "203C",
+    "bytes": [
+     "B8",
+     "00",
+     "00"
+    ],
+    "line": 42
+   },
+   {
+    "address": "203F",
+    "bytes": [
+     "50"
+    ],
+    "line": 43
+   },
+   {
+    "address": "2040",
+    "bytes": [
+     "9D"
+    ],
+    "line": 44
+   },
+   {
+    "address": "2041",
+    "bytes": [
+     "BB",
+     "00",
+     "00"
+    ],
+    "line": 45
+   },
+   {
+    "address": "2044",
+    "bytes": [
+     "F7",
+     "D3"
+    ],
+    "line": 46
+   },
+   {
+    "address": "2046",
+    "bytes": [
+     "9C"
+    ],
+    "line": 47
+   },
+   {
+    "address": "2047",
+    "bytes": [
+     "B8",
+     "00",
+     "00"
+    ],
+    "line": 48
+   },
+   {
+    "address": "204A",
+    "bytes": [
+     "50"
+    ],
+    "line": 49
+   },
+   {
+    "address": "204B",
+    "bytes": [
+     "9D"
+    ],
+    "line": 50
+   },
+   {
+    "address": "204C",
+    "bytes": [
+     "BB",
+     "FF",
+     "FF"
+    ],
+    "line": 51
+   },
+   {
+    "address": "204F",
+    "bytes": [
+     "F7",
+     "D3"
+    ],
+    "line": 52
+   },
+   {
+    "address": "2051",
+    "bytes": [
+     "9C"
+    ],
+    "line": 53
+   },
+   {
+    "address": "2052",
+    "bytes": [
+     "B8",
+     "00",
+     "00"
+    ],
+    "line": 54
+   },
+   {
+    "address": "2055",
+    "bytes": [
+     "50"
+    ],
+    "line": 55
+   },
+   {
+    "address": "2056",
+    "bytes": [
+     "9D"
+    ],
+    "line": 56
+   },
+   {
+    "address": "2057",
+    "bytes": [
+     "BB",
+     "34",
+     "12"
+    ],
+    "line": 57
+   },
+   {
+    "address": "205A",
+    "bytes": [
+     "F7",
+     "D3"
+    ],
+    "line": 58
+   },
+   {
+    "address": "205C",
+    "bytes": [
+     "9C"
+    ],
+    "line": 59
+   },
+   {
+    "address": "205D",
+    "bytes": [
+     "B8",
+     "00",
+     "00"
+    ],
+    "line": 60
+   },
+   {
+    "address": "2060",
+    "bytes": [
+     "50"
+    ],
+    "line": 61
+   },
+   {
+    "address": "2061",
+    "bytes": [
+     "9D"
+    ],
+    "line": 62
+   },
+   {
+    "address": "2062",
+    "bytes": [
+     "BB",
+     "00",
+     "80"
+    ],
+    "line": 63
+   },
+   {
+    "address": "2065",
+    "bytes": [
+     "F7",
+     "D3"
+    ],
+    "line": 64
+   },
+   {
+    "address": "2067",
+    "bytes": [
+     "9C"
+    ],
+    "line": 65
+   },
+   {
+    "address": "2068",
+    "bytes": [
+     "B8",
+     "00",
+     "00"
+    ],
+    "line": 66
+   },
+   {
+    "address": "206B",
+    "bytes": [
+     "50"
+    ],
+    "line": 67
+   },
+   {
+    "address": "206C",
+    "bytes": [
+     "9D"
+    ],
+    "line": 68
+   },
+   {
+    "address": "206D",
+    "bytes": [
+     "C6",
+     "06",
+     "00",
+     "10",
+     "00"
+    ],
+    "line": 69
+   },
+   {
+    "address": "2072",
+    "bytes": [
+     "F6",
+     "16",
+     "00",
+     "10"
+    ],
+    "line": 70
+   },
+   {
+    "address": "2076",
+    "bytes": [
+     "9C"
+    ],
+    "line": 71
+   },
+   {
+    "address": "2077",
+    "bytes": [
+     "B8",
+     "00",
+     "00"
+    ],
+    "line": 72
+   },
+   {
+    "address": "207A",
+    "bytes": [
+     "50"
+    ],
+    "line": 73
+   },
+   {
+    "address": "207B",
+    "bytes": [
+     "9D"
+    ],
+    "line": 74
+   },
+   {
+    "address": "207C",
+    "bytes": [
+     "C6",
+     "06",
+     "00",
+     "10",
+     "F0"
+    ],
+    "line": 75
+   },
+   {
+    "address": "2081",
+    "bytes": [
+     "F6",
+     "16",
+     "00",
+     "10"
+    ],
+    "line": 76
+   },
+   {
+    "address": "2085",
+    "bytes": [
+     "9C"
+    ],
+    "line": 77
+   },
+   {
+    "address": "2086",
+    "bytes": [
+     "B8",
+     "D5",
+     "08"
+    ],
+    "line": 78
+   },
+   {
+    "address": "2089",
+    "bytes": [
+     "50"
+    ],
+    "line": 79
+   },
+   {
+    "address": "208A",
+    "bytes": [
+     "9D"
+    ],
+    "line": 80
+   },
+   {
+    "address": "208B",
+    "bytes": [
+     "B3",
+     "00"
+    ],
+    "line": 81
+   },
+   {
+    "address": "208D",
+    "bytes": [
+     "F6",
+     "D3"
+    ],
+    "line": 82
+   },
+   {
+    "address": "208F",
+    "bytes": [
+     "9C"
+    ],
+    "line": 83
+   },
+   {
+    "address": "2090",
+    "bytes": [
+     "B8",
+     "D5",
+     "08"
+    ],
+    "line": 84
+   },
+   {
+    "address": "2093",
+    "bytes": [
+     "50"
+    ],
+    "line": 85
+   },
+   {
+    "address": "2094",
+    "bytes": [
+     "9D"
+    ],
+    "line": 86
+   },
+   {
+    "address": "2095",
+    "bytes": [
+     "B3",
+     "FF"
+    ],
+    "line": 87
+   },
+   {
+    "address": "2097",
+    "bytes": [
+     "F6",
+     "D3"
+    ],
+    "line": 88
+   },
+   {
+    "address": "2099",
+    "bytes": [
+     "9C"
+    ],
+    "line": 89
+   },
+   {
+    "address": "209A",
+    "bytes": [
+     "B8",
+     "D5",
+     "08"
+    ],
+    "line": 90
+   },
+   {
+    "address": "209D",
+    "bytes": [
+     "50"
+    ],
+    "line": 91
+   },
+   {
+    "address": "209E",
+    "bytes": [
+     "9D"
+    ],
+    "line": 92
+   },
+   {
+    "address": "209F",
+    "bytes": [
+     "B3",
+     "0F"
+    ],
+    "line": 93
+   },
+   {
+    "address": "20A1",
+    "bytes": [
+     "F6",
+     "D3"
+    ],
+    "line": 94
+   },
+   {
+    "address": "20A3",
+    "bytes": [
+     "9C"
+    ],
+    "line": 95
+   },
+   {
+    "address": "20A4",
+    "bytes": [
+     "B8",
+     "D5",
+     "08"
+    ],
+    "line": 96
+   },
+   {
+    "address": "20A7",
+    "bytes": [
+     "50"
+    ],
+    "line": 97
+   },
+   {
+    "address": "20A8",
+    "bytes": [
+     "9D"
+    ],
+    "line": 98
+   },
+   {
+    "address": "20A9",
+    "bytes": [
+     "B3",
+     "F0"
+    ],
+    "line": 99
+   },
+   {
+    "address": "20AB",
+    "bytes": [
+     "F6",
+     "D3"
+    ],
+    "line": 100
+   },
+   {
+    "address": "20AD",
+    "bytes": [
+     "9C"
+    ],
+    "line": 101
+   },
+   {
+    "address": "20AE",
+    "bytes": [
+     "B8",
+     "D5",
+     "08"
+    ],
+    "line": 102
+   },
+   {
+    "address": "20B1",
+    "bytes": [
+     "50"
+    ],
+    "line": 103
+   },
+   {
+    "address": "20B2",
+    "bytes": [
+     "9D"
+    ],
+    "line": 104
+   },
+   {
+    "address": "20B3",
+    "bytes": [
+     "B3",
+     "80"
+    ],
+    "line": 105
+   },
+   {
+    "address": "20B5",
+    "bytes": [
+     "F6",
+     "D3"
+    ],
+    "line": 106
+   },
+   {
+    "address": "20B7",
+    "bytes": [
+     "9C"
+    ],
+    "line": 107
+   },
+   {
+    "address": "20B8",
+    "bytes": [
+     "B8",
+     "D5",
+     "08"
+    ],
+    "line": 108
+   },
+   {
+    "address": "20BB",
+    "bytes": [
+     "50"
+    ],
+    "line": 109
+   },
+   {
+    "address": "20BC",
+    "bytes": [
+     "9D"
+    ],
+    "line": 110
+   },
+   {
+    "address": "20BD",
+    "bytes": [
+     "B3",
+     "01"
+    ],
+    "line": 111
+   },
+   {
+    "address": "20BF",
+    "bytes": [
+     "F6",
+     "D3"
+    ],
+    "line": 112
+   },
+   {
+    "address": "20C1",
+    "bytes": [
+     "9C"
+    ],
+    "line": 113
+   },
+   {
+    "address": "20C2",
+    "bytes": [
+     "B8",
+     "D5",
+     "08"
+    ],
+    "line": 114
+   },
+   {
+    "address": "20C5",
+    "bytes": [
+     "50"
+    ],
+    "line": 115
+   },
+   {
+    "address": "20C6",
+    "bytes": [
+     "9D"
+    ],
+    "line": 116
+   },
+   {
+    "address": "20C7",
+    "bytes": [
+     "BB",
+     "00",
+     "00"
+    ],
+    "line": 117
+   },
+   {
+    "address": "20CA",
+    "bytes": [
+     "F7",
+     "D3"
+    ],
+    "line": 118
+   },
+   {
+    "address": "20CC",
+    "bytes": [
+     "9C"
+    ],
+    "line": 119
+   },
+   {
+    "address": "20CD",
+    "bytes": [
+     "B8",
+     "D5",
+     "08"
+    ],
+    "line": 120
+   },
+   {
+    "address": "20D0",
+    "bytes": [
+     "50"
+    ],
+    "line": 121
+   },
+   {
+    "address": "20D1",
+    "bytes": [
+     "9D"
+    ],
+    "line": 122
+   },
+   {
+    "address": "20D2",
+    "bytes": [
+     "BB",
+     "FF",
+     "FF"
+    ],
+    "line": 123
+   },
+   {
+    "address": "20D5",
+    "bytes": [
+     "F7",
+     "D3"
+    ],
+    "line": 124
+   },
+   {
+    "address": "20D7",
+    "bytes": [
+     "9C"
+    ],
+    "line": 125
+   },
+   {
+    "address": "20D8",
+    "bytes": [
+     "B8",
+     "D5",
+     "08"
+    ],
+    "line": 126
+   },
+   {
+    "address": "20DB",
+    "bytes": [
+     "50"
+    ],
+    "line": 127
+   },
+   {
+    "address": "20DC",
+    "bytes": [
+     "9D"
+    ],
+    "line": 128
+   },
+   {
+    "address": "20DD",
+    "bytes": [
+     "BB",
+     "34",
+     "12"
+    ],
+    "line": 129
+   },
+   {
+    "address": "20E0",
+    "bytes": [
+     "F7",
+     "D3"
+    ],
+    "line": 130
+   },
+   {
+    "address": "20E2",
+    "bytes": [
+     "9C"
+    ],
+    "line": 131
+   },
+   {
+    "address": "20E3",
+    "bytes": [
+     "B8",
+     "D5",
+     "08"
+    ],
+    "line": 132
+   },
+   {
+    "address": "20E6",
+    "bytes": [
+     "50"
+    ],
+    "line": 133
+   },
+   {
+    "address": "20E7",
+    "bytes": [
+     "9D"
+    ],
+    "line": 134
+   },
+   {
+    "address": "20E8",
+    "bytes": [
+     "BB",
+     "00",
+     "80"
+    ],
+    "line": 135
+   },
+   {
+    "address": "20EB",
+    "bytes": [
+     "F7",
+     "D3"
+    ],
+    "line": 136
+   },
+   {
+    "address": "20ED",
+    "bytes": [
+     "9C"
+    ],
+    "line": 137
+   },
+   {
+    "address": "20EE",
+    "bytes": [
+     "B8",
+     "D5",
+     "08"
+    ],
+    "line": 138
+   },
+   {
+    "address": "20F1",
+    "bytes": [
+     "50"
+    ],
+    "line": 139
+   },
+   {
+    "address": "20F2",
+    "bytes": [
+     "9D"
+    ],
+    "line": 140
+   },
+   {
+    "address": "20F3",
+    "bytes": [
+     "C6",
+     "06",
+     "00",
+     "10",
+     "00"
+    ],
+    "line": 141
+   },
+   {
+    "address": "20F8",
+    "bytes": [
+     "F6",
+     "16",
+     "00",
+     "10"
+    ],
+    "line": 142
+   },
+   {
+    "address": "20FC",
+    "bytes": [
+     "9C"
+    ],
+    "line": 143
+   },
+   {
+    "address": "20FD",
+    "bytes": [
+     "B8",
+     "D5",
+     "08"
+    ],
+    "line": 144
+   },
+   {
+    "address": "2100",
+    "bytes": [
+     "50"
+    ],
+    "line": 145
+   },
+   {
+    "address": "2101",
+    "bytes": [
+     "9D"
+    ],
+    "line": 146
+   },
+   {
+    "address": "2102",
+    "bytes": [
+     "C6",
+     "06",
+     "00",
+     "10",
+     "F0"
+    ],
+    "line": 147
+   },
+   {
+    "address": "2107",
+    "bytes": [
+     "F6",
+     "16",
+     "00",
+     "10"
+    ],
+    "line": 148
+   },
+   {
+    "address": "210B",
+    "bytes": [
+     "9C"
+    ],
+    "line": 149
+   },
+   {
+    "address": "210C",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 150
+   }
+  ],
+  "symbols": [
+   {
+    "name": "M8",
+    "type": "Byte",
+    "value": "1000"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "08D5",
+   "BX": "7FFF",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "210E",
+   "SP": "7FD0"
+  },
+  "flags": "0044",
+  "memory": {
+   "1000": "0F",
+   "2000": "B80000509DB300F6D39CB80000509DB3FFF6D39CB80000509DB30FF6D39CB80000509DB3F0F6D39CB80000509DB380F6D39CB80000509DB301F6D39CB80000509DBB0000F7D39CB80000509DBBFFFFF7D39CB80000509DBB3412F7D39CB80000509DBB0080F7D39CB80000509DC606001000F61600109CB80000509DC6060010F0F61600109CB8D508509DB300F6D39CB8D508509DB3FFF6D39CB8D508509DB30FF6D39CB8D508509DB3F0F6D39CB8D508509DB380F6D39CB8D508509DB301F6D39CB8D508509DBB0000F7D39CB8D508509DBBFFFFF7D39CB8D508509DBB3412F7D39CB8D508509DBB0080F7D39CB8D508509DC606001000F61600109CB8D508509DC6060010F0F61600109CCD",
+   "7FCC": "0E214400440044",
+   "7FDC": "440044004400440044004400440044",
+   "7FF4": "4400440044004400440044",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

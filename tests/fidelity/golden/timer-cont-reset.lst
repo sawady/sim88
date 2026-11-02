@@ -1,0 +1,61 @@
+
+								p gina: 1 
+
+ Listado Fuente: P052.LST
+ Programa Fuente en: P052.ASM
+ Fecha: Mon Nov 02 15:34:56 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; timeout: 14
+			      2	; Timer with COMP = 2 and INT1 -> vector 11h. Th
+				e routine keeps the value of
+			      3	; CONT it sees and does not write CONT: does the
+				 timer start again by itself?
+			      4	        ORG 1000H
+ 1000 4[		      5	VALORES DB 4 DUP (0)
+	     00
+		      ]
+ 1004 00		      6	N       DB 0
+			      7	        ORG 44H
+ 0044 00 30		      8	        DW RUT
+			      9	        ORG 3000H
+ 3000 50		     10	RUT:    PUSH AX
+ 3001 53		     11	        PUSH BX
+ 3002 E4 10		     12	        IN AL, 10H
+ 3004 BB 00 10		     13	        MOV BX, OFFSET VALORES
+ 3007 02 1E 04 10	     14	        ADD BL, N
+ 300B 88 07		     15	        MOV [BX], AL
+ 300D FE 06 04 10	     16	        INC N
+ 3011 B0 20		     17	        MOV AL, 20H
+ 3013 E6 20		     18	        OUT 20H, AL
+ 3015 5B		     19	        POP BX
+ 3016 58		     20	        POP AX
+ 3017 CF		     21	        IRET
+			     22	        ORG 2000H
+ 2000 FA		     23	        CLI
+ 2001 B0 11		     24	        MOV AL, 11H
+ 2003 E6 25		     25	        OUT 25H, AL         ; INT1 -> vector 11h
+ 2005 B0 FD		     26	        MOV AL, 0FDH
+ 2007 E6 21		     27	        OUT 21H, AL         ; only INT1
+ 2009 B0 02		     28	        MOV AL, 2
+ 200B E6 11		     29	        OUT 11H, AL         ; COMP
+ 200D B0 00		     30	        MOV AL, 0
+ 200F E6 10		     31	        OUT 10H, AL         ; CONT
+ 2011 FB		     32	        STI
+ 2012 80 3E 04 10 02	     33	LAZO:   CMP N, 2
+ 2017 75 F9		     34	        JNZ LAZO
+ 2019 E4 10		     35	        IN AL, 10H
+ 201B 8A C8		     36	        MOV CL, AL
+ 201D CD 00		     37	        INT 0
+			     38	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ VALORES 	Byte		1000h
+ N       	Byte		1004h
+ RUT     	Label		3000h
+ LAZO    	Label		2012h

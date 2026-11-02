@@ -1,0 +1,67 @@
+{
+ "program": "opcode-00.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "B8",
+     "01",
+     "00"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "00",
+     "00"
+    ],
+    "line": 5
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "B8",
+     "02",
+     "00"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2008",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 7
+   }
+  ],
+  "symbols": []
+ },
+ "run": {
+  "status": "error",
+  "window": [
+   ">G",
+   "Error en la ejecuci\ufffdn: c\ufffddigo 0 no reconocido.",
+   ">_",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0001",
+   "BX": "0000",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "2005",
+   "SP": "8000"
+  },
+  "flags": "0200",
+  "memory": {
+   "2000": "B801000000B80200CD"
+  }
+ }
+}

@@ -1,0 +1,25 @@
+
+								p gina: 1 
+
+ Listado Fuente: P009.LST
+ Programa Fuente en: P009.ASM
+ Fecha: Mon Nov 02 15:46:42 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; SP at 0: PUSH wraps around to FFFEh (the monit
+				or area).
+			      2	        ORG 2000H
+ 2000 BC 00 00		      3	        MOV SP, 0
+ 2003 B8 34 12		      4	        MOV AX, 1234H
+ 2006 50		      5	        PUSH AX
+ 2007 8B DC		      6	        MOV BX, SP
+ 2009 59		      7	        POP CX
+ 200A BC 00 80		      8	        MOV SP, 8000H
+ 200D CD 00		      9	        INT 0
+			     10	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

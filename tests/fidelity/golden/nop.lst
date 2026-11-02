@@ -1,0 +1,23 @@
+
+								p gina: 1 
+
+ Listado Fuente: P045.LST
+ Programa Fuente en: P045.ASM
+ Fecha: Mon Nov 02 15:34:53 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; NOP: its encoding (the MSX88 manual gives 1001
+				1000) and that it runs.
+			      2	        ORG 2000H
+ 2000 B8 01 00		      3	        MOV AX, 1
+ 2003 90		      4	        NOP
+ 2004 90		      5	        NOP
+ 2005 BB 02 00		      6	        MOV BX, 2
+ 2008 CD 00		      7	        INT 0
+			      8	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

@@ -1,0 +1,21 @@
+{
+ "program": "asm-err-mov-size.asm",
+ "assembler": {
+  "errors": 1,
+  "warnings": 0,
+  "messages": [
+   "(linea 4)Error: Operandos no compatibles."
+  ],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "88",
+     "00"
+    ],
+    "line": 4
+   }
+  ],
+  "symbols": []
+ }
+}

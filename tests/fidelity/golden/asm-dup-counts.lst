@@ -1,0 +1,33 @@
+
+								p gina: 1 
+
+ Listado Fuente: P002.LST
+ Programa Fuente en: P002.ASM
+ Fecha: Mon Nov 02 15:46:41 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; run: no
+			      2	; How the listing shows DUP counts of 10 and 16.
+			      3	        ORG 1000H
+ 1000 A[		      4	A       DB 10 DUP (1)
+	     01
+		      ]
+ 100A 10[		      5	B       DB 16 DUP (2)
+	     02
+		      ]
+ 101A 3[		      6	C       DW 3 DUP (1234H)
+	     34 12
+		      ]
+			      7	        ORG 2000H
+ 2000 CD 00		      8	        INT 0
+			      9	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ A       	Byte		1000h	No usado
+ B       	Byte		100Ah	No usado
+ C       	Word		101Ah	No usado

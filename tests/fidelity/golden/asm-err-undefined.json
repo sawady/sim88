@@ -1,0 +1,22 @@
+{
+ "program": "asm-err-undefined.asm",
+ "assembler": {
+  "errors": 1,
+  "warnings": 0,
+  "messages": [
+   "(linea 4)Error: Etiqueta no definida."
+  ],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "E9",
+     "77",
+     "3A"
+    ],
+    "line": 4
+   }
+  ],
+  "symbols": []
+ }
+}

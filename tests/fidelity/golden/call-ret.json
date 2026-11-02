@@ -1,0 +1,196 @@
+{
+ "program": "call-ret.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "CD",
+     "CC"
+    ],
+    "line": 4
+   },
+   {
+    "address": "3000",
+    "bytes": [
+     "03",
+     "C0"
+    ],
+    "line": 6
+   },
+   {
+    "address": "3002",
+    "bytes": [
+     "C3"
+    ],
+    "line": 7
+   },
+   {
+    "address": "3003",
+    "bytes": [
+     "50"
+    ],
+    "line": 8
+   },
+   {
+    "address": "3004",
+    "bytes": [
+     "E8",
+     "00",
+     "30"
+    ],
+    "line": 9
+   },
+   {
+    "address": "3007",
+    "bytes": [
+     "E8",
+     "00",
+     "30"
+    ],
+    "line": 10
+   },
+   {
+    "address": "300A",
+    "bytes": [
+     "5B"
+    ],
+    "line": 11
+   },
+   {
+    "address": "300B",
+    "bytes": [
+     "C3"
+    ],
+    "line": 12
+   },
+   {
+    "address": "300C",
+    "bytes": [
+     "8B",
+     "DC"
+    ],
+    "line": 13
+   },
+   {
+    "address": "300E",
+    "bytes": [
+     "8B",
+     "07"
+    ],
+    "line": 14
+   },
+   {
+    "address": "3010",
+    "bytes": [
+     "C3"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "B8",
+     "05",
+     "00"
+    ],
+    "line": 17
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "E8",
+     "03",
+     "30"
+    ],
+    "line": 18
+   },
+   {
+    "address": "2006",
+    "bytes": [
+     "89",
+     "06",
+     "00",
+     "10"
+    ],
+    "line": 19
+   },
+   {
+    "address": "200A",
+    "bytes": [
+     "E8",
+     "0C",
+     "30"
+    ],
+    "line": 20
+   },
+   {
+    "address": "200D",
+    "bytes": [
+     "8B",
+     "CC"
+    ],
+    "line": 21
+   },
+   {
+    "address": "200F",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 22
+   }
+  ],
+  "symbols": [
+   {
+    "name": "RES",
+    "type": "Word",
+    "value": "1000"
+   },
+   {
+    "name": "DOBLE",
+    "type": "Label",
+    "value": "3000"
+   },
+   {
+    "name": "CUAD",
+    "type": "Label",
+    "value": "3003"
+   },
+   {
+    "name": "SUMA",
+    "type": "Label",
+    "value": "300C"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "200D",
+   "BX": "7FFE",
+   "CX": "8000",
+   "DX": "0000",
+   "IP": "2011",
+   "SP": "8000"
+  },
+  "flags": "0214",
+  "memory": {
+   "1000": "14",
+   "2000": "B80500E8033089060010E80C308BCCCD",
+   "3000": "03C0C350E80030E800305BC38BDC8B07C3",
+   "7FFA": "0A3011201402",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

@@ -1,0 +1,418 @@
+{
+ "program": "alu-inc-dec-neg.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "FF"
+    ],
+    "line": 3
+   },
+   {
+    "address": "1001",
+    "bytes": [
+     "FF",
+     "7F"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "B0",
+     "FF"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "80",
+     "C0",
+     "01"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "B0",
+     "7F"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "FE",
+     "C0"
+    ],
+    "line": 9
+   },
+   {
+    "address": "2009",
+    "bytes": [
+     "9C"
+    ],
+    "line": 10
+   },
+   {
+    "address": "200A",
+    "bytes": [
+     "50"
+    ],
+    "line": 11
+   },
+   {
+    "address": "200B",
+    "bytes": [
+     "B0",
+     "00"
+    ],
+    "line": 12
+   },
+   {
+    "address": "200D",
+    "bytes": [
+     "80",
+     "E8",
+     "01"
+    ],
+    "line": 13
+   },
+   {
+    "address": "2010",
+    "bytes": [
+     "B0",
+     "00"
+    ],
+    "line": 14
+   },
+   {
+    "address": "2012",
+    "bytes": [
+     "80",
+     "C0",
+     "00"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2015",
+    "bytes": [
+     "B0",
+     "80"
+    ],
+    "line": 16
+   },
+   {
+    "address": "2017",
+    "bytes": [
+     "FE",
+     "C8"
+    ],
+    "line": 17
+   },
+   {
+    "address": "2019",
+    "bytes": [
+     "9C"
+    ],
+    "line": 18
+   },
+   {
+    "address": "201A",
+    "bytes": [
+     "50"
+    ],
+    "line": 19
+   },
+   {
+    "address": "201B",
+    "bytes": [
+     "FE",
+     "06",
+     "00",
+     "10"
+    ],
+    "line": 20
+   },
+   {
+    "address": "201F",
+    "bytes": [
+     "9C"
+    ],
+    "line": 21
+   },
+   {
+    "address": "2020",
+    "bytes": [
+     "FF",
+     "0E",
+     "01",
+     "10"
+    ],
+    "line": 22
+   },
+   {
+    "address": "2024",
+    "bytes": [
+     "9C"
+    ],
+    "line": 23
+   },
+   {
+    "address": "2025",
+    "bytes": [
+     "FF",
+     "06",
+     "01",
+     "10"
+    ],
+    "line": 24
+   },
+   {
+    "address": "2029",
+    "bytes": [
+     "9C"
+    ],
+    "line": 25
+   },
+   {
+    "address": "202A",
+    "bytes": [
+     "FF",
+     "06",
+     "01",
+     "10"
+    ],
+    "line": 26
+   },
+   {
+    "address": "202E",
+    "bytes": [
+     "9C"
+    ],
+    "line": 27
+   },
+   {
+    "address": "202F",
+    "bytes": [
+     "B0",
+     "01"
+    ],
+    "line": 28
+   },
+   {
+    "address": "2031",
+    "bytes": [
+     "F6",
+     "D8"
+    ],
+    "line": 29
+   },
+   {
+    "address": "2033",
+    "bytes": [
+     "9C"
+    ],
+    "line": 30
+   },
+   {
+    "address": "2034",
+    "bytes": [
+     "50"
+    ],
+    "line": 31
+   },
+   {
+    "address": "2035",
+    "bytes": [
+     "B0",
+     "00"
+    ],
+    "line": 32
+   },
+   {
+    "address": "2037",
+    "bytes": [
+     "F6",
+     "D8"
+    ],
+    "line": 33
+   },
+   {
+    "address": "2039",
+    "bytes": [
+     "9C"
+    ],
+    "line": 34
+   },
+   {
+    "address": "203A",
+    "bytes": [
+     "50"
+    ],
+    "line": 35
+   },
+   {
+    "address": "203B",
+    "bytes": [
+     "B0",
+     "80"
+    ],
+    "line": 36
+   },
+   {
+    "address": "203D",
+    "bytes": [
+     "F6",
+     "D8"
+    ],
+    "line": 37
+   },
+   {
+    "address": "203F",
+    "bytes": [
+     "9C"
+    ],
+    "line": 38
+   },
+   {
+    "address": "2040",
+    "bytes": [
+     "50"
+    ],
+    "line": 39
+   },
+   {
+    "address": "2041",
+    "bytes": [
+     "BB",
+     "01",
+     "00"
+    ],
+    "line": 40
+   },
+   {
+    "address": "2044",
+    "bytes": [
+     "F7",
+     "DB"
+    ],
+    "line": 41
+   },
+   {
+    "address": "2046",
+    "bytes": [
+     "9C"
+    ],
+    "line": 42
+   },
+   {
+    "address": "2047",
+    "bytes": [
+     "53"
+    ],
+    "line": 43
+   },
+   {
+    "address": "2048",
+    "bytes": [
+     "F6",
+     "1E",
+     "00",
+     "10"
+    ],
+    "line": 44
+   },
+   {
+    "address": "204C",
+    "bytes": [
+     "9C"
+    ],
+    "line": 45
+   },
+   {
+    "address": "204D",
+    "bytes": [
+     "BA",
+     "00",
+     "00"
+    ],
+    "line": 46
+   },
+   {
+    "address": "2050",
+    "bytes": [
+     "FF",
+     "CA"
+    ],
+    "line": 47
+   },
+   {
+    "address": "2052",
+    "bytes": [
+     "9C"
+    ],
+    "line": 48
+   },
+   {
+    "address": "2053",
+    "bytes": [
+     "52"
+    ],
+    "line": 49
+   },
+   {
+    "address": "2054",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 50
+   }
+  ],
+  "symbols": [
+   {
+    "name": "B1",
+    "type": "Byte",
+    "value": "1000"
+   },
+   {
+    "name": "W1",
+    "type": "Word",
+    "value": "1001"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0080",
+   "BX": "FFFF",
+   "CX": "0000",
+   "DX": "FFFF",
+   "IP": "2056",
+   "SP": "7FDA"
+  },
+  "flags": "0294",
+  "memory": {
+   "1002": "80",
+   "2000": "B0FF80C001B07FFEC09C50B00080E801B00080C000B080FEC89C50FE0600109CFF0E01109CFF0601109CFF0601109CB001F6D89C50B000F6D89C50B080F6D89C50BB0100F7DB9C53F61E00109CBA0000FFCA9C52CD",
+   "7FD6": "56209402FFFF94024402FFFF95028000810A00004402FF009502940A0402000254027F00100A8000900A",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

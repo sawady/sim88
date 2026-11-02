@@ -1,0 +1,347 @@
+{
+ "program": "alu-add-adc-16.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "FF",
+     "7F"
+    ],
+    "line": 3
+   },
+   {
+    "address": "1002",
+    "bytes": [
+     "FF",
+     "FF"
+    ],
+    "line": 4
+   },
+   {
+    "address": "1004",
+    "bytes": [
+     "34",
+     "12"
+    ],
+    "line": 5
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "B8",
+     "FF",
+     "7F"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "81",
+     "C0",
+     "01",
+     "00"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "9C"
+    ],
+    "line": 9
+   },
+   {
+    "address": "2008",
+    "bytes": [
+     "50"
+    ],
+    "line": 10
+   },
+   {
+    "address": "2009",
+    "bytes": [
+     "B8",
+     "FF",
+     "FF"
+    ],
+    "line": 11
+   },
+   {
+    "address": "200C",
+    "bytes": [
+     "81",
+     "C0",
+     "01",
+     "00"
+    ],
+    "line": 12
+   },
+   {
+    "address": "2010",
+    "bytes": [
+     "9C"
+    ],
+    "line": 13
+   },
+   {
+    "address": "2011",
+    "bytes": [
+     "50"
+    ],
+    "line": 14
+   },
+   {
+    "address": "2012",
+    "bytes": [
+     "BB",
+     "00",
+     "80"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2015",
+    "bytes": [
+     "B9",
+     "00",
+     "80"
+    ],
+    "line": 16
+   },
+   {
+    "address": "2018",
+    "bytes": [
+     "03",
+     "D9"
+    ],
+    "line": 17
+   },
+   {
+    "address": "201A",
+    "bytes": [
+     "9C"
+    ],
+    "line": 18
+   },
+   {
+    "address": "201B",
+    "bytes": [
+     "53"
+    ],
+    "line": 19
+   },
+   {
+    "address": "201C",
+    "bytes": [
+     "BA",
+     "FF",
+     "00"
+    ],
+    "line": 20
+   },
+   {
+    "address": "201F",
+    "bytes": [
+     "81",
+     "C2",
+     "01",
+     "00"
+    ],
+    "line": 21
+   },
+   {
+    "address": "2023",
+    "bytes": [
+     "9C"
+    ],
+    "line": 22
+   },
+   {
+    "address": "2024",
+    "bytes": [
+     "52"
+    ],
+    "line": 23
+   },
+   {
+    "address": "2025",
+    "bytes": [
+     "81",
+     "06",
+     "00",
+     "10",
+     "01",
+     "00"
+    ],
+    "line": 24
+   },
+   {
+    "address": "202B",
+    "bytes": [
+     "9C"
+    ],
+    "line": 25
+   },
+   {
+    "address": "202C",
+    "bytes": [
+     "8B",
+     "06",
+     "02",
+     "10"
+    ],
+    "line": 26
+   },
+   {
+    "address": "2030",
+    "bytes": [
+     "03",
+     "06",
+     "04",
+     "10"
+    ],
+    "line": 27
+   },
+   {
+    "address": "2034",
+    "bytes": [
+     "9C"
+    ],
+    "line": 28
+   },
+   {
+    "address": "2035",
+    "bytes": [
+     "50"
+    ],
+    "line": 29
+   },
+   {
+    "address": "2036",
+    "bytes": [
+     "81",
+     "16",
+     "04",
+     "10",
+     "00",
+     "00"
+    ],
+    "line": 30
+   },
+   {
+    "address": "203C",
+    "bytes": [
+     "9C"
+    ],
+    "line": 31
+   },
+   {
+    "address": "203D",
+    "bytes": [
+     "B9",
+     "FF",
+     "FF"
+    ],
+    "line": 32
+   },
+   {
+    "address": "2040",
+    "bytes": [
+     "81",
+     "C1",
+     "01",
+     "00"
+    ],
+    "line": 33
+   },
+   {
+    "address": "2044",
+    "bytes": [
+     "B9",
+     "FF",
+     "7F"
+    ],
+    "line": 34
+   },
+   {
+    "address": "2047",
+    "bytes": [
+     "81",
+     "D1",
+     "00",
+     "00"
+    ],
+    "line": 35
+   },
+   {
+    "address": "204B",
+    "bytes": [
+     "9C"
+    ],
+    "line": 36
+   },
+   {
+    "address": "204C",
+    "bytes": [
+     "51"
+    ],
+    "line": 37
+   },
+   {
+    "address": "204D",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 38
+   }
+  ],
+  "symbols": [
+   {
+    "name": "W1",
+    "type": "Word",
+    "value": "1000"
+   },
+   {
+    "name": "W2",
+    "type": "Word",
+    "value": "1002"
+   },
+   {
+    "name": "W3",
+    "type": "Word",
+    "value": "1004"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "1233",
+   "BX": "0000",
+   "CX": "8000",
+   "DX": "0100",
+   "IP": "204F",
+   "SP": "7FE4"
+  },
+  "flags": "0A94",
+  "memory": {
+   "1001": "80FFFF3512",
+   "2000": "B8FF7F81C001009C50B8FFFF81C001009C50BB0080B9008003D99C53BAFF0081C201009C528106001001009C8B060210030604109C508116041000009CB9FFFF81C10100B9FF7F81D100009C51CD",
+   "7FE0": "4F20940A0080940A040233121502940A000114020000450A000055020080940A",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

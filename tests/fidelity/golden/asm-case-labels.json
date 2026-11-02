@@ -1,0 +1,55 @@
+{
+ "program": "asm-case-labels.asm",
+ "assembler": {
+  "errors": 4,
+  "warnings": 0,
+  "messages": [
+   "(linea 6)Error: Etiqueta no definida.",
+   "(linea 6)Error: Valor de expresion fuera de rango.",
+   "(linea 8)Error: Etiqueta no definida.",
+   "(linea 8)Error: Salto fuera de rango."
+  ],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "05"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "B0",
+     "C8"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "FE",
+     "C8"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2004",
+    "bytes": [
+     "75",
+     "00"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2006",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 9
+   }
+  ],
+  "symbols": []
+ }
+}

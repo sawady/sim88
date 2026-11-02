@@ -1,0 +1,59 @@
+
+								p gina: 1 
+
+ Listado Fuente: P026.LST
+ Programa Fuente en: P026.ASM
+ Fecha: Mon Nov 02 15:34:45 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; DB, DW, DUP, ?, EQU, ORG, OFFSET and number fo
+				rmats.
+			      2	CANT    EQU 3
+			      3	BASE    EQU 1000H
+			      4	        ORG BASE
+ 1000 01 0A FF F0 FF 80	      5	NUMS    DB 1, 0AH, 0FFH, 11110000B, -1, -128, 12
+				7
+ 1006 7F
+ 1007 01 00 34 12 FF FF	      6	PALS    DW 1, 1234H, -1, 0FFFFH
+ 100D FF FF
+ 100F 48 6F 6C 61 0D 0A	      7	MSG     DB "Hola", 0DH, 0AH, "$"
+ 1015 24
+ 1016 3[		      8	RES     DB CANT DUP (5)
+	     05
+		      ]
+ 1019 2[		      9	MAS     DW 2 DUP (0AA55H)
+	     55 AA
+		      ]
+ 101D 4[		     10	HUECO   DB 4 DUP (?)
+	     55
+		      ]
+ 1021 0F 10		     11	DIR     DW MSG
+ 1023 07		     12	TAM     DB OFFSET RES - OFFSET MSG
+			     13	        ORG 1040H
+ 1040 05 02		     14	OTRA    DB CANT + 2, CANT - 1
+			     15	        ORG 2000H
+ 2000 B8 07 10		     16	        MOV AX, OFFSET PALS
+ 2003 BB 10 10		     17	        MOV BX, BASE + 10H
+ 2006 B1 03		     18	        MOV CL, CANT
+ 2008 B5 07		     19	        MOV CH, OFFSET HUECO - OFFSET RES
+ 200A 8B 16 21 10	     20	        MOV DX, DIR
+ 200E CD 00		     21	        INT 0
+			     22	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ CANT    	Number		   3h
+ BASE    	Number		1000h
+ NUMS    	Byte		1000h	No usado
+ PALS    	Word		1007h
+ MSG     	Byte		100Fh
+ RES     	Byte		1016h
+ MAS     	Word		1019h	No usado
+ HUECO   	Byte		101Dh
+ DIR     	Word		1021h
+ TAM     	Byte		1023h	No usado
+ OTRA    	Byte		1040h	No usado

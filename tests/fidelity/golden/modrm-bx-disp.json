@@ -1,0 +1,75 @@
+{
+ "program": "modrm-bx-disp.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "01",
+     "02",
+     "03"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "BB",
+     "00",
+     "10"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "8A",
+     "47",
+     "02"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2006",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 8
+   }
+  ],
+  "symbols": [
+   {
+    "name": "T",
+    "type": "Byte",
+    "value": "1000"
+   }
+  ]
+ },
+ "run": {
+  "status": "error",
+  "window": [
+   ">G",
+   "Error en la ejecuci\ufffdn: c\ufffddigo 47 no reconocido.",
+   ">_",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0000",
+   "BX": "1000",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "2005",
+   "SP": "8000"
+  },
+  "flags": "0200",
+  "memory": {
+   "1000": "010203",
+   "2000": "BB00108A4702CD"
+  }
+ }
+}

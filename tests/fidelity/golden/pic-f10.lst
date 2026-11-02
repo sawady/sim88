@@ -1,0 +1,62 @@
+
+								p gina: 1 
+
+ Listado Fuente: P047.LST
+ Programa Fuente en: P047.ASM
+ Fecha: Mon Nov 02 15:34:54 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; keys: 2:f10 2:f10
+			      2	;; timeout: 12
+			      3	; Configuration 0: F10 interrupts through INT0 o
+				f the PIC with vector 10h.
+			      4	; The routine counts and keeps the PIC registers
+				 it sees.
+			      5	        ORG 1000H
+ 1000 00		      6	CUENTA  DB 0
+ 1001 00 00 00		      7	EN_RUT  DB 0, 0, 0
+			      8	        ORG 40H
+ 0040 00 30		      9	        DW RUT
+			     10	        ORG 3000H
+ 3000 50		     11	RUT:    PUSH AX
+ 3001 E4 23		     12	        IN AL, 23H          ; ISR inside the rou
+				tine
+ 3003 88 06 01 10	     13	        MOV EN_RUT, AL
+ 3007 E4 22		     14	        IN AL, 22H          ; IRR
+ 3009 88 06 02 10	     15	        MOV EN_RUT + 1, AL
+ 300D 9C		     16	        PUSHF
+ 300E 58		     17	        POP AX
+ 300F 88 26 03 10	     18	        MOV EN_RUT + 2, AH  ; flags inside (I?)
+ 3013 FE 06 00 10	     19	        INC CUENTA
+ 3017 B0 20		     20	        MOV AL, 20H
+ 3019 E6 20		     21	        OUT 20H, AL         ; EOI
+ 301B 58		     22	        POP AX
+ 301C CF		     23	        IRET
+			     24	        ORG 2000H
+ 2000 FA		     25	        CLI
+ 2001 B0 10		     26	        MOV AL, 10H
+ 2003 E6 24		     27	        OUT 24H, AL         ; INT0 -> vector 10h
+ 2005 B0 FE		     28	        MOV AL, 0FEH
+ 2007 E6 21		     29	        OUT 21H, AL         ; only INT0 unmasked
+ 2009 FB		     30	        STI
+ 200A 80 3E 00 10 02	     31	LAZO:   CMP CUENTA, 2
+ 200F 75 F9		     32	        JNZ LAZO
+ 2011 E4 21		     33	        IN AL, 21H
+ 2013 8A D8		     34	        MOV BL, AL
+ 2015 E4 22		     35	        IN AL, 22H
+ 2017 8A F8		     36	        MOV BH, AL
+ 2019 E4 23		     37	        IN AL, 23H
+ 201B 8A C8		     38	        MOV CL, AL
+ 201D CD 00		     39	        INT 0
+			     40	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ CUENTA  	Byte		1000h
+ EN_RUT  	Byte		1001h
+ RUT     	Label		3000h
+ LAZO    	Label		200Ah

@@ -1,0 +1,131 @@
+{
+ "program": "int7-newline.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "55",
+     "4E",
+     "4F",
+     "0D",
+     "0A",
+     "44"
+    ],
+    "line": 3
+   },
+   {
+    "address": "1006",
+    "bytes": [
+     "4F",
+     "53",
+     "0A",
+     "54",
+     "52",
+     "45"
+    ],
+    "line": 3
+   },
+   {
+    "address": "100C",
+    "bytes": [
+     "53",
+     "0D",
+     "43",
+     "55",
+     "41",
+     "54"
+    ],
+    "line": 3
+   },
+   {
+    "address": "1012",
+    "bytes": [
+     "52",
+     "4F"
+    ],
+    "line": 3
+   },
+   {
+    "address": "1014",
+    "bytes": [
+     "55"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "BB",
+     "00",
+     "10"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "B0",
+     "14"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "CD",
+     "07"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 9
+   }
+  ],
+  "symbols": [
+   {
+    "name": "TXT",
+    "type": "Byte",
+    "value": "1000"
+   },
+   {
+    "name": "FIN",
+    "type": "Byte",
+    "value": "1014"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   "UN0\ufffd\ufffdD0S\ufffdTRES\ufffdCUATR0",
+   ">_",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0014",
+   "BX": "1000",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "2009",
+   "SP": "8000"
+  },
+  "flags": "0200",
+  "memory": {
+   "1000": "554E4F0D0A444F530A545245530D43554154524F55",
+   "2000": "BB0010B014CD07CD",
+   "7FFC": "09200002",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

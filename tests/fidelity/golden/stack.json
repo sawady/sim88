@@ -1,0 +1,223 @@
+{
+ "program": "stack.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "B8",
+     "22",
+     "11"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "BB",
+     "44",
+     "33"
+    ],
+    "line": 5
+   },
+   {
+    "address": "2006",
+    "bytes": [
+     "B9",
+     "66",
+     "55"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2009",
+    "bytes": [
+     "BA",
+     "88",
+     "77"
+    ],
+    "line": 7
+   },
+   {
+    "address": "200C",
+    "bytes": [
+     "50"
+    ],
+    "line": 8
+   },
+   {
+    "address": "200D",
+    "bytes": [
+     "53"
+    ],
+    "line": 9
+   },
+   {
+    "address": "200E",
+    "bytes": [
+     "51"
+    ],
+    "line": 10
+   },
+   {
+    "address": "200F",
+    "bytes": [
+     "52"
+    ],
+    "line": 11
+   },
+   {
+    "address": "2010",
+    "bytes": [
+     "58"
+    ],
+    "line": 12
+   },
+   {
+    "address": "2011",
+    "bytes": [
+     "5B"
+    ],
+    "line": 13
+   },
+   {
+    "address": "2012",
+    "bytes": [
+     "59"
+    ],
+    "line": 14
+   },
+   {
+    "address": "2013",
+    "bytes": [
+     "5A"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2014",
+    "bytes": [
+     "B8",
+     "FF",
+     "FF"
+    ],
+    "line": 16
+   },
+   {
+    "address": "2017",
+    "bytes": [
+     "50"
+    ],
+    "line": 17
+   },
+   {
+    "address": "2018",
+    "bytes": [
+     "9D"
+    ],
+    "line": 18
+   },
+   {
+    "address": "2019",
+    "bytes": [
+     "9C"
+    ],
+    "line": 19
+   },
+   {
+    "address": "201A",
+    "bytes": [
+     "59"
+    ],
+    "line": 20
+   },
+   {
+    "address": "201B",
+    "bytes": [
+     "B8",
+     "00",
+     "00"
+    ],
+    "line": 21
+   },
+   {
+    "address": "201E",
+    "bytes": [
+     "50"
+    ],
+    "line": 22
+   },
+   {
+    "address": "201F",
+    "bytes": [
+     "9D"
+    ],
+    "line": 23
+   },
+   {
+    "address": "2020",
+    "bytes": [
+     "9C"
+    ],
+    "line": 24
+   },
+   {
+    "address": "2021",
+    "bytes": [
+     "5A"
+    ],
+    "line": 25
+   },
+   {
+    "address": "2022",
+    "bytes": [
+     "54"
+    ],
+    "line": 26
+   },
+   {
+    "address": "2023",
+    "bytes": [
+     "58"
+    ],
+    "line": 27
+   },
+   {
+    "address": "2024",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 28
+   }
+  ],
+  "symbols": []
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0000",
+   "BX": "5566",
+   "CX": "FFFF",
+   "DX": "0000",
+   "IP": "2026",
+   "SP": "8000"
+  },
+  "flags": "0000",
+  "memory": {
+   "2000": "B82211BB4433B96655BA887750535152585B595AB8FFFF509D9C59B80000509D9C5A5458CD",
+   "7FF8": "887766552620",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

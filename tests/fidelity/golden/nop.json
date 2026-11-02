@@ -1,0 +1,75 @@
+{
+ "program": "nop.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "B8",
+     "01",
+     "00"
+    ],
+    "line": 3
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "90"
+    ],
+    "line": 4
+   },
+   {
+    "address": "2004",
+    "bytes": [
+     "90"
+    ],
+    "line": 5
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "BB",
+     "02",
+     "00"
+    ],
+    "line": 6
+   },
+   {
+    "address": "2008",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 7
+   }
+  ],
+  "symbols": []
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0001",
+   "BX": "0002",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "200A",
+   "SP": "8000"
+  },
+  "flags": "0200",
+  "memory": {
+   "2000": "B801009090BB0200CD",
+   "7FFC": "0A200002",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

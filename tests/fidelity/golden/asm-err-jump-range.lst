@@ -1,0 +1,24 @@
+
+								p gina: 1 
+
+ Listado Fuente: P013.LST
+ Programa Fuente en: P013.ASM
+ Fecha: Mon Nov 02 15:34:43 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; run: no
+			      2	; A conditional jump farther than 127 bytes.
+			      3	        ORG 2000H
+ 2000 74 00		      4	        JZ LEJOS
+Error: Salto fuera de rango.
+			      5	        ORG 2100H
+ 2100 CD 00		      6	LEJOS:  INT 0
+			      7	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ LEJOS   	Label		2100h

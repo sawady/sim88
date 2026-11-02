@@ -1,0 +1,46 @@
+
+								p gina: 1 
+
+ Listado Fuente: P051.LST
+ Programa Fuente en: P051.ASM
+ Fecha: Mon Nov 02 15:34:55 2026
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	; PUSH, POP, PUSHF and POPF: SP moves by 2, word
+				s are little endian, POPF
+			      2	; loads every flag bit from the stack.
+			      3	        ORG 2000H
+ 2000 B8 22 11		      4	        MOV AX, 1122H
+ 2003 BB 44 33		      5	        MOV BX, 3344H
+ 2006 B9 66 55		      6	        MOV CX, 5566H
+ 2009 BA 88 77		      7	        MOV DX, 7788H
+ 200C 50		      8	        PUSH AX
+ 200D 53		      9	        PUSH BX
+ 200E 51		     10	        PUSH CX
+ 200F 52		     11	        PUSH DX
+ 2010 58		     12	        POP AX
+ 2011 5B		     13	        POP BX
+ 2012 59		     14	        POP CX
+ 2013 5A		     15	        POP DX
+ 2014 B8 FF FF		     16	        MOV AX, 0FFFFH
+ 2017 50		     17	        PUSH AX
+ 2018 9D		     18	        POPF               ; every flag bit set
+ 2019 9C		     19	        PUSHF
+ 201A 59		     20	        POP CX             ; how much of FFFFh M
+				SX88 keeps
+ 201B B8 00 00		     21	        MOV AX, 0
+ 201E 50		     22	        PUSH AX
+ 201F 9D		     23	        POPF               ; every flag cleared 
+				(I too)
+ 2020 9C		     24	        PUSHF
+ 2021 5A		     25	        POP DX
+ 2022 54		     26	        PUSH SP
+ 2023 58		     27	        POP AX
+ 2024 CD 00		     28	        INT 0
+			     29	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
