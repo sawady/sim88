@@ -21,27 +21,46 @@ planned).
 
 ## Status
 
-SIM88 is **work in progress**. What works today:
+SIM88 is **work in progress**; [PROGRESS.md](PROGRESS.md) has the plan and what is done.
+It follows the dialect and conventions of MSX88: data at `ORG 1000h`, code at `ORG 2000h`,
+`HLT` or `INT 0` to finish, `END` to close the source. What works today:
 
-- Editor with syntax highlighting, open/save `.asm` files (save downloads the file).
-- Assembler for `MOV reg, immediate` (8 and 16 bit registers, decimal,
-  hexadecimal and negative numbers) and `END`.
-- Step-by-step execution with adjustable speed (fetch, decode, IP increment,
-  operand fetch, execute), with the active components highlighted.
+- Assembler: labels (`LOOP:`), variables (`DB`, `DW`, `?`, lists, strings, `DUP`), constants
+  (`EQU`), `ORG`, `OFFSET`, `BYTE PTR` / `WORD PTR`, expressions, and errors with the line.
+- Instructions, encoded with real 8086 opcodes: `MOV`, `ADD`, `ADC`, `SUB`, `SBB`, `CMP`, `AND`,
+  `OR`, `XOR`, `NOT`, `NEG`, `INC`, `DEC`, `PUSH`, `POP`, `PUSHF`, `POPF`, `JMP`, `JZ`, `JNZ`,
+  `JS`, `JNS`, `JC`, `JNC`, `JO`, `JNO`, `CALL`, `RET`, `INT`, `IRET`, `STI`, `CLI`, `IN`, `OUT`,
+  `NOP`, `HLT`.
+- Addressing modes: immediate, register, direct (`VAR`, `[1000h]`) and indirect through `[BX]`.
+- Flags Z, S, O, C, A, P and I; 64 KB of memory; interrupt vector table; INT 0 (end),
+  INT 3 (breakpoint), INT 6 (read a key) and INT 7 (write to the screen).
+- `IN` / `OUT` on an I/O bus ready for peripherals.
+- Execution animated phase by phase (fetch, decode, IP, operands, execute) at adjustable
+  speed, or step by step: one instruction, one phase, or **one instruction back**.
 
-`MOV reg, reg`, arithmetic/logic instructions, flags, jumps, the stack,
-interrupts, `ORG`/`DW`/`EQU` and the peripherals are planned. See
-[Roadmap.md](Roadmap.md) (in Spanish) for the target scope, and the test suite
-(`src/model/__tests__`) for the exact current behavior, including known bugs
-(marked with `test.fails`).
+Not yet: the peripherals (PIO with LEDs and switches, PIC, timer, handshake, printer, CDMA).
+Where SIM88 is not sure to behave like MSX88, PROGRESS.md lists it under "Open questions".
 
 ## Example
 
 ```asm
-; AX = 0201h
-MOV AL, 1
-MOV AH, 2
-END
+; Sum of a table
+        ORG 1000H
+TABLA   DB 1, 2, 3, 4, 5
+CANT    DB 5
+TOTAL   DB ?
+
+        ORG 2000H
+        MOV AL, 0
+        MOV CL, CANT
+        MOV BX, OFFSET TABLA
+LAZO:   ADD AL, [BX]
+        INC BX
+        DEC CL
+        JNZ LAZO
+        MOV TOTAL, AL
+        HLT
+        END
 ```
 
 ## Running locally
@@ -57,29 +76,40 @@ npm run preview  # serve the production build
 ```
 
 Keyboard shortcuts: `F5` run, `F6` pause/resume, `F7` stop, `F8` reset,
+`F10` step, `F11` micro-step (one phase), `Shift+F10` step back,
 `Ctrl+Alt+I` / `Ctrl+Alt+D` faster/slower, `Ctrl+N` new, `Ctrl+O` open,
 `Ctrl+S` save, `Ctrl+Shift+S` save as.
 
 ## Project layout
 
 ```
-src/grammar.pegjs     assembly grammar (compiled with peggy at build/test time)
-src/model/            parser, static checker, compiler, decoder, interpreter, machine
-src/model/__tests__/  model tests
-src/actions, reducers Redux glue
-src/components/       React UI
+src/grammar.pegjs        grammar of one source line (compiled with peggy at build/test time)
+src/model/parser.js      splits the source into lines and parses them
+src/model/assembler.js   two-pass assembler: symbols, ORG, data, encoding
+src/model/isa.js         instruction table shared by the assembler and the decoder
+src/model/decoder.js     8086 decoder (opcode table + ModRM)
+src/model/alu.js         pure 8/16 bit ALU with flags
+src/model/cpu.js         CPU state (64 KB Uint8Array) and instruction execution
+src/model/machine.js     the fetch-decode-execute cycle as the UI shows it, history for step back
+src/model/__tests__/     model tests
+src/actions, reducers    Redux glue
+src/components/          React UI
 ```
 
-The machine state is a plain object; each step of the cycle
-(`EXECUTION_CYCLE` in `src/model/machine.js`) returns an
-[immutability-helper](https://github.com/kolodny/immutability-helper) spec
-that is applied to it.
+Every function of the model returns a new state. Memory is copied only when an instruction
+writes it, so keeping one snapshot per instruction (for "step back") is cheap.
 
 ## Deployment
 
 Every push to `master` is built and published to GitHub Pages by
 `.github/workflows/deploy.yml` (Pages must be configured with
 "Source: GitHub Actions").
+
+## Contributing
+
+The plan, its progress and the design decisions live in [PROGRESS.md](PROGRESS.md).
+Bug reports, questions and ideas are welcome as GitHub issues; see
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 

@@ -1,56 +1,51 @@
-// Test helpers: assemble and run programs headlessly, with the same
-// fetch-decode-execute steps the UI runs (minus the timers).
-import update from 'immutability-helper';
+// Test helpers: assemble and run programs headlessly.
+import { assemble } from '../assembler';
+import { createCpu, step, readReg, getFlag, MEMORY_SIZE } from '../cpu';
+import { hex8 } from '../format';
 
-import { parse } from '../parser';
-import staticCheck from '../static-checker';
-import compile from '../compiler';
-import { createMachine, loadProgram, start, EXECUTION_CYCLE } from '../machine';
-import { MACHINE_STATES } from '../constants';
-import { fromHexToInt } from '../conversions';
+export const hex = (s) => parseInt(s, 16);
 
-export const ORG = fromHexToInt('2000');
-
-export const hex = (s) => fromHexToInt(s);
-
-// source -> { [address]: 'XX' } (same pipeline as actions/machine.js#start)
-export function assemble(source) {
-  const ast = parse(source);
-  staticCheck(ast);
-  return compile(ORG, ast);
-}
-
-// Compiled program as a list of hex bytes, in address order.
+// Bytes of a source, as hex strings, in address order ('?' bytes skipped).
 export function bytes(source) {
+  return assemble(source)
+    .listing.flatMap((entry) => entry.bytes)
+    .filter((b) => b !== null)
+    .map(hex8);
+}
+
+// Bytes of a single instruction / line assembled at 2000h.
+export const encode = (line) => bytes(`ORG 2000h\n${line}\nEND`);
+
+export function cpuWith(memoryBytes = {}, { ip = 0x2000, regs = {}, flags = 0 } = {}) {
+  const mem = new Uint8Array(MEMORY_SIZE);
+  for (const [address, value] of Object.entries(memoryBytes)) mem[Number(address)] = value;
+  const cpu = createCpu({ mem, ip });
+  return { ...cpu, regs: { ...cpu.regs, ...regs }, flags };
+}
+
+// Loads bytes at 2000h
+export const cpuWithCode = (codeBytes, options) =>
+  cpuWith(Object.fromEntries(codeBytes.map((b, i) => [0x2000 + i, b])), options);
+
+// Assembles and runs until HLT / INT 0, at the CPU level.
+export function run(source, { maxInstructions = 10000 } = {}) {
   const program = assemble(source);
-  return Object.keys(program)
-    .map(Number)
-    .sort((a, b) => a - b)
-    .map((dir) => program[dir]);
-}
-
-export function loadedMachine(source) {
-  let machine = createMachine();
-  machine = update(machine, loadProgram(assemble(source))(machine));
-  return update(machine, start());
-}
-
-// Runs until the machine stops (END or decode error).
-export function run(source, { maxCycles = 1000 } = {}) {
-  let machine = loadedMachine(source);
-  for (let cycle = 0; cycle < maxCycles; cycle++) {
-    for (const step of EXECUTION_CYCLE) {
-      if (machine.state !== MACHINE_STATES.RUNNING) return machine;
-      machine = update(machine, step(machine));
+  const mem = new Uint8Array(MEMORY_SIZE);
+  for (const [address, byte] of program.memory) mem[address] = byte;
+  let cpu = createCpu({ mem, ip: program.entry });
+  let output = [];
+  for (let i = 0; i < maxInstructions; i++) {
+    const result = step(cpu);
+    cpu = result.cpu;
+    output = output.concat(result.events.output);
+    if (result.events.halted) {
+      return { cpu, halted: result.events.halted, output: String.fromCharCode(...output), program, steps: i + 1 };
     }
   }
-  throw new Error(`Program did not stop after ${maxCycles} cycles`);
+  throw new Error(`Program did not halt after ${maxInstructions} instructions`);
 }
 
-export const reg = (machine, name) => machine.registers[name].value;
-
-export const mem = (machine, dir) =>
-  machine.memory.find((cell) => cell.dir === dir).value;
-
-export const flagsOn = (machine) =>
-  machine.flags.filter((f) => f.value).map((f) => f.name);
+export const reg = (cpu, name) => readReg(cpu, name);
+export const flag = (cpu, name) => getFlag(cpu, name);
+export const byteAt = (cpu, address) => cpu.mem[address];
+export const wordAt = (cpu, address) => cpu.mem[address] | (cpu.mem[address + 1] << 8);
