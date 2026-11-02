@@ -14,6 +14,8 @@ import {
   writeFile,
   writeNewFile,
   loadDefaultProgram,
+  setStrict,
+  loadStrictPreference,
 } from '../actions/editor';
 import {
   start,
@@ -30,7 +32,14 @@ import {
 
 import '../styles/App.css';
 
-// Keyboard shortcuts (same bindings as the original NW.js app).
+// Keyboard shortcuts. The ones MSX88 defines are kept: F6 runs one phase of
+// the cycle, F7 one instruction, ESC ends the program (and, in task 27/28,
+// F10 interrupts and 0-7 toggle the switches).
+
+// Keys that must not be taken from the editor or the keyboard of INT 6.
+const isTyping = (ev) =>
+  ev.target && (ev.target.tagName === 'TEXTAREA' || ev.target.tagName === 'INPUT' || ev.target.tagName === 'PRE');
+
 const matches = (ev, { key, ctrl = false, shift = false, alt = false }) =>
   ev.key.toLowerCase() === key &&
   (ev.ctrlKey || ev.metaKey) === ctrl &&
@@ -42,6 +51,7 @@ export default function App() {
   const filepath = useSelector((state) => state.editor.filepath);
   const text = useSelector((state) => state.editor.text);
   const machineState = useSelector((state) => state.machine.state);
+  const strict = useSelector((state) => state.editor.strict);
   const fileInput = useRef(null);
 
   const actions = {
@@ -60,10 +70,12 @@ export default function App() {
     stepPhase: () => dispatch(stepPhase(text)),
     stepInstruction: () => dispatch(stepInstruction(text)),
     stepBack: () => dispatch(stepBack()),
-    pauseOrResume: () => {
+    runPauseResume: () => {
       if (machineState === MACHINE_STATES.RUNNING) dispatch(pause());
-      if (machineState === MACHINE_STATES.PAUSED) dispatch(resume());
+      else if (machineState === MACHINE_STATES.PAUSED) dispatch(resume());
+      else dispatch(start(text));
     },
+    setStrict: (value) => dispatch(setStrict(value)),
     increase: () => dispatch(increaseVelocity()),
     decrease: () => dispatch(decreaseVelocity()),
   };
@@ -80,17 +92,24 @@ export default function App() {
       [{ key: 'g', ctrl: true }, a.saveFile],
       [{ key: 's', ctrl: true, shift: true }, a.saveFileAs],
       [{ key: 'g', ctrl: true, shift: true }, a.saveFileAs],
-      [{ key: 'f5' }, a.start],
-      [{ key: 'f6' }, a.pauseOrResume],
-      [{ key: 'f7' }, a.stop],
+      [{ key: 'f5' }, a.runPauseResume],
+      [{ key: 'f6' }, a.stepPhase],
+      [{ key: 'f7' }, a.stepInstruction],
+      [{ key: 'f7', shift: true }, a.stepBack],
+      [{ key: 'escape' }, a.stop],
       [{ key: 'f8' }, a.reset],
-      [{ key: 'f10' }, a.stepInstruction],
-      [{ key: 'f11' }, a.stepPhase],
-      [{ key: 'f10', shift: true }, a.stepBack],
       [{ key: 'i', ctrl: true, alt: true }, a.increase],
       [{ key: 'd', ctrl: true, alt: true }, a.decrease],
     ];
-    const found = bindings.find(([binding]) => matches(ev, binding));
+    // MSX88: + and - change the speed (not while typing)
+    const typingBindings = [
+      [{ key: '+' }, a.increase],
+      [{ key: '+', shift: true }, a.increase],
+      [{ key: '-' }, a.decrease],
+    ];
+    const found =
+      bindings.find(([binding]) => matches(ev, binding)) ||
+      (!isTyping(ev) && typingBindings.find(([binding]) => matches(ev, binding)));
     if (found) {
       ev.preventDefault();
       found[1]();
@@ -106,6 +125,7 @@ export default function App() {
     setTitle(DEFAULT_FILE_NAME);
     dispatch(reset());
     dispatch(loadDefaultProgram());
+    dispatch(setStrict(loadStrictPreference()));
   }, [dispatch]);
 
   const onFileChosen = (ev) => {
@@ -123,7 +143,7 @@ export default function App() {
         onChange={onFileChosen}
         accept=".txt,.asm"
       />
-      <Toolbar {...actions} machineState={machineState} />
+      <Toolbar {...actions} machineState={machineState} strict={strict} />
       <div className="main">
         <Editor />
         <Machine />

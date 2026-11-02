@@ -2,3 +2,12 @@
   width: 100%;
   display: flex;
 }
+.toolbar .strict {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  padding: 0 8px;
+  font-family: monospace;
+  color: #555555;
+}

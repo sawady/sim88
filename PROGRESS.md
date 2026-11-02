@@ -29,6 +29,13 @@ Taken by Federico Sawady on 2026-11-02.
    no code; `HLT` (F4) halts the CPU; `INT 0` also ends the program, as in MSX88. Opcode 00 decodes
    as `ADD r/m8, r8`, as on an 8086.
 4. **64 KB of memory on a `Uint8Array`**, with a snapshot per step (enables "step back").
+5. **Fidelity rule** (adjusts decision 2): where MSX88 / ASM88 is documented, SIM88 copies
+   MSX88 even when it differs from a real 8086; real 8086 opcodes are used only where MSX88 says
+   nothing. Reason: students compare with the `.LST` listings and the course material. So `JMP`
+   and `CALL` carry an absolute address (`E9`/`E8`, as ASM88) and `NOP` is 98h (MSX88 manual).
+6. **SIM88 extensions** (`'A'`, single-quoted strings, `[1000h]`, `*` and `/`) are kept and
+   documented as extensions; **MSX88 strict mode** (a toggle in the UI) rejects them. The extra
+   assembler errors (missing `END`, no code at 2000h) are kept.
 
 ## Phase 0: assembler bugs
 
@@ -109,7 +116,7 @@ Taken by Federico Sawady on 2026-11-02.
   The screen takes the keyboard while INT 6 waits; keys typed earlier are buffered.
 - [x] **26. IN, OUT and an I/O bus** · Deps: 16
   Port map with an interface to plug peripherals (`src/model/io.js`); device state lives in the
-  machine, so step back undoes I/O. Unmapped ports read FFh ⚠️.
+  machine, so step back undoes I/O. Unmapped ports read FFh ⚠️ (open question 8).
 - [ ] **27. PIO, LED bar and switches** · Deps: 26
 - [ ] **28. PIC and the INT/NMI lines** · Deps: 24, 26
 - [ ] **29. Timer** · Deps: 28
@@ -120,7 +127,7 @@ Taken by Federico Sawady on 2026-11-02.
 
 - [x] **32. "Step" (one instruction) and "micro-step" (one cycle phase) buttons** · `gfi`
   Buttons and shortcuts, execution without a timer, reducer tests. Includes "step back" (decision 4).
-  F10 step, F11 micro-step, Shift+F10 back.
+  F7 step and F6 micro-step (as MSX88), Shift+F7 back.
 - [x] **33. Highlight the running line in the editor** · Deps: 11
 - [ ] **34. Keep the program in localStorage** · `gfi`
 - [ ] **35. Loadable examples** · `gfi`
@@ -136,45 +143,36 @@ Taken by Federico Sawady on 2026-11-02.
 
 ## Open questions (MSX88 fidelity)
 
-Assumptions made where MSX88 behavior is not confirmed. Each one is implemented in the most
-reasonable way and waits for confirmation.
+Behavior that MSX88's documentation does not settle. Each one is implemented in the most
+reasonable way and waits for confirmation. Sources (MSX88 manual v3 by R. de Diego, UNLP guides
+and practice sheets, ASM88 `.LST` listings) are listed in the project notes kept outside the
+repo.
 
-Federico: please confirm or correct. Sources are in the MSX88 notes kept outside the repo
-(manual v3 by R. de Diego, UNLP guides and practice sheets, ASM88 `.LST` listings).
+Resolved by Federico on 2026-11-02 (decisions 5 and 6): JMP/CALL absolute, NOP 98h, SP starts at
+8000h, extensions kept with a strict mode, extra assembler errors kept.
 
-1. **JMP and CALL encoding.** ASM88 listings show `E9`/`E8` followed by the *absolute* target
-   address. SIM88 follows decision 2 and uses the real 8086 encoding (relative displacement),
-   so the bytes differ from an MSX88 listing for those two instructions. Conditional jumps match
-   (`7x` + rel8).
-2. **NOP opcode.** The MSX88 manual lists NOP as 98h (CBW on an 8086); SIM88 uses 90h. Not seen
-   in any listing.
-3. **Initial SP = 8000h.** Inferred from the UNLP stack diagrams (the first PUSH writes
-   7FFEh–7FFFh). The other registers and the flags start at 0 (not documented).
-4. **Execution starts at 2000h.** If the program has instructions but none at 2000h, SIM88 gives
-   an assembler error ("put the code after ORG 2000h"). This is a SIM88 addition.
-5. **HLT** stops the program, like INT 0. On MSX88 HLT "stops the CPU until an external
-   interrupt"; that matters once the PIC exists (task 28).
-6. **INT 3** pauses the simulation (the "Reanudar" button continues).
-7. **Names are case insensitive** (labels, variables, constants), as in MASM. Not confirmed.
-8. **Extensions accepted by SIM88**, not found in MSX88 material: character literals (`'A'`),
-   single-quoted strings, direct addresses in brackets (`MOV AL, [1000h]`), and `*` / `/` in
-   expressions. Rejected because MSX88 lacks them: `[BX + n]`, PUSH/POP of 8-bit registers or
-   memory, and jumps other than JZ/JNZ/JS/JNS/JC/JNC/JO/JNO.
-9. **A missing END is an error.** Not confirmed what ASM88 does.
-10. **`DB ?` / `DW ?`** reserve memory without writing it. Memory starts zeroed in SIM88; on
-    MSX88 it holds whatever was there.
-11. **Encodings chosen by the assembler** follow the ASM88 listings: general forms only (no
-    `A0`–`A3`, no accumulator immediates, no `40+r` INC). `INT 3` is assembled as `CD 03` (not
-    `CC`). The decoder understands all of these short forms anyway.
-12. **INT n through the vector table** pushes the flags and IP (no CS: there are no segments),
-    clears I, and jumps to the word at 4·n. IRET pops IP and the flags. This matches the MSX88
-    manual; INT 0, 3, 6 and 7 are handled by the simulator itself (the "monitor").
-13. **INT 6** does not echo the key on the screen (the program prints it with INT 7 if it wants).
-    Enter is 0Dh. Not confirmed.
-14. **Unmapped I/O ports** read FFh and ignore writes. Port addresses of the MSX88 peripherals
-    (PIO 30h–33h, PIC 20h–2Bh, timer 10h–11h, HAND 40h–41h, CDMA 50h–57h) come from the manual.
+1. **Initial registers and flags** start at 0 (SP at 8000h, IP at 2000h). Not documented.
+2. **Names are case insensitive** (labels, variables, constants), as in MASM. Not documented;
+   the ASM88 symbol table keeps the case as written, which does not settle it.
+3. **INT 6 does not echo** the key. Not documented, but the UNLP practice programs always print
+   the key with INT 7 right after INT 6, which only makes sense without echo. Enter is 0Dh.
+4. **INT 3** pauses the simulation (the "Reanudar" button continues).
+5. **`DB ?` / `DW ?`** reserve memory without writing it. Memory starts zeroed in SIM88; on
+   MSX88 it holds whatever was there (the listings show leftover bytes).
+6. **Encodings MSX88 does not document** follow the 8086: the assembler uses the general forms,
+   as the listings do (no `A0`–`A3`, no accumulator immediates, no `40+r` INC), and `INT 3` is
+   `CD 03` (not `CC`). The decoder understands the short forms anyway, and the short `JMP` (EB)
+   stays relative.
+7. **INT n through the vector table** pushes the flags and IP (no CS: there are no segments),
+   clears I, and jumps to the word at 4·n. IRET pops IP and the flags. This matches the MSX88
+   manual; INT 0, 3, 6 and 7 are handled by the simulator itself (the "monitor").
+8. **Unmapped I/O ports** read FFh and ignore writes.
 
 ## Log
+
+- 2026-11-02: fidelity rule (decision 5): absolute `JMP`/`CALL`, `NOP` = 98h; MSX88 strict mode
+  (decision 6); MSX88 shortcuts (F5 run/pause, F6 cycle step, F7 instruction step, Esc stop,
+  + and - speed).
 
 - 2026-11-02: phase 0 done (tasks 1–9). New core: line-based peggy grammar, two-pass assembler
   with symbols, ORG, DB/DW (`?`, lists, strings, DUP), EQU, OFFSET, PTR and expressions; ISA table

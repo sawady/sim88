@@ -74,7 +74,7 @@ DataList
 DataItem
   = "?" { return node('uninit', {}); }
   / count:Expr _ "DUP"i _ "(" _ values:DataList _ ")" { return node('dup', { count, values }); }
-  / value:String { return node('string', { value }); }
+  / String
   / Expr
 
 // ---------------------------------------------------------------- operands
@@ -134,14 +134,15 @@ Number "number"
   / digits:$[01]+ [bB] !IdChar { return node('number', { value: parseInt(digits, 2) }); }
   / digits:$[0-9]+ [dD]? !IdChar { return node('number', { value: parseInt(digits, 10) }); }
 
-// 'A' or "A": the character code
+// 'A' or "A": the character code (a SIM88 extension, marked for strict mode)
 Char
-  = "'" c:[^'\r\n] "'" { return node('number', { value: c.charCodeAt(0) }); }
-  / '"' c:[^"\r\n] '"' { return node('number', { value: c.charCodeAt(0) }); }
+  = "'" c:[^'\r\n] "'" { return node('number', { value: c.charCodeAt(0), char: true }); }
+  / '"' c:[^"\r\n] '"' { return node('number', { value: c.charCodeAt(0), char: true }); }
 
+// Double quotes are MSX88; single quotes are a SIM88 extension.
 String
-  = '"' chars:$[^"\r\n]* '"' { return chars; }
-  / "'" chars:$[^'\r\n]* "'" { return chars; }
+  = '"' value:$[^"\r\n]* '"' { return node('string', { value }); }
+  / "'" value:$[^'\r\n]* "'" { return node('string', { value, quote: "'" }); }
 
 // ------------------------------------------------------------------ lexical
 

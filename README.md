@@ -38,6 +38,11 @@ It follows the dialect and conventions of MSX88: data at `ORG 1000h`, code at `O
 - Execution animated phase by phase (fetch, decode, IP, operands, execute) at adjustable
   speed, or step by step: one instruction, one phase, or **one instruction back**.
 
+**MSX88 strict mode** (toolbar toggle) rejects what SIM88 accepts beyond the MSX88 dialect:
+character literals (`'A'`), single-quoted strings, direct addresses in brackets (`[1000h]`), and
+`*` / `/` in expressions. Where MSX88 differs from a real 8086, SIM88 follows MSX88: `JMP` and
+`CALL` carry an absolute address and `NOP` is 98h, so the bytes match ASM88 listings.
+
 Not yet: the peripherals (PIO with LEDs and switches, PIC, timer, handshake, printer, CDMA).
 Where SIM88 is not sure to behave like MSX88, PROGRESS.md lists it under "Open questions".
 
@@ -75,10 +80,10 @@ npm run build    # production build in dist/
 npm run preview  # serve the production build
 ```
 
-Keyboard shortcuts: `F5` run, `F6` pause/resume, `F7` stop, `F8` reset,
-`F10` step, `F11` micro-step (one phase), `Shift+F10` step back,
-`Ctrl+Alt+I` / `Ctrl+Alt+D` faster/slower, `Ctrl+N` new, `Ctrl+O` open,
-`Ctrl+S` save, `Ctrl+Shift+S` save as.
+Keyboard shortcuts (the ones MSX88 has work the same): `F5` run / pause / resume,
+`F6` micro-step (one phase of the cycle), `F7` step (one instruction), `Shift+F7` step back,
+`Esc` stop, `F8` reset, `+` / `-` (or `Ctrl+Alt+I` / `Ctrl+Alt+D`) faster/slower,
+`Ctrl+N` new, `Ctrl+O` open, `Ctrl+S` save, `Ctrl+Shift+S` save as.
 
 ## Project layout
 

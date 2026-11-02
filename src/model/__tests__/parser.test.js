@@ -109,7 +109,7 @@ describe('parser: operands', () => {
   });
 
   test('character literals', () => {
-    expect(operands("MOV AL, 'A'")[1]).toEqual({ kind: 'number', value: 65 });
+    expect(operands("MOV AL, 'A'")[1]).toEqual({ kind: 'number', value: 65, char: true });
   });
 
   test('registers, and a register does not match the prefix of a longer name', () => {

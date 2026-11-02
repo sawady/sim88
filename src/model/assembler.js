@@ -10,6 +10,12 @@
 //
 // Errors are AsmError with the source line.
 //
+// Options:
+//   strict: MSX88 strict mode. Rejects what SIM88 accepts as extensions to
+//           the MSX88 dialect: character literals ('A'), single-quoted
+//           strings, direct addresses in brackets ([1000h]), and * and / in
+//           expressions.
+//
 // Pass 0 learns the kind of every symbol (code label, data label, constant),
 // so pass 1 can size every instruction before knowing addresses: a data label
 // used as an operand is a memory operand, a constant or OFFSET is an immediate.
@@ -26,11 +32,11 @@ const fail = (message, line) => {
 
 const DIRECTIVES = ['ORG', 'END', 'DB', 'DW', 'EQU', 'OFFSET', 'PTR', 'BYTE', 'WORD', 'DUP'];
 
-export function assemble(source) {
+export function assemble(source, { strict = false } = {}) {
   const { statements, ended } = parse(source);
   if (!ended) fail('END is missing: the program must finish with the END directive.', undefined);
   const symbols = collectSymbols(statements);
-  const ctx = { symbols };
+  const ctx = { symbols, strict };
   pass1(statements, ctx);
   return pass2(statements, ctx);
 }
@@ -69,6 +75,7 @@ function evaluate(expr, ctx, line, { partial = false, visiting = new Set() } = {
   const plain = (value) => ({ value, memory: false, size: undefined });
   switch (expr.kind) {
     case 'number':
+      if (expr.char) extension(ctx, `Character literals like '${String.fromCharCode(expr.value)}'`, line);
       return plain(expr.value);
     case 'neg': {
       const v = ev(expr.value);
@@ -91,6 +98,7 @@ function evaluate(expr, ctx, line, { partial = false, visiting = new Set() } = {
       return plain(value);
     }
     case 'binary': {
+      if (expr.op === '*' || expr.op === '/') extension(ctx, `"${expr.op}" in expressions`, line);
       const l = ev(expr.left);
       const r = ev(expr.right);
       const value = l.value === null || r.value === null ? null : arithmetic(expr.op, l.value, r.value, line);
@@ -110,6 +118,10 @@ function evaluate(expr, ctx, line, { partial = false, visiting = new Set() } = {
     default:
       throw new Error(`Unknown expression ${expr.kind}`);
   }
+}
+
+function extension(ctx, what, line) {
+  if (ctx.strict) fail(`${what} are a SIM88 extension, not allowed in MSX88 strict mode.`, line);
 }
 
 function arithmetic(op, a, b, line) {
@@ -163,6 +175,9 @@ function classify(operand, ctx, line) {
     if (operand.base && operand.disp) {
       fail('MSX88 only supports [BX] as indirect addressing (no [BX + displacement]).', line);
     }
+    if (!operand.base) {
+      extension(ctx, 'Direct addresses in brackets (use a variable name)', line);
+    }
     let size = operand.ptr;
     if (operand.disp && size === undefined) {
       size = evaluate(operand.disp, ctx, line, { partial: true }).size;
@@ -205,6 +220,7 @@ function matches(code, operand, size, opcode) {
     case 'Iw':
     case 'Jb':
     case 'Jw':
+    case 'Aw':
       return operand.kind === 'imm';
     default:
       return false;
@@ -266,7 +282,7 @@ function plan(statement, ctx) {
     const o = operands[i];
     if ((code === 'Eb' || code === 'Ew') && o.kind === 'mem' && !o.base) length += 2;
     if (code === 'Ib' || code === 'Jb') length += 1;
-    if (code === 'Iw' || code === 'Jw') length += 2;
+    if (code === 'Iw' || code === 'Jw' || code === 'Aw') length += 2;
   });
   return { row, operands, size, length };
 }
@@ -280,6 +296,7 @@ function dataLength(body, ctx, line) {
       case 'uninit':
         return unit;
       case 'string':
+        if (item.quote) extension(ctx, 'Single-quoted strings', line);
         if (body.size !== 8) fail('Strings can only be defined with DB.', line);
         return item.value.length;
       case 'dup': {
@@ -451,6 +468,11 @@ function encodeInstruction(statement, ctx) {
       }
       bytes.push(value & 0xff);
       if (size === 16) bytes.push((value >> 8) & 0xff);
+    }
+    if (code === 'Aw') {
+      const { value: target } = evaluate(o.expr, ctx, line);
+      if (target < 0 || target > 0xffff) fail(`Address ${target} is outside the memory.`, line);
+      bytes.push(target & 0xff, (target >> 8) & 0xff);
     }
     if (code === 'Jw' || code === 'Jb') {
       const { value: target } = evaluate(o.expr, ctx, line);

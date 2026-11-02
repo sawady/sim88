@@ -99,6 +99,8 @@ export function decode(mem, address) {
         const rel = nextWord();
         return { type: 'rel', target: (cursor + rel) & 0xffff };
       }
+      case 'Aw':
+        return { type: 'rel', target: nextWord() };
       case 'AL':
         return register(8, 0);
       case 'AX':

@@ -34,11 +34,12 @@ const runLoop = () => (dispatch, getState) => {
 };
 
 // Assembles the source and loads it. Returns false on an assembler error.
-const load = (text) => (dispatch) => {
+const load = (text) => (dispatch, getState) => {
   clearTimeout(TIMER);
   dispatch({ type: START });
   try {
-    dispatch({ type: LOAD_PROGRAM, program: assemble(text) });
+    const { strict } = getState().editor;
+    dispatch({ type: LOAD_PROGRAM, program: assemble(text, { strict }) });
     return true;
   } catch (e) {
     dispatch({ type: SHOW_ERROR, message: makeErrorMessage(e), line: e.line });

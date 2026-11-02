@@ -3,6 +3,7 @@ import { legacy_createStore as createStore, applyMiddleware, combineReducers } f
 import { thunk } from 'redux-thunk';
 
 import reducers from '..';
+import { setStrict } from '../../actions/editor';
 import { start, stepInstruction, stepPhase, stepBack, pause, resume, reset } from '../../actions/machine';
 import { readReg } from '../../model/cpu';
 
@@ -83,6 +84,16 @@ describe('machine controls (actions + reducer)', () => {
     expect(store.getState().editor.error).toBe('Error en la línea 2: 300 does not fit in 8 bits.');
     expect(store.getState().editor.errorLine).toBe(2);
     expect(store.getState().machine.state).toBe('STOPPED');
+  });
+
+  test('MSX88 strict mode is applied when assembling', () => {
+    const store = newStore();
+    store.dispatch(setStrict(true));
+    store.dispatch(start("ORG 2000h\nMOV AL, 'A'\nHLT\nEND"));
+    expect(store.getState().editor.error).toMatch(/strict mode/);
+    store.dispatch(setStrict(false));
+    store.dispatch(start("ORG 2000h\nMOV AL, 'A'\nHLT\nEND"));
+    expect(store.getState().editor.error).toBe(undefined);
   });
 
   test('reset clears the machine but keeps the speed', () => {

@@ -12,6 +12,7 @@
 //   Is       immediate byte, sign extended to 16 bits (opcode 83)
 //   Ob, Ow   direct memory address, no ModRM (A0-A3)
 //   Jb, Jw   relative jump target (IP relative displacement)
+//   Aw       absolute jump target (MSX88's JMP and CALL)
 //   AL, AX, DX   that register
 //
 // Row options:
@@ -97,10 +98,12 @@ export const CONDITIONAL_JUMPS = [
 CONDITIONAL_JUMPS.forEach((mnemonic, i) =>
   row(0x70 + i, mnemonic, ['Jb'], MSX88_JUMPS.includes(mnemonic) ? {} : { asm: false })
 );
-// ASM88 always emits the 3 byte JMP; the 2 byte short JMP is only decoded.
-row(0xe9, 'JMP', ['Jw']);
+// MSX88 deviates from the 8086 here: JMP (E9) and CALL (E8) carry the
+// ABSOLUTE target address, as the ASM88 listings show (`E9 08 20` = JMP 2008h).
+// The 2 byte short JMP (EB, relative) is only decoded.
+row(0xe9, 'JMP', ['Aw']);
 row(0xeb, 'JMP', ['Jb'], { asm: false });
-row(0xe8, 'CALL', ['Jw']);
+row(0xe8, 'CALL', ['Aw']);
 row(0xc3, 'RET');
 row(0xc2, 'RET', ['Iw'], { asm: false });
 
@@ -122,7 +125,10 @@ row(0xee, 'OUT', ['DX', 'AL']);
 row(0xef, 'OUT', ['DX', 'AX']);
 
 // Control
-row(0x90, 'NOP');
+// The MSX88 manual encodes NOP as 98h (CBW on an 8086). 90h, the 8086 NOP,
+// is still decoded as NOP.
+row(0x98, 'NOP');
+row(0x90, 'NOP', [], { asm: false });
 row(0xf4, 'HLT');
 
 export const ROWS = rows;

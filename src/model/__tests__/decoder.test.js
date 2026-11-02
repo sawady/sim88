@@ -64,10 +64,18 @@ describe('decoder', () => {
     expect(at(0xcc).text).toBe('INT 3h');
   });
 
-  test('relative jumps are shown with their absolute target', () => {
+  test('conditional jumps are relative and shown with their absolute target', () => {
     expect(at(0x75, 0xfa)).toMatchObject({ mnemonic: 'JNZ', length: 2, operands: [{ type: 'rel', target: 0x1ffc }] });
-    expect(at(0xe9, 0x01, 0x00).operands[0].target).toBe(0x2004);
-    expect(at(0xe8, 0xfd, 0x0f).operands[0].target).toBe(0x3000);
+  });
+
+  test('JMP and CALL carry an absolute address, as in MSX88 (E9 08 20 = JMP 2008h)', () => {
+    expect(at(0xe9, 0x08, 0x20)).toMatchObject({ mnemonic: 'JMP', length: 3, text: 'JMP 2008h' });
+    expect(at(0xe8, 0x00, 0x30)).toMatchObject({ mnemonic: 'CALL', length: 3, text: 'CALL 3000h' });
+  });
+
+  test('NOP is 98h, as in the MSX88 manual (90h also decodes as NOP)', () => {
+    expect(at(0x98).text).toBe('NOP');
+    expect(at(0x90).text).toBe('NOP');
   });
 
   test('zero operand instructions', () => {

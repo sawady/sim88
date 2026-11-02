@@ -5,6 +5,27 @@ export const DEFAULT_PROGRAM = defaultProgram;
 
 export const CHANGE_TEXT = 'CHANGE_TEXT';
 export const CHANGE_FILE_PATH = 'CHANGE_FILE_PATH';
+export const SET_STRICT = 'SET_STRICT';
+
+const STRICT_KEY = 'sim88.strict';
+
+export const loadStrictPreference = () => {
+  try {
+    return window.localStorage.getItem(STRICT_KEY) === 'true';
+  } catch (e) {
+    return false;
+  }
+};
+
+// MSX88 strict mode: the assembler rejects SIM88's extensions.
+export const setStrict = (strict) => {
+  try {
+    window.localStorage.setItem(STRICT_KEY, String(strict));
+  } catch (e) {
+    // storage unavailable: the preference just isn't remembered
+  }
+  return { type: SET_STRICT, strict };
+};
 
 export const changeText = (text) => ({
   type: CHANGE_TEXT,
