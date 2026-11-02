@@ -1,0 +1,473 @@
+/* Text user interface: desktop, windows, menus, status bar, dialogs, controls. */
+
+.screen {
+  position: relative;
+  width: calc(var(--cols) * var(--cw));
+  height: calc(var(--rows) * var(--ch));
+  overflow: hidden;
+  background: var(--desk-bg);
+  white-space: pre;
+}
+
+.stacked .screen {
+  min-height: 100vh;
+}
+
+/* The desktop: ░ on the whole screen, as Turbo Vision. */
+.desktop {
+  position: absolute;
+  inset: 0;
+  color: var(--desk-fg);
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ------------------------------------------------------------ frames */
+
+/* A box drawn with box characters. Its padding is one cell on each side,
+   where the borders go. */
+.frame {
+  position: relative;
+  padding: var(--ch) var(--cw);
+  color: var(--fg);
+  background: var(--bg);
+}
+
+.win {
+  --fg: var(--win-fg);
+  --bg: var(--win-bg);
+  --frame-color: var(--win-frame);
+}
+
+.frame-top,
+.frame-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--ch);
+  display: flex;
+  overflow: hidden;
+  color: var(--frame-color);
+  white-space: pre;
+  pointer-events: none;
+}
+
+.frame-top {
+  top: 0;
+}
+
+.frame-bottom {
+  bottom: 0;
+}
+
+.frame-fill {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.frame-fill.left {
+  max-width: calc(var(--cw) * 2);
+}
+
+.frame-center .frame-fill.left {
+  max-width: none;
+}
+
+.frame-title {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: clip;
+  color: var(--title-color, var(--frame-color));
+  background: var(--title-back, transparent);
+}
+
+.frame-side {
+  position: absolute;
+  top: var(--ch);
+  bottom: var(--ch);
+  width: var(--cw);
+  overflow: hidden;
+  color: var(--frame-color);
+  white-space: pre;
+  pointer-events: none;
+}
+
+.frame-side.left {
+  left: 0;
+}
+
+.frame-side.right {
+  right: 0;
+}
+
+/* ------------------------------------------------------------ windows */
+
+.win {
+  position: absolute;
+  left: calc(var(--x) * var(--cw));
+  top: calc(var(--y) * var(--ch));
+  width: calc(var(--w) * var(--cw));
+  height: calc(var(--h) * var(--ch));
+  box-shadow: calc(var(--cw) * 2) var(--ch) 0 var(--shadow);
+  --title-color: var(--title-fg);
+  --title-back: var(--title-bg);
+}
+
+.win.active {
+  --frame-color: var(--win-frame-active);
+  z-index: 2;
+}
+
+.win-body {
+  position: absolute;
+  inset: var(--ch) var(--cw);
+  overflow: hidden;
+}
+
+.win-body.scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.win.editor {
+  --bg: var(--ed-bg);
+  --fg: var(--ed-fg);
+}
+
+.win.console {
+  --bg: var(--con-bg);
+  --fg: var(--con-fg);
+}
+
+/* Scrollbars in the colors of the frame, one cell wide. */
+.win-body,
+.win-body * {
+  scrollbar-color: var(--frame-color) var(--bg);
+}
+
+.win-body ::-webkit-scrollbar,
+.win-body::-webkit-scrollbar {
+  width: var(--cw);
+  height: var(--cw);
+  background: var(--bg);
+}
+
+.win-body ::-webkit-scrollbar-thumb,
+.win-body::-webkit-scrollbar-thumb {
+  background: var(--frame-color);
+}
+
+/* -------------------------------------------------- menu and status bar */
+
+.menubar,
+.statusbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--ch);
+  display: flex;
+  align-items: stretch;
+  background: var(--bar-bg);
+  color: var(--bar-fg);
+  white-space: pre;
+  z-index: 20;
+}
+
+.menubar {
+  top: 0;
+  padding-left: var(--cw);
+}
+
+.statusbar {
+  bottom: 0;
+}
+
+.stacked .menubar,
+.stacked .statusbar {
+  position: fixed;
+  width: calc(var(--cols) * var(--cw));
+}
+
+.hot {
+  color: var(--hot-color, var(--bar-hot));
+  text-decoration: var(--hot-line);
+}
+
+.menubar-item {
+  padding: 0 var(--cw);
+}
+
+.menubar-item[aria-expanded='true'],
+.menubar-item:focus-visible,
+.statusbar button:focus-visible {
+  background: var(--bar-sel-bg);
+  color: var(--bar-sel-fg);
+  outline: none;
+  --hot-color: var(--bar-sel-fg);
+}
+
+.menubar-title {
+  margin-left: auto;
+  padding: 0 var(--cw);
+}
+
+.stacked .menubar-title {
+  display: none;
+}
+
+.menu {
+  position: absolute;
+  z-index: 30;
+  --fg: var(--bar-fg);
+  --bg: var(--bar-bg);
+  --frame-color: var(--bar-fg);
+  box-shadow: calc(var(--cw) * 2) var(--ch) 0 var(--shadow);
+  min-width: calc(var(--cw) * 20);
+}
+
+.menu-item {
+  display: flex;
+  width: 100%;
+  gap: calc(var(--cw) * 3);
+  padding: 0 var(--cw);
+  text-align: left;
+}
+
+.menu-item .label {
+  flex: 1;
+}
+
+.menu-item .shortcut {
+  margin-left: auto;
+}
+
+.menu-item[aria-disabled='true'] {
+  color: var(--bar-dis);
+  --hot-color: var(--bar-dis);
+  cursor: default;
+}
+
+.menu-item:focus,
+.menu-item:hover {
+  background: var(--bar-sel-bg);
+  color: var(--bar-sel-fg);
+  outline: none;
+  --hot-color: var(--bar-sel-fg);
+}
+
+.menu-separator {
+  position: relative;
+  height: var(--ch);
+  color: var(--frame-color);
+  white-space: pre;
+}
+
+.menu-separator > span {
+  position: absolute;
+  left: calc(var(--cw) * -1);
+  right: calc(var(--cw) * -1);
+  display: flex;
+  overflow: hidden;
+}
+
+.statusbar button {
+  padding: 0 var(--cw);
+}
+
+.statusbar .sep {
+  color: var(--bar-fg);
+}
+
+.statusbar .state {
+  margin-left: auto;
+  padding: 0 var(--cw);
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------- dialogs */
+
+.modal {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+}
+
+.stacked .modal {
+  position: fixed;
+}
+
+.dialog {
+  position: absolute;
+  left: calc(var(--x) * var(--cw));
+  top: calc(var(--y) * var(--ch));
+  width: calc(var(--w) * var(--cw));
+  max-width: calc(100% - var(--cw) * 2);
+  max-height: calc(100% - var(--ch) * 3);
+  overflow: hidden auto;
+  --fg: var(--dlg-fg);
+  --bg: var(--dlg-bg);
+  --frame-color: var(--dlg-frame);
+  --title-color: var(--dlg-title);
+  --hot-color: var(--dlg-hot);
+  box-shadow: calc(var(--cw) * 2) var(--ch) 0 var(--shadow);
+}
+
+.dialog-body {
+  padding: var(--ch) var(--cw) 0;
+  white-space: normal;
+}
+
+.dialog-body p {
+  margin: 0 0 var(--ch);
+}
+
+.dialog-buttons {
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--cw) * 3);
+  padding: var(--ch) 0;
+}
+
+/* A box inside a dialog or a window, with a title on its frame. */
+.group {
+  margin: 0 0 var(--ch);
+  background: transparent;
+  --frame-color: var(--fg);
+  --title-color: var(--fg);
+  --title-back: transparent;
+}
+
+.group .frame-title {
+  color: var(--title-color);
+}
+
+/* Buttons: text on a colored bar with a half-block shadow. */
+.btn {
+  position: relative;
+  min-width: calc(var(--cw) * 10);
+  padding: 0 var(--cw);
+  text-align: center;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  --hot-color: var(--btn-hot);
+  box-shadow: var(--cw) calc(var(--ch) / 2) 0 var(--shadow);
+  margin-bottom: calc(var(--ch) / 2);
+}
+
+.btn:focus-visible,
+.btn:focus {
+  background: var(--btn-focus-bg);
+  color: var(--btn-focus-fg);
+  outline: none;
+  --hot-color: var(--btn-focus-fg);
+}
+
+.btn:focus .hot {
+  text-decoration: underline;
+}
+
+.btn:active {
+  left: var(--cw);
+  top: calc(var(--ch) / 2);
+  box-shadow: none;
+}
+
+.btn[aria-pressed='true'] {
+  background: var(--on-bg);
+  color: var(--on-fg);
+}
+
+/* Radio buttons and check boxes: ( ) / (•) and [ ] / [X]. */
+.choice {
+  display: flex;
+  gap: var(--cw);
+  padding: 0 var(--cw);
+  cursor: pointer;
+  white-space: pre;
+}
+
+.choice input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+}
+
+.choice:focus-within {
+  background: var(--bar-sel-bg);
+  color: var(--bar-sel-fg);
+  --hot-color: var(--bar-sel-fg);
+}
+
+.choices.columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(calc(var(--cw) * 14), 1fr));
+}
+
+.field {
+  display: inline-block;
+  width: calc(var(--cw) * var(--size, 10));
+  height: var(--ch);
+  padding: 0 var(--cw);
+  border: 0;
+  border-radius: 0;
+  background: var(--fld-bg);
+  color: var(--fld-fg);
+  caret-color: var(--fld-fg);
+}
+
+.win .field {
+  background: var(--wfld-bg);
+  color: var(--wfld-fg);
+  caret-color: var(--wfld-fg);
+}
+
+.field:focus {
+  outline: none;
+  box-shadow: inset 0 calc(var(--px) * -2) 0 var(--fld-fg);
+}
+
+.help {
+  color: var(--fg);
+  margin: 0 0 var(--ch);
+}
+
+.warning {
+  background: var(--err-bg);
+  color: var(--err-fg);
+  padding: 0 var(--cw);
+}
+
+.dialog a {
+  color: inherit;
+}
+
+.keys-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.keys-table th {
+  font-weight: normal;
+  text-align: left;
+  padding-right: calc(var(--cw) * 2);
+  white-space: pre;
+  color: var(--hot-color);
+  vertical-align: top;
+}
+
+.keys-table td {
+  padding: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:active {
+    left: 0;
+    top: 0;
+  }
+}

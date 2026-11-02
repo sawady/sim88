@@ -92,7 +92,7 @@ describe('machine controls (actions + reducer)', () => {
   test('an assembler error is shown with its line and the machine stays stopped', () => {
     const store = newStore();
     store.dispatch(start('ORG 2000h\nMOV AL, 300\nEND'));
-    expect(store.getState().editor.error).toBe('Error en la línea 2: 300 does not fit in 8 bits.');
+    expect(store.getState().editor.error).toBe('300 does not fit in 8 bits.');
     expect(store.getState().editor.errorLine).toBe(2);
     expect(store.getState().machine.state).toBe('STOPPED');
   });

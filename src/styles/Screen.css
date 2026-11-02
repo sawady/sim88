@@ -1,0 +1,32 @@
+.screen-output {
+  margin: 0;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font: inherit;
+  background: var(--con-bg);
+  color: var(--con-fg);
+}
+
+.screen-output .cursor {
+  visibility: hidden;
+}
+
+.screen-output.waiting .cursor {
+  visibility: visible;
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen-output.waiting .cursor {
+    animation: none;
+  }
+}

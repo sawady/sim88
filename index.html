@@ -1,16 +1,26 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" data-theme="borland">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta name="description" content="SIM88: simulador didáctico de un 8088 simplificado" />
-    <link rel="icon" href="./favicon.ico" />
+    <meta name="theme-color" content="#0000aa" />
+    <meta name="description" content="SIM88: simulador didáctico de un 8088 simplificado, fiel a MSX88 / educational simulator of a simplified 8088" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="./manifest.json" />
     <title>SIM88</title>
+    <script>
+      // The saved theme and language before the first paint (no flash of the
+      // default theme). The app applies them again once it loads.
+      try {
+        var s = JSON.parse(localStorage.getItem('sim88.settings')) || {};
+        if (s.theme) document.documentElement.dataset.theme = s.theme;
+        if (s.lang) document.documentElement.lang = s.lang;
+        else if (!/^es\b/i.test(navigator.language || '')) document.documentElement.lang = 'en';
+      } catch (e) {}
+    </script>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>SIM88 necesita JavaScript. / SIM88 needs JavaScript.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

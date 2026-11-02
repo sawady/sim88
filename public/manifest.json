@@ -1,15 +1,15 @@
 {
-  "short_name": "SIM 88",
-  "name": "SIM 88",
+  "short_name": "SIM88",
+  "name": "SIM88",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ],
   "start_url": "./",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#0000aa",
+  "background_color": "#0000aa"
 }

@@ -14,14 +14,16 @@
     "node": ">=20.19"
   },
   "scripts": {
+    "postinstall": "node scripts/fetch-font.mjs",
+    "predev": "node scripts/fetch-font.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/fetch-font.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@mdi/js": "^7.4.47",
     "ace-builds": "^1.45.2",
     "classnames": "^2.5.1",
     "react": "^19.3.1",

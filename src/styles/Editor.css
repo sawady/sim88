@@ -1,8 +1,171 @@
-.editor {
-  width: 100% !important;
-  height: calc(100% - 26px) !important;
+/* The Ace editor as a text mode editor: theme colors, the VGA font, an
+   underline cursor and no rounded or smooth details. */
+
+.editor-window {
+  display: flex;
+  flex-direction: column;
 }
-.editor .running-line {
+
+.editor-host {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.editor-bar {
+  flex: 0 0 auto;
+  padding: 0 var(--cw);
+  white-space: pre-wrap;
+}
+
+.editor-bar.error {
+  background: var(--err-bg);
+  color: var(--err-fg);
+}
+
+.editor-bar.message {
+  background: var(--msg-bg);
+  color: var(--msg-fg);
+}
+
+.editor-loading {
+  padding: 0 var(--cw);
+}
+
+.ace-sim88.ace_editor {
+  font-family: var(--font) !important;
+  line-height: var(--ch);
+  background: var(--ed-bg);
+  color: var(--ed-fg);
+  border-radius: 0;
+}
+
+.ace-sim88 .ace_gutter {
+  background: var(--ed-bg);
+  color: var(--ed-gutter);
+}
+
+.ace-sim88 .ace_gutter-cell {
+  padding-left: 0;
+  padding-right: var(--cw);
+}
+
+.ace-sim88 .ace_gutter-active-line {
+  background: transparent;
+}
+
+.ace-sim88 .ace_cursor {
+  color: var(--ed-cursor);
+  border-left: 0 !important;
+  border-bottom: calc(var(--px) * 2) solid var(--ed-cursor);
+  background: transparent;
+}
+
+.ace-sim88.ace_focus .ace_cursor {
+  border-bottom-width: calc(var(--px) * 3);
+}
+
+.ace-sim88 .ace_marker-layer .ace_selection {
+  background: var(--ed-sel);
+  border-radius: 0;
+}
+
+.ace-sim88 .ace_marker-layer .ace_bracket {
+  border: 0;
+  background: var(--ed-sel);
+}
+
+.ace-sim88 .ace_marker-layer .ace_selected-word {
+  border: 0;
+}
+
+.ace-sim88 .running-line {
   position: absolute;
-  background: rgba(255, 99, 71, 0.35);
+  background: var(--ed-run);
+}
+
+.ace-sim88 .error-line {
+  position: absolute;
+  background: var(--ed-err);
+}
+
+.ace-sim88 .ace_keyword {
+  color: var(--ed-kw);
+}
+
+.ace-sim88 .ace_variable.ace_parameter {
+  color: var(--ed-reg);
+}
+
+.ace-sim88 .ace_constant {
+  color: var(--ed-num);
+}
+
+.ace-sim88 .ace_string {
+  color: var(--ed-str);
+}
+
+.ace-sim88 .ace_comment {
+  color: var(--ed-com);
+  font-style: normal;
+}
+
+.ace-sim88 .ace_support.ace_function {
+  color: var(--ed-dir);
+}
+
+.ace-sim88 .ace_entity.ace_name {
+  color: var(--ed-lbl);
+}
+
+.ace-sim88 .ace_scrollbar {
+  scrollbar-color: var(--frame-color) var(--ed-bg);
+}
+
+.ace-sim88 .ace_scrollbar::-webkit-scrollbar {
+  width: var(--cw);
+  height: var(--cw);
+  background: var(--ed-bg);
+}
+
+.ace-sim88 .ace_scrollbar::-webkit-scrollbar-thumb {
+  background: var(--frame-color);
+}
+
+/* Autocompletion: a menu like the ones of the menu bar. */
+.ace_editor.ace_autocomplete {
+  font-family: var(--font) !important;
+  background: var(--bar-bg) !important;
+  color: var(--bar-fg) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: calc(var(--cw) * 2) var(--ch) 0 var(--shadow) !important;
+}
+
+.ace_editor.ace_autocomplete .ace_marker-layer .ace_active-line,
+.ace_editor.ace_autocomplete .ace_line-hover {
+  background: var(--bar-sel-bg) !important;
+  border: 0 !important;
+}
+
+.ace_editor.ace_autocomplete .ace_completion-highlight {
+  color: var(--bar-hot) !important;
+  text-shadow: none !important;
+}
+
+.ace_tooltip {
+  font-family: var(--font) !important;
+  background: var(--dlg-bg) !important;
+  color: var(--dlg-fg) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ace-sim88 .ace_cursor-layer,
+  .ace-sim88 .ace_cursor {
+    opacity: 1 !important;
+    animation: none !important;
+    transition: none !important;
+  }
 }

@@ -1,107 +1,111 @@
 .peripherals {
-  margin-top: 20px;
-  padding: 8px;
-  background: #00a8a8;
-  box-shadow: 8px 8px rgba(0, 0, 0, 0.5);
+  white-space: pre;
+  color: var(--win-fg);
 }
 
 .peripherals .heading {
-  background-color: green;
-  display: inline-block;
-  padding: 0 6px;
-  margin-bottom: 8px;
+  color: var(--label);
+  white-space: pre-wrap;
 }
 
-.peripherals .devices {
+.device {
+  display: flex;
+  min-height: var(--ch);
+}
+
+.device-name {
+  color: var(--label);
+}
+
+.device-regs {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  column-gap: var(--cw);
 }
 
-.peripherals .device {
-  background: royalblue;
-  border: 1px solid white;
-  border-radius: 4px;
-  padding: 6px;
-  min-width: 110px;
+.device .reg .name {
+  color: var(--dim);
 }
 
-.peripherals .device.active {
-  background: tomato;
+.device .reg .value {
+  background: var(--val-bg);
+  color: var(--val-fg);
+  padding: 0 var(--cw);
 }
 
-.peripherals .device .title {
-  font-size: 14px;
-  margin-bottom: 4px;
+.device.active .reg .value {
+  background: var(--act-bg);
+  color: var(--act-fg);
 }
 
-.peripherals .device .subtitle {
-  font-size: 12px;
-  opacity: 0.8;
+.inline-btn {
+  margin-left: var(--cw);
+  color: var(--label);
 }
 
-.peripherals .registers {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
-  gap: 2px 8px;
-  font-family: monospace;
+.inline-btn:hover,
+.inline-btn:focus-visible {
+  background: var(--bar-sel-bg);
+  color: var(--bar-sel-fg);
+  outline: none;
 }
 
-.peripherals .reg .name {
-  font-style: italic;
-  margin-right: 4px;
+.inline-btn:active {
+  background: var(--act-bg);
+  color: var(--act-fg);
 }
 
-.peripherals .action {
-  margin-top: 6px;
-  background: white;
-  color: black;
-  border-radius: 3px;
-  padding: 2px 8px;
+.led {
+  color: var(--led-off);
+  width: calc(var(--cw) * 2);
 }
 
-.peripherals .leds,
-.peripherals .switches {
-  display: flex;
-  gap: 4px;
-  margin: 4px 0;
+.led.on {
+  color: var(--led-on);
 }
 
-.peripherals .led {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #400;
-  border: 1px solid #222;
+.switch {
+  width: var(--cw);
+  margin-right: var(--cw);
+  color: var(--off-fg);
 }
 
-.peripherals .led.on {
-  background: #ff3030;
-  box-shadow: 0 0 6px #ff3030;
+.switch.on {
+  color: var(--on-fg);
+  background: var(--on-bg);
 }
 
-.peripherals .switch {
-  width: 18px;
-  height: 26px;
-  padding: 0;
-  justify-content: center;
-  background: #333;
-  color: white;
-  border-radius: 3px;
-  font-size: 11px;
+.switch:hover {
+  text-decoration: underline;
 }
 
-.peripherals .switch.on {
-  background: gold;
-  color: black;
+.printer {
+  margin-top: var(--ch);
 }
 
-.peripherals .paper {
-  background: #fffbe6;
-  color: black;
-  min-height: 3em;
-  width: 21ch;
-  margin: 4px 0 0;
-  padding: 4px;
+.printer .device {
+  gap: var(--cw);
+}
+
+.printer .busy {
+  background: var(--act-bg);
+  color: var(--act-fg);
+}
+
+.printer .ready {
+  color: var(--dim);
+}
+
+.paper-box {
+  width: calc(var(--cw) * (var(--paper) + 2));
+  margin: 0;
+  --frame-color: var(--dim);
+}
+
+.paper {
+  margin: 0;
+  font: inherit;
+  min-height: calc(var(--ch) * 3);
   white-space: pre;
+  color: var(--win-fg);
 }

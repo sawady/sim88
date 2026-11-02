@@ -65,8 +65,10 @@ export const loadInitialProgram = () => (dispatch) => {
 };
 
 // Keeps the program in localStorage, so reloading the page does not lose it.
+// Only changes are saved: the empty editor of the first render is not, so the
+// first visit still gets the default example.
 export function persistProgram(store) {
-  let last = {};
+  let last = store.getState().editor;
   return store.subscribe(() => {
     const { text, filepath } = store.getState().editor;
     if (text !== last.text) storage.set(PROGRAM_KEY, text);

@@ -1,8 +1,8 @@
 import { assemble } from '../model/assembler';
 import { MACHINE_STATES } from '../model/constants';
 
-const makeErrorMessage = (e) =>
-  e.line ? `Error en la línea ${e.line}: ${e.message}` : `Error: ${e.message}`;
+// The assembler error is kept as it comes (with its line apart): the UI
+// shows it in its language (see src/i18n/messages.js).
 
 let TIMER;
 // The timer's clock runs in real time while the program runs, at the
@@ -64,7 +64,7 @@ const load = (text) => (dispatch, getState) => {
     dispatch({ type: LOAD_PROGRAM, program: assemble(text, { strict }) });
     return true;
   } catch (e) {
-    dispatch({ type: SHOW_ERROR, message: makeErrorMessage(e), line: e.line });
+    dispatch({ type: SHOW_ERROR, message: e.message, line: e.line });
     dispatch({ type: STOP });
     return false;
   }
