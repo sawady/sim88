@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/sawady/sim88/actions/workflows/ci.yml/badge.svg)](https://github.com/sawady/sim88/actions/workflows/ci.yml)
 [![Deploy](https://github.com/sawady/sim88/actions/workflows/deploy.yml/badge.svg)](https://github.com/sawady/sim88/actions/workflows/deploy.yml)
+[![Sponsor](https://img.shields.io/github/sponsors/sawady?label=Sponsor&logo=GitHub)](https://github.com/sponsors/sawady)
 
 **Try it in the browser: <https://sawady.github.io/sim88/>** (no installation needed).
 
@@ -200,6 +201,11 @@ Pack](https://int10h.org/oldschool-pc-fonts/) by VileR, licensed under
 `scripts/fetch-font.mjs` when installing (checked against a SHA-256 sum), not kept in this
 repository, and served from the site itself. The look follows MSX88 by R. de Diego and the
 Borland IDEs of the early 1990s.
+
+## Sponsoring
+
+SIM88 is free software. If it is useful to you, you can support its development through
+[GitHub Sponsors](https://github.com/sponsors/sawady).
 
 ## License
 
