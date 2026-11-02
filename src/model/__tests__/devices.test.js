@@ -11,6 +11,7 @@ import {
   pressF10,
   timerPulse,
   toggleSwitch,
+  typeKey,
 } from '../machine';
 import { initialDevices, pendingInterrupt, acknowledgeInterrupt, requestInterrupt } from '../devices';
 import { pic } from '../devices/pic';
@@ -98,6 +99,33 @@ describe('PIO (configuration 0): switches and LEDs', () => {
   test('the switches keep their position when the program is loaded again', () => {
     const m = toggleSwitch(createMachine(), 3);
     expect(loadProgram(m, assemble('HLT\nEND')).devices.switches).toBe(8);
+  });
+});
+
+describe('events from outside between the operands and execute phases', () => {
+  // The operands phase already computed the result of the instruction; the
+  // event must survive the commit in the execute phase.
+  const atExecutePhase = (source) => {
+    let m = machineFor(source);
+    for (let i = 0; i < 4; i++) m = stepPhase(m);
+    expect(m.phase).toBe(4);
+    return m;
+  };
+
+  test('a switch flipped is not lost', () => {
+    const m = stepPhase(toggleSwitch(atExecutePhase('NOP\nHLT\nEND'), 3));
+    expect(m.devices.switches).toBe(8);
+  });
+
+  test('F10 and timer pulses are not lost', () => {
+    const m = stepPhase(timerPulse(pressF10(atExecutePhase('NOP\nHLT\nEND'))));
+    expect(m.devices.pic.irr & 1).toBe(1);
+    expect(m.devices.timer.cont).toBe(1);
+  });
+
+  test('a key typed is not lost', () => {
+    const m = stepPhase(typeKey(atExecutePhase('NOP\nHLT\nEND'), 65));
+    expect(m.input).toEqual([65]);
   });
 });
 

@@ -146,6 +146,7 @@ Taken by Federico Sawady on 2026-11-02.
   configuration it needs (`; conexionado: N`) and is tested in strict mode.
 - [ ] **36. i18n es/en**
 - [ ] **37. Screenshot and GIF for the README** · `gfi` · Deps: 9
+  Screenshot done (`docs/screenshot.png`, linked from the README); the GIF is pending.
 - [x] **38. Load Ace in a separate chunk** · `gfi`
   The main chunk is below 500 kB. (Main ~300 kB; the editor loads in its own ~590 kB chunk.)
 - [x] **39. UI tests with Testing Library** · `gfi`
@@ -197,6 +198,9 @@ Resolved by Federico on 2026-11-02 (decisions 5 and 6): JMP/CALL absolute, NOP 9
 15. **Configuration 1 printer**: STROBE is PA1 and a character is taken on its rising edge.
 
 ## Log
+
+- 2026-11-02: README screenshot (task 37, GIF pending). Fixed: a switch, F10, timer pulse or key
+  arriving between the operands and execute phases was lost.
 
 - 2026-11-02: the Ace editor loads lazily (task 38) and a UI smoke test covers running, errors,
   stepping and the switches (task 39).

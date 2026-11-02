@@ -26,3 +26,8 @@
   font-family: monospace;
   color: #555555;
 }
+
+.toolbar .examples select,
+.toolbar .config select {
+  max-width: 190px;
+}

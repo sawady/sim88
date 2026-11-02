@@ -310,25 +310,34 @@ export function stepBack(machine) {
 
 // ------------------------------------------------------------ outside world
 
+// Events from outside (keys, switches, F10, the timer clock) can arrive
+// between the operands and the execute phases, when the result of the
+// instruction is already computed in `pending`: they apply to both, or the
+// commit would lose them.
+const fromOutside = (machine, field, f) => ({
+  ...machine,
+  [field]: f(machine[field]),
+  pending: machine.pending && { ...machine.pending, [field]: f(machine.pending[field]) },
+});
+
 // A key typed on the keyboard, for INT 6.
 export const typeKey = (machine, code) => ({
-  ...machine,
-  input: [...machine.input, code & 0xff],
+  ...fromOutside(machine, 'input', (input) => [...input, code & 0xff]),
   waitingInput: false,
 });
 
 // F10: interrupt request on INT0 of the PIC.
 export const pressF10 = (machine) =>
-  machine.devices.pic ? { ...machine, devices: requestInterrupt(machine.devices, 0) } : machine;
+  machine.devices.pic ? fromOutside(machine, 'devices', (d) => requestInterrupt(d, 0)) : machine;
 
 // One pulse of the timer's 1 Hz clock.
 export const timerPulse = (machine) =>
-  machine.devices.timer ? { ...machine, devices: pulse(machine.devices) } : machine;
+  machine.devices.timer ? fromOutside(machine, 'devices', pulse) : machine;
 
 // Flips switch n (0-7) of the switch bar (configuration 0).
 export const toggleSwitch = (machine, n) =>
   'switches' in machine.devices
-    ? { ...machine, devices: { ...machine.devices, switches: machine.devices.switches ^ (1 << n) } }
+    ? fromOutside(machine, 'devices', (d) => ({ ...d, switches: d.switches ^ (1 << n) }))
     : machine;
 
 // --------------------------------------------------------------- controls

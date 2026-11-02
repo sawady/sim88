@@ -6,7 +6,7 @@ You write a small assembly program, SIM88 assembles it into memory and runs it
 one fetch–decode–execute step at a time, highlighting the registers, the
 instruction register, the decoder and the memory cell being used at each step.
 
-> Screenshot: _pending_
+![SIM88 running a program that copies the switches to the LEDs](docs/screenshot.png)
 
 ## Who is it for
 
