@@ -52,7 +52,7 @@ describe('examples', () => {
     let m = run(machineFor(example('03')));
     expect(m.waitingInput).toBe(true);
     m = run(typeKey(m, 'x'.charCodeAt(0)));
-    expect(m.output).toBe('Escriba una letra: x');
+    expect(m.output).toBe('Escriba una letra: \nx\n'); // one line per INT 7, as MSX88
   });
 
   test('F10 interrupts', () => {
@@ -65,7 +65,7 @@ describe('examples', () => {
     let m = phases(machineFor(example('05')), 200);
     for (let i = 0; i < 5; i++) m = phases(timerPulse(m), 20);
     m = phases(m, 400);
-    expect(m.output).toBe('Pasaron 5 segundos. ');
+    expect(m.output).toBe('Pasaron 5 segundos. \n');
   });
 
   test('switches and LEDs', () => {
@@ -89,6 +89,6 @@ describe('examples', () => {
 
   test('DMA', () => {
     const m = run(machineFor(example('09')));
-    expect(m.output).toBe('COPIADO POR DMA');
+    expect(m.output).toBe('COPIADO POR DMA\n');
   });
 });

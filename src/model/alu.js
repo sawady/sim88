@@ -11,6 +11,15 @@
 //   P  parity: 1 when the low byte of the result has an even number of ones
 //
 // Flags the 8086 leaves undefined (A after AND/OR/XOR) are set to 0.
+//
+// MSX88 V-3.1 differs from the 8086 in four places, and SIM88 copies it
+// (fidelity rule; evidence in tests/fidelity: alu-adc-sbb-flags,
+// alu-inc-dec-flags, alu-not-flags, run on the original MSX88):
+//   - INC and DEC clear C (the 8086 leaves it alone).
+//   - ADC and SBB with C = 1 are ADD / SUB followed by INC / DEC of the
+//     result, and the flags are those of the INC / DEC: so C ends 0.
+//   - NOT sets flags: 8 bits leave Z = P = 1 and C O S A = 0; 16 bits leave
+//     the six at 0 (the 8086, and the MSX88 manual, say NOT changes none).
 
 const mask = (size) => (size === 8 ? 0xff : 0xffff);
 const signBit = (size) => (size === 8 ? 0x80 : 0x8000);
@@ -48,7 +57,8 @@ export function add(size, a, b, carryIn = 0) {
   };
 }
 
-export const adc = (size, a, b, carry) => add(size, a, b, carry ? 1 : 0);
+// ADC: with C = 0 it is ADD; with C = 1, MSX88 adds and then increments.
+export const adc = (size, a, b, carry) => (carry ? inc(size, add(size, a, b).result) : add(size, a, b));
 
 export function sub(size, a, b, borrowIn = 0) {
   const raw = a - b - borrowIn;
@@ -64,7 +74,8 @@ export function sub(size, a, b, borrowIn = 0) {
   };
 }
 
-export const sbb = (size, a, b, carry) => sub(size, a, b, carry ? 1 : 0);
+// SBB: with C = 0 it is SUB; with C = 1, MSX88 subtracts and then decrements.
+export const sbb = (size, a, b, carry) => (carry ? dec(size, sub(size, a, b).result) : sub(size, a, b));
 
 // CMP computes a - b only for the flags; the caller discards the result.
 export const cmp = (size, a, b) => sub(size, a, b);
@@ -80,8 +91,11 @@ export const and = (size, a, b) => logic(size, a & b);
 export const or = (size, a, b) => logic(size, a | b);
 export const xor = (size, a, b) => logic(size, a ^ b);
 
-// NOT changes no flag.
-export const not = (size, a) => ({ result: ~a & mask(size), flags: {} });
+// NOT: on MSX88 the flags do not depend on the operand (see above).
+export const not = (size, a) => ({
+  result: ~a & mask(size),
+  flags: { C: false, O: false, S: false, A: false, Z: size === 8, P: size === 8 },
+});
 
 // NEG is 0 - a; C is set unless the operand was 0.
 export function neg(size, a) {
@@ -89,17 +103,15 @@ export function neg(size, a) {
   return { result, flags: { ...flags, C: a !== 0 } };
 }
 
-// INC and DEC are ADD/SUB 1 that leave C untouched.
+// INC and DEC are ADD/SUB 1 that clear C (on MSX88; see above).
 export function inc(size, a) {
   const { result, flags } = add(size, a, 1);
-  const { C, ...rest } = flags;
-  return { result, flags: rest };
+  return { result, flags: { ...flags, C: false } };
 }
 
 export function dec(size, a) {
   const { result, flags } = sub(size, a, 1);
-  const { C, ...rest } = flags;
-  return { result, flags: rest };
+  return { result, flags: { ...flags, C: false } };
 }
 
 // Two operand operations by mnemonic. `carry` is the current C flag.

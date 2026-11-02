@@ -21,14 +21,16 @@ const runAll = (machine, max = 10000) => {
 };
 
 describe('machine: the fetch-decode-execute cycle', () => {
-  test('a fresh machine is stopped, with empty memory', () => {
+  test('a fresh machine is stopped, with the memory of a fresh MSX88', () => {
     const m = createMachine();
     expect(m.state).toBe('STOPPED');
-    expect(m.cpu.mem.every((b) => b === 0)).toBe(true);
+    // only the monitor's vectors of INT 0/3/6/7
+    expect(m.cpu.mem.slice(0x20).every((b) => b === 0)).toBe(true);
+    expect(m.cpu.mem[2]).toBe(0xcf);
   });
 
   test('loading a program writes its bytes and sets IP to 2000h', () => {
-    const m = machineFor('ORG 1000h\nN DB 7\nORG 2000h\nMOV AL, N\nHLT\nEND');
+    const m = machineFor('ORG 1000h\nN DB 7\nORG 2000h\nMOV AL, N\nINT 0\nEND');
     expect(m.cpu.mem[0x1000]).toBe(7);
     expect(m.cpu.mem[0x2000]).toBe(0x8a);
     expect(m.cpu.ip).toBe(0x2000);
@@ -36,7 +38,7 @@ describe('machine: the fetch-decode-execute cycle', () => {
   });
 
   test('each phase shows its part of the cycle', () => {
-    let m = machineFor('MOV AX, 1234h\nADD AX, 1\nHLT\nEND');
+    let m = machineFor('MOV AX, 1234h\nADD AX, 1\nINT 0\nEND');
     expect(EXECUTION_CYCLE).toHaveLength(5);
 
     m = stepPhase(m); // fetch
@@ -65,22 +67,29 @@ describe('machine: the fetch-decode-execute cycle', () => {
     expect(m.alu).toEqual({ OP1: 0x1234, OP2: 1, RES: 0x1235 });
   });
 
-  test('HLT stops the machine with a message', () => {
-    const m = runAll(machineFor('MOV AL, 1\nHLT\nEND'));
-    expect(m.state).toBe('STOPPED');
+  test('HLT waits for an interrupt, with a message, even when none can come (as MSX88)', () => {
+    const m = runAll(machineFor('MOV AL, 1\nCLI\nHLT\nEND'));
+    expect(m.state).toBe('RUNNING');
+    expect(m.cpuHalted).toBe(true);
     expect(m.message).toMatch(/HLT/);
     expect(m.error).toBe(null);
   });
 
+  test('INT 0 stops the machine with a message', () => {
+    const m = runAll(machineFor('MOV AL, 1\nINT 0\nEND'));
+    expect(m.state).toBe('STOPPED');
+    expect(m.message).toMatch(/INT 0/);
+  });
+
   test('INT 3 pauses the machine', () => {
-    const m = runAll(machineFor('INT 3\nMOV AL, 1\nHLT\nEND'));
+    const m = runAll(machineFor('INT 3\nMOV AL, 1\nINT 0\nEND'));
     expect(m.state).toBe('PAUSED');
     expect(m.message).toMatch(/INT 3/);
     expect(m.cpu.ip).toBe(0x2002);
   });
 
   test('a runtime error stops the machine with the message', () => {
-    const program = assemble('NOP\nHLT\nEND');
+    const program = assemble('NOP\nINT 0\nEND');
     program.memory.set(0x2000, 0x0f);
     const m = runAll(start(loadProgram(createMachine(), program)));
     expect(m.state).toBe('STOPPED');
@@ -89,13 +98,13 @@ describe('machine: the fetch-decode-execute cycle', () => {
 
   test('INT 7 output goes to the console', () => {
     const m = runAll(machineFor('ORG 1000h\nM DB "ok"\nORG 2000h\nMOV BX, OFFSET M\nMOV AL, 2\nINT 7\nINT 0\nEND'));
-    expect(m.output).toBe('ok');
+    expect(m.output).toBe('ok\n'); // one line per INT 7
   });
 });
 
 describe('machine: step back (a snapshot per instruction)', () => {
   test('restores registers, memory and IP of the previous instruction', () => {
-    let m = machineFor('ORG 1000h\nV DB 1\nORG 2000h\nMOV AL, 5\nMOV V, AL\nHLT\nEND');
+    let m = machineFor('ORG 1000h\nV DB 1\nORG 2000h\nMOV AL, 5\nMOV V, AL\nINT 0\nEND');
     m = stepInstruction(m);
     m = stepInstruction(m);
     expect(m.cpu.mem[0x1000]).toBe(5);
@@ -113,7 +122,7 @@ describe('machine: step back (a snapshot per instruction)', () => {
   });
 
   test('in the middle of an instruction, goes back to its start', () => {
-    let m = stepInstruction(machineFor('MOV AL, 5\nMOV BL, 6\nHLT\nEND'));
+    let m = stepInstruction(machineFor('MOV AL, 5\nMOV BL, 6\nINT 0\nEND'));
     m = stepPhase(stepPhase(stepPhase(m)));
     expect(m.cpu.ip).toBe(0x2004);
     m = stepBack(m);
@@ -121,8 +130,8 @@ describe('machine: step back (a snapshot per instruction)', () => {
     expect(m.phase).toBe(0);
   });
 
-  test('after HLT, stepping back lets the program continue', () => {
-    let m = runAll(machineFor('MOV AL, 1\nHLT\nEND'));
+  test('after INT 0, stepping back lets the program continue', () => {
+    let m = runAll(machineFor('MOV AL, 1\nINT 0\nEND'));
     m = stepBack(m);
     expect(m.state).toBe('PAUSED');
     expect(m.message).toBe(null);
@@ -131,7 +140,7 @@ describe('machine: step back (a snapshot per instruction)', () => {
   });
 
   test('history is bounded', () => {
-    const m = runAll(machineFor(`MOV CX, ${HISTORY_LIMIT + 10}\nL: DEC CX\nJNZ L\nHLT\nEND`), 100000);
+    const m = runAll(machineFor(`MOV CX, ${HISTORY_LIMIT + 10}\nL: DEC CX\nJNZ L\nINT 0\nEND`), 100000);
     expect(m.history.length).toBe(HISTORY_LIMIT);
   });
 });

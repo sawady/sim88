@@ -2,7 +2,8 @@
 //
 //   20h EOI   write 20h at the end of an interrupt routine: clears the ISR
 //             bit of the interrupt in service
-//   21h IMR   mask: bit n = 1 masks INTn (all unmasked after reset)
+//   21h IMR   mask: bit n = 1 masks INTn (all masked after reset: FFh, as
+//             MSX88 V-3.1 reads it; tests/fidelity, io-ports-initial-c0)
 //   22h IRR   requests: bit n = 1 when INTn asked for an interrupt
 //   23h ISR   in service: bit n = 1 while INTn is being serviced
 //   24h-2Bh   INT0..INT7: the vector number (interrupt type) of each line
@@ -14,7 +15,7 @@
 export const PIC_BASE = 0x20;
 export const EOI_COMMAND = 0x20;
 
-export const initialPic = () => ({ imr: 0, irr: 0, isr: 0, vectors: [0, 0, 0, 0, 0, 0, 0, 0] });
+export const initialPic = () => ({ imr: 0xff, irr: 0, isr: 0, vectors: [0, 0, 0, 0, 0, 0, 0, 0] });
 
 const lowestBit = (value) => {
   for (let n = 0; n < 8; n++) if (value & (1 << n)) return n;

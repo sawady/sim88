@@ -1,4 +1,6 @@
-// Printer (MSX88 manual 7.9): ASCII, 20 columns, a buffer of 5 characters.
+// Printer (MSX88 manual 7.9): ASCII, 20 columns, a buffer of 4 characters
+// (on MSX88 V-3.1 BUSY goes to 1 when the 4th character arrives before
+// anything is printed: tests/fidelity, exp-printer-buffer).
 // It is driven through a Centronics interface: STROBE (data valid) and
 // BUSY (it cannot take data: the buffer is full).
 //
@@ -7,7 +9,7 @@
 // program has to wait for BUSY.
 
 export const PRINTER_COLUMNS = 20;
-export const PRINTER_BUFFER = 5;
+export const PRINTER_BUFFER = 4;
 export const PRINT_INTERVAL = 8; // instructions per printed character, by default
 
 export const initialPrinter = (interval = PRINT_INTERVAL) => ({

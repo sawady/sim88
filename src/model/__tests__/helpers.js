@@ -1,6 +1,6 @@
 // Test helpers: assemble and run programs headlessly.
 import { assemble } from '../assembler';
-import { createCpu, step, readReg, getFlag, MEMORY_SIZE } from '../cpu';
+import { createCpu, step, readReg, getFlag, initialMemory } from '../cpu';
 import { hex8 } from '../format';
 
 export const hex = (s) => parseInt(s, 16);
@@ -16,8 +16,10 @@ export function bytes(source) {
 // Bytes of a single instruction / line assembled at 2000h.
 export const encode = (line) => bytes(`ORG 2000h\n${line}\nEND`);
 
+// A CPU with MSX88's initial memory (the vector table of the monitor) plus
+// `memoryBytes`.
 export function cpuWith(memoryBytes = {}, { ip = 0x2000, regs = {}, flags = 0 } = {}) {
-  const mem = new Uint8Array(MEMORY_SIZE);
+  const mem = initialMemory();
   for (const [address, value] of Object.entries(memoryBytes)) mem[Number(address)] = value;
   const cpu = createCpu({ mem, ip });
   return { ...cpu, regs: { ...cpu.regs, ...regs }, flags };
@@ -30,16 +32,17 @@ export const cpuWithCode = (codeBytes, options) =>
 // Assembles and runs until HLT / INT 0, at the CPU level.
 export function run(source, { maxInstructions = 10000 } = {}) {
   const program = assemble(source);
-  const mem = new Uint8Array(MEMORY_SIZE);
+  const mem = initialMemory();
   for (const [address, byte] of program.memory) mem[address] = byte;
   let cpu = createCpu({ mem, ip: program.entry });
-  let output = [];
+  let output = '';
   for (let i = 0; i < maxInstructions; i++) {
     const result = step(cpu);
     cpu = result.cpu;
-    output = output.concat(result.events.output);
+    // one line per INT 7
+    output += result.events.output.map((line) => `${String.fromCharCode(...line)}\n`).join('');
     if (result.events.halted) {
-      return { cpu, halted: result.events.halted, output: String.fromCharCode(...output), program, steps: i + 1 };
+      return { cpu, halted: result.events.halted, output, program, steps: i + 1 };
     }
   }
   throw new Error(`Program did not halt after ${maxInstructions} instructions`);

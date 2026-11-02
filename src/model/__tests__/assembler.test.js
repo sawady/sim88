@@ -95,7 +95,7 @@ describe('assembler: 8086 encoding, as in the ASM88 listings', () => {
     expect(encode('IRET')).toEqual(['CF']);
     expect(encode('CLI')).toEqual(['FA']);
     expect(encode('STI')).toEqual(['FB']);
-    expect(encode('NOP')).toEqual(['98']); // MSX88 manual
+    expect(encode('NOP')).toEqual(['90']); // ASM88 (the manual says 98h)
     expect(encode('HLT')).toEqual(['F4']);
   });
 
@@ -112,12 +112,12 @@ describe('assembler: 8086 encoding, as in the ASM88 listings', () => {
     expect(bytes('ORG 2000h\nSUMA: INC AL\nCMP AL, AH\nJNZ SUMA\nEND')).toEqual([
       'FE', 'C0', '3A', 'C4', '75', 'FA',
     ]);
-    expect(bytes('ORG 2000h\nJZ FIN\nNOP\nFIN: HLT\nEND')).toEqual(['74', '01', '98', 'F4']);
+    expect(bytes('ORG 2000h\nJZ FIN\nNOP\nFIN: HLT\nEND')).toEqual(['74', '01', '90', 'F4']);
     // POLL at 2008h: `200C E9 08 20  JMP POLL` in the UNLP listings
     expect(bytes('ORG 2000h\nMOV AX, 1\nMOV BX, 1\nNOP\nNOP\nPOLL: NOP\nNOP\nNOP\nNOP\nJMP POLL\nEND').slice(-3)).toEqual([
       'E9', '08', '20',
     ]);
-    expect(bytes('ORG 2000h\nJMP FIN\nNOP\nFIN: HLT\nEND')).toEqual(['E9', '04', '20', '98', 'F4']);
+    expect(bytes('ORG 2000h\nJMP FIN\nNOP\nFIN: HLT\nEND')).toEqual(['E9', '04', '20', '90', 'F4']);
     expect(bytes('ORG 2000h\nCALL RUT\nHLT\nORG 3000h\nRUT: RET\nEND')).toEqual([
       'E8', '00', '30', 'F4', 'C3',
     ]);

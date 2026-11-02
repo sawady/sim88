@@ -4,8 +4,11 @@
 //   32h CA, 33h CB   direction of each bit: 1 input, 0 output (all inputs
 //                    after reset)
 //
-// Reading a port gives the outside world on its input bits and the latched
-// value on its output bits. What is outside depends on the configuration:
+// Reading PA gives the outside world on its input bits and the latched value
+// on its output bits. Nothing drives PB from outside (LEDs, printer data):
+// reading it gives the latch on every bit, also on the input ones, as MSX88
+// does (tests/fidelity: pio-pb-input). What is outside depends on the
+// configuration:
 //   0: switches on PA, LEDs on PB
 //   1: printer: PA0 BUSY (input), PA1 STROBE (output), PB the data
 
@@ -39,7 +42,7 @@ export const pio = {
       case 0:
         return portValue(pa, ca, outsideA(devices));
       case 1:
-        return portValue(pb, cb, 0);
+        return pb;
       case 2:
         return ca;
       default:

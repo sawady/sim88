@@ -40,7 +40,7 @@ describe('I/O bus: IN and OUT', () => {
         OUT PORT, AL
         MOV DX, 30h
         IN AL, DX
-        HLT
+        INT 0
         END`)
     );
     expect(readReg(m.cpu, 'BL')).toBe(0x5a);
@@ -49,24 +49,24 @@ describe('I/O bus: IN and OUT', () => {
   });
 
   test('16 bit IN reads two consecutive ports (little endian)', () => {
-    const m = runAll(machineFor('IN AX, 31h\nHLT\nEND'));
+    const m = runAll(machineFor('IN AX, 31h\nINT 0\nEND'));
     expect(readReg(m.cpu, 'AX')).toBe(0x1234);
   });
 
-  test('a port with no device reads FFh and ignores writes', () => {
-    const m = runAll(machineFor('MOV AL, 1\nOUT 40h, AL\nIN AL, 40h\nHLT\nEND'));
-    expect(readReg(m.cpu, 'AL')).toBe(0xff);
+  test('a port with no device reads 00h and ignores writes', () => {
+    const m = runAll(machineFor('MOV AL, 1\nOUT 40h, AL\nIN AL, 40h\nINT 0\nEND'));
+    expect(readReg(m.cpu, 'AL')).toBe(0x00);
   });
 
   test('step back undoes device state too', () => {
-    let m = machineFor('MOV AL, 1\nOUT 30h, AL\nHLT\nEND');
+    let m = machineFor('MOV AL, 1\nOUT 30h, AL\nINT 0\nEND');
     m = stepInstruction(stepInstruction(m));
     expect(m.devices.latch).toBe(1);
     expect(stepBack(m).devices.latch).toBe(0x5a);
   });
 
   test('devices tick once per instruction', () => {
-    const m = runAll(machineFor('NOP\nNOP\nNOP\nHLT\nEND'));
+    const m = runAll(machineFor('NOP\nNOP\nNOP\nINT 0\nEND'));
     expect(m.devices.ticks).toBe(4);
   });
 
@@ -83,7 +83,7 @@ describe('INT 6: reads a key into [BX]', () => {
     MOV BX, OFFSET CAR
     INT 6
     MOV AL, CAR
-    HLT
+    INT 0
     END`;
 
   test('waits for a key, then stores it', () => {

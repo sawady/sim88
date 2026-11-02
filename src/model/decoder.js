@@ -43,7 +43,13 @@ export function decode(mem, address) {
     modrm = parseModRM(next());
   }
 
-  if (!entry) {
+  // The SX88 reaches memory only directly (mod 00, r/m 110) or through BX
+  // (mod 00, r/m 111). MSX88 does not recognize any other ModRM memory mode,
+  // like 00 00 (ADD [BX+SI], AL on an 8086): it stops with "código 0 no
+  // reconocido" (the ModRM byte) and IP after the ModRM byte
+  // (tests/fidelity: opcode-00, modrm-bx-disp, modrm-si).
+  const sx88Mode = !modrm || modrm.mod === 3 || (modrm.mod === 0 && modrm.rm >= 6);
+  if (!entry || !sx88Mode) {
     const length = modrm ? 2 : 1;
     return finish(mem, address, length, {
       opcode,

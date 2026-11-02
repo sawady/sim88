@@ -76,15 +76,15 @@ describe('App', () => {
     expect(screen.getByLabelText('Programa').value).toMatch(/TABLA/);
   });
 
-  test('runs the default example to HLT', async () => {
+  test('runs the default example to HLT, where the CPU waits (as MSX88)', async () => {
     const store = await renderApp();
     fireEvent.click(screen.getByRole('button', { name: 'F5 Ejecutar' }));
-    for (let i = 0; i < 60 && store.getState().machine.state === 'RUNNING'; i++) {
+    for (let i = 0; i < 60 && !store.getState().machine.cpuHalted; i++) {
       await act(async () => {
         vi.advanceTimersByTime(store.getState().machine.velocity * 10);
       });
     }
-    expect(screen.getByRole('status').textContent).toMatch(/Programa terminado \(HLT\)/);
+    expect(screen.getByRole('status').textContent).toMatch(/HLT: la CPU espera una interrupción/);
     expect(registerValue('AX')).toBe('00 0F');
   });
 

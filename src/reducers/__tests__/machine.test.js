@@ -27,7 +27,7 @@ describe('machine controls (actions + reducer)', () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => vi.useRealTimers());
 
-  test('start runs one phase per velocity tick until HLT', () => {
+  test('start runs one phase per velocity tick; at HLT the CPU waits (as MSX88)', () => {
     const store = newStore();
     store.dispatch(start(PROGRAM));
     expect(store.getState().machine.state).toBe('RUNNING');
@@ -36,7 +36,7 @@ describe('machine controls (actions + reducer)', () => {
     expect(AL(store)).toBe(1);
     vi.advanceTimersByTime(velocity * 100);
     expect(AL(store)).toBe(3);
-    expect(store.getState().machine.state).toBe('STOPPED');
+    expect(store.getState().machine.cpuHalted).toBe(true);
     expect(store.getState().machine.message).toMatch(/HLT/);
   });
 
@@ -83,9 +83,10 @@ describe('machine controls (actions + reducer)', () => {
     expect(store.getState().machine.cpu.ip).toBe(0x2002);
   });
 
-  test('stepping through HLT stops the machine', () => {
+  test('stepping through INT 0 stops the machine', () => {
     const store = newStore();
-    for (let i = 0; i < 4; i++) store.dispatch(stepInstruction(PROGRAM));
+    const program = PROGRAM.replace('HLT', 'INT 0');
+    for (let i = 0; i < 4; i++) store.dispatch(stepInstruction(program));
     expect(store.getState().machine.state).toBe('STOPPED');
   });
 

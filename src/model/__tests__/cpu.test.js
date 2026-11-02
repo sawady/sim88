@@ -13,18 +13,23 @@ describe('CPU: initial state and memory', () => {
     expect(cpu.ip).toBe(CODE_START);
     expect(cpu.regs.SP).toBe(STACK_TOP);
     expect(STACK_TOP).toBe(0x8000);
-    expect(cpu.flags).toBe(0);
+    expect(cpu.flags).toBe(0x0200); // I = 1, as MSX88 starts
+    // The monitor's vector table: INT 0/3/6/7 lead to an IRET at 4n+2
+    expect([...cpu.mem.slice(0, 0x20)]).toEqual([
+      0x02, 0, 0xcf, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x0e, 0, 0xcf, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0x1a, 0, 0xcf, 0, 0x1e, 0, 0xcf, 0,
+    ]);
   });
 
   test('execution never mutates the previous state; memory is copied only on writes', () => {
-    const before = cpuWithCode([0xb0, 0x05, 0x88, 0x07]); // MOV AL, 5 / MOV [BX], AL
+    const before = cpuWithCode([0xb0, 0x05, 0x88, 0x07], { regs: { BX: 0x1000 } }); // MOV AL, 5 / MOV [BX], AL
     const first = step(before);
     expect(reg(before, 'AL')).toBe(0);
     expect(first.cpu.mem).toBe(before.mem); // no write: shared
     const second = step(first.cpu);
     expect(second.cpu.mem).not.toBe(first.cpu.mem);
-    expect(byteAt(second.cpu, 0)).toBe(5);
-    expect(byteAt(first.cpu, 0)).toBe(0);
+    expect(byteAt(second.cpu, 0x1000)).toBe(5);
+    expect(byteAt(first.cpu, 0x1000)).toBe(0);
   });
 
   test('an unknown opcode is a clear error', () => {
@@ -94,10 +99,35 @@ describe('CPU: END, HLT and INT 0', () => {
     expect(reg(result.cpu, 'AL')).toBe(1);
   });
 
-  test('without HLT the CPU keeps running: 00 00 is ADD [BX+SI], AL', () => {
-    const { cpu, events } = step(cpuWithCode([0x00, 0x00], { regs: { AX: 3 } }));
+  test('without HLT or INT 0 the CPU runs into 00 00, which MSX88 does not recognize ([BX+SI])', () => {
+    expect(() => step(cpuWithCode([0x00, 0x00], { regs: { AX: 3 } }))).toThrow(/Unknown opcode 0h at 2000h/);
+    // 00 07 is ADD [BX], AL, an SX88 instruction
+    const { cpu, events } = step(cpuWithCode([0x00, 0x07], { regs: { AX: 3, BX: 0x1000 } }));
     expect(events.halted).toBe(null);
-    expect(byteAt(cpu, 0)).toBe(3);
+    expect(byteAt(cpu, 0x1000)).toBe(3);
+  });
+
+  test('INT 0 goes through the stack like MSX88: IP and flags stay below SP', () => {
+    const result = run('MOV AL, 1\nINT 0\nEND');
+    expect(result.cpu.regs.SP).toBe(0x8000);
+    expect(result.cpu.ip).toBe(0x2004);
+    expect(wordAt(result.cpu, 0x7ffc)).toBe(0x2004); // pushed IP
+    expect(wordAt(result.cpu, 0x7ffe)).toBe(0x0200); // pushed flags
+  });
+
+  test('a program that replaces the vector of INT 7 gets its own routine', () => {
+    const result = run(`
+      ORG 1CH
+      DW MIA
+      ORG 3000H
+      MIA: MOV DX, 7777H
+      IRET
+      ORG 2000H
+      INT 7
+      INT 0
+      END`);
+    expect(reg(result.cpu, 'DX')).toBe(0x7777);
+    expect(result.output).toBe('');
   });
 
   test('INT 3 is a breakpoint', () => {
@@ -164,9 +194,9 @@ describe('CPU: ALU instructions and flags', () => {
     expect(flag(cpu, 'Z')).toBe(true);
   });
 
-  test('INC and DEC keep the carry flag', () => {
+  test('INC and DEC clear the carry flag, as MSX88', () => {
     const { cpu } = run('MOV AL, 0FFh\nADD AL, 1\nINC BL\nHLT\nEND');
-    expect(flag(cpu, 'C')).toBe(true);
+    expect(flag(cpu, 'C')).toBe(false);
     expect(flag(cpu, 'Z')).toBe(false);
   });
 
@@ -302,7 +332,7 @@ describe('CPU: stack, subroutines and interrupts', () => {
       int 7
       int 0
       end`);
-    expect(result.output).toBe('Hola');
+    expect(result.output).toBe('Hola\n'); // one line per INT 7, as on MSX88
   });
 
   test('CLI and STI', () => {

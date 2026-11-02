@@ -9,8 +9,13 @@
 //                 1 memory -> peripheral, 0 peripheral -> memory), bit 3 MT
 //                 (1 block, 0 on demand)
 //                 read: the bits written, bit 0 = 1 while paused, bit 7 TC
-//                 (transfer finished)
-//   57h           any access starts (or resumes) the transfer
+//                 (transfer finished; 1 after a reset, as on MSX88)
+//   57h           any access, IN or OUT, starts (or resumes) the transfer
+//
+// Memory to memory in block mode moves the whole block at once: on MSX88 the
+// instruction after the start already reads TC = 1 and CONT = 0
+// (tests/fidelity: cdma-mem-mem, cdma-start-by-read). On demand, and with
+// the peripheral, it moves one byte per instruction.
 //
 // The peripheral is the HAND (and its printer): its INT line is DREQ, so a
 // transfer to the printer waits while the printer is busy. When CONT gets to
@@ -22,7 +27,7 @@ import { requestInterrupt } from './pic';
 
 export const CDMA_BASE = 0x50;
 
-export const initialCdma = () => ({ rf: 0, cont: 0, rd: 0, ctrl: 0, running: false, paused: false, tc: false });
+export const initialCdma = () => ({ rf: 0, cont: 0, rd: 0, ctrl: 0, running: false, paused: false, tc: true });
 
 const withCdma = (devices, changes) => ({ ...devices, cdma: { ...devices.cdma, ...changes } });
 
@@ -52,7 +57,7 @@ export const cdma = {
       case 6:
         return (ctrl & 0x0e) | (paused ? 1 : 0) | (tc ? 0x80 : 0);
       default:
-        return 0xff; // reading 57h also starts: see machine reads below
+        return 0xff;
     }
   },
   write(devices, port, value) {
@@ -76,32 +81,45 @@ export const cdma = {
         return start(devices);
     }
   },
-  // One byte per instruction while running.
+  afterRead: (devices, port) => (port === CDMA_BASE + 7 ? start(devices) : devices),
   tick(devices, memory) {
     const state = devices.cdma;
     if (!state.running || state.paused || state.cont === 0) return devices;
     const memoryToMemory = (state.ctrl & 2) !== 0;
-    const toPeripheral = (state.ctrl & 4) !== 0;
-    let next = devices;
-    if (memoryToMemory) {
-      memory.write(state.rd, memory.read(state.rf));
-      next = withCdma(next, { rf: (state.rf + 1) & 0xffff, rd: (state.rd + 1) & 0xffff });
-    } else {
-      if (!handInterruptLine(devices)) return devices; // DREQ inactive: wait
-      if (toPeripheral) {
-        const byte = memory.read(state.rf);
-        next = printerReceive({ ...next, hand: { ...next.hand, data: byte } }, byte);
-      } else {
-        memory.write(state.rf, devices.hand.data);
-      }
-      next = withCdma(next, { rf: (state.rf + 1) & 0xffff });
+    const block = (state.ctrl & 8) !== 0;
+    if (memoryToMemory && block) {
+      let next = devices;
+      while (next.cdma.running) next = transferByte(next, memory);
+      return next;
     }
-    const cont = (state.cont - 1) & 0xffff;
-    next = withCdma(next, { cont });
-    if (cont === 0) {
-      next = withCdma(next, { running: false, tc: true });
-      next = requestInterrupt(next, 3);
-    }
-    return next;
+    return transferByte(devices, memory);
   },
 };
+
+// Moves one byte.
+function transferByte(devices, memory) {
+  const state = devices.cdma;
+  const memoryToMemory = (state.ctrl & 2) !== 0;
+  const toPeripheral = (state.ctrl & 4) !== 0;
+  let next = devices;
+  if (memoryToMemory) {
+    memory.write(state.rd, memory.read(state.rf));
+    next = withCdma(next, { rf: (state.rf + 1) & 0xffff, rd: (state.rd + 1) & 0xffff });
+  } else {
+    if (!handInterruptLine(devices)) return devices; // DREQ inactive: wait
+    if (toPeripheral) {
+      const byte = memory.read(state.rf);
+      next = printerReceive({ ...next, hand: { ...next.hand, data: byte } }, byte);
+    } else {
+      memory.write(state.rf, devices.hand.data);
+    }
+    next = withCdma(next, { rf: (state.rf + 1) & 0xffff });
+  }
+  const cont = (state.cont - 1) & 0xffff;
+  next = withCdma(next, { cont });
+  if (cont === 0) {
+    next = withCdma(next, { running: false, tc: true });
+    next = requestInterrupt(next, 3);
+  }
+  return next;
+}

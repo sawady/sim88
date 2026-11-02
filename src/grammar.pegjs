@@ -74,6 +74,8 @@ DataList
 DataItem
   = "?" { return node('uninit', {}); }
   / count:Expr _ "DUP"i _ "(" _ values:DataList _ ")" { return node('dup', { count, values }); }
+  // ASM88 also takes DUP without a count, as one copy (tests/fidelity: asm-dup-no-count).
+  / "DUP"i _ "(" _ values:DataList _ ")" { return node('dup', { count: node('number', { value: 1 }), values }); }
   / String
   / Expr
 

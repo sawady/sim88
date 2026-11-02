@@ -10,6 +10,7 @@
 //     ports: [30h, 31h, ...],                  the ports it answers
 //     read(devices, port) -> byte              IN
 //     write(devices, port, byte) -> devices    OUT (returns a new object)
+//     afterRead(devices, port) -> devices      optional: what an IN does to it
 //     tick(devices, memory) -> devices         optional: one step of time,
 //                                              after every instruction
 //   }
@@ -18,10 +19,10 @@
 // { read(address), write(address, byte) }.
 //
 // Device state is part of every machine snapshot, so "step back" undoes I/O
-// too. Ports nobody answers read as FFh (nothing drives the bus) and ignore
-// writes.
+// too. Ports nobody answers read as 00h and ignore writes (as MSX88 does:
+// tests/fidelity, io-ports-initial-c0).
 
-export const UNMAPPED_PORT_VALUE = 0xff;
+export const UNMAPPED_PORT_VALUE = 0x00;
 
 export function createBus(devices = [], initialState = {}) {
   const byPort = new Map();
@@ -53,7 +54,9 @@ export function busIO(bus, devices, input) {
       const device = bus.deviceAt(port);
       if (!device) return UNMAPPED_PORT_VALUE;
       io.accessed.add(device.name);
-      return device.read(io.devices, port) & 0xff;
+      const value = device.read(io.devices, port) & 0xff;
+      if (device.afterRead) io.devices = device.afterRead(io.devices, port);
+      return value;
     },
     out(port, value) {
       const device = bus.deviceAt(port);

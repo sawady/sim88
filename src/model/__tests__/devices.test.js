@@ -139,8 +139,14 @@ describe('PIC', () => {
     expect([pic.read(d, 0x21), pic.read(d, 0x24), pic.read(d, 0x2b)]).toEqual([0xfe, 10, 99]);
   });
 
+  test('every line is masked after a reset (IMR = FFh, as MSX88)', () => {
+    const d = initialDevices(0);
+    expect(pic.read(d, 0x21)).toBe(0xff);
+    expect(pendingInterrupt(requestInterrupt(d, 0))).toBe(null);
+  });
+
   test('priority: INT0 first; masked lines wait; in-service blocks lower priorities', () => {
-    let d = initialDevices(0);
+    let d = pic.write(initialDevices(0), 0x21, 0);
     d = requestInterrupt(requestInterrupt(d, 3), 1);
     expect(pendingInterrupt(d)).toBe(1);
     d = pic.write(d, 0x21, 0b0010); // mask INT1
@@ -205,8 +211,10 @@ describe('PIC', () => {
   });
 
   test('step back undoes the acceptance of an interrupt', () => {
-    let m = machineFor('ORG 40\nDW RUT\nORG 3000h\nRUT: IRET\nORG 2000h\nMOV AL, 10\nOUT 24h, AL\nSTI\nL: JMP L\nEND');
-    m = runInstructions(m, 4);
+    let m = machineFor(
+      'ORG 40\nDW RUT\nORG 3000h\nRUT: IRET\nORG 2000h\nMOV AL, 0FEh\nOUT 21h, AL\nMOV AL, 10\nOUT 24h, AL\nSTI\nL: JMP L\nEND'
+    );
+    m = runInstructions(m, 6);
     m = stepPhase(pressF10(m));
     expect(m.cpu.ip).toBe(0x3000);
     m = stepBack(m);
@@ -215,16 +223,20 @@ describe('PIC', () => {
   });
 });
 
+// MSX88 waits after HLT even when no interrupt can come: only ESC ends it
+// (tests/fidelity: hlt-cli, hlt-sti, loop-sum-table).
 describe('HLT', () => {
-  test('ends the program when no interrupt can arrive (I = 0)', () => {
-    const m = runUntil(machineFor('MOV AL, 1\nHLT\nEND'));
-    expect(m.state).toBe('STOPPED');
-    expect(m.message).toMatch(/terminado \(HLT\)/);
+  test('waits even when no interrupt can arrive (I = 0)', () => {
+    const m = runInstructions(machineFor('MOV AL, 1\nCLI\nHLT\nEND'), 50);
+    expect(m.state).toBe('RUNNING');
+    expect(m.cpuHalted).toBe(true);
+    expect(m.cpu.ip).toBe(0x2004);
   });
 
-  test('ends the program when every connected line is masked', () => {
-    const m = runUntil(machineFor('MOV AL, 0FFh\nOUT 21h, AL\nSTI\nHLT\nEND'));
-    expect(m.state).toBe('STOPPED');
+  test('waits when every line is masked', () => {
+    const m = runInstructions(machineFor('MOV AL, 0FFh\nOUT 21h, AL\nSTI\nHLT\nEND'), 50);
+    expect(m.state).toBe('RUNNING');
+    expect(m.cpuHalted).toBe(true);
   });
 
   test('with interrupts enabled, waits for one and continues after IRET', () => {
@@ -237,6 +249,8 @@ describe('HLT', () => {
            OUT PIC, AL
            IRET
       ORG 2000h
+           MOV AL, 0FEh
+           OUT IMR, AL
            MOV AL, 10
            OUT INT0, AL
            STI
@@ -244,7 +258,7 @@ describe('HLT', () => {
            MOV CL, 2
            INT 0
            END`);
-    m = runInstructions(m, 4);
+    m = runInstructions(m, 6);
     expect(m.cpuHalted).toBe(true);
     expect(m.state).toBe('RUNNING');
     expect(m.message).toMatch(/espera una interrupción/);
@@ -548,9 +562,9 @@ describe('printer', () => {
 });
 
 describe('printer speed', () => {
-  // Sends "ABCDE" (the whole buffer) through the HAND, then counts instructions.
+  // Sends "ABCD" (the whole buffer) through the HAND, then counts instructions.
   const PRINT = `ORG 1000h
-        T DB "ABCDE"
+        T DB "ABCD"
         F DB ?
         ORG 2000h
               MOV BX, OFFSET T
@@ -561,12 +575,12 @@ describe('printer speed', () => {
               JNZ L
         W:    JMP W
               END`;
-  // Instructions until the five characters are on the paper.
+  // Instructions until the four characters are on the paper.
   const instructionsToPrint = (interval) => {
     let m = machineFor(PRINT, 2);
     if (interval) m = setPrintInterval(m, interval);
     let n = 0;
-    while (m.devices.printer.paper !== 'ABCDE') {
+    while (m.devices.printer.paper !== 'ABCD') {
       m = stepInstruction(m);
       n += 1;
       if (n > 10000) throw new Error('did not print');
@@ -576,14 +590,14 @@ describe('printer speed', () => {
 
   test(`prints one character every ${PRINT_INTERVAL} instructions by default`, () => {
     const n = instructionsToPrint();
-    expect(n).toBeGreaterThanOrEqual(5 * PRINT_INTERVAL);
-    expect(n).toBeLessThanOrEqual(5 * PRINT_INTERVAL + 25);
+    expect(n).toBeGreaterThanOrEqual(4 * PRINT_INTERVAL);
+    expect(n).toBeLessThanOrEqual(4 * PRINT_INTERVAL + 25);
   });
 
   test.each([1, 2, 16, 32])('one character every %s instructions', (interval) => {
     const n = instructionsToPrint(interval);
-    expect(n).toBeGreaterThanOrEqual(5 * interval);
-    expect(n).toBeLessThanOrEqual(5 * interval + 25);
+    expect(n).toBeGreaterThanOrEqual(4 * interval);
+    expect(n).toBeLessThanOrEqual(4 * interval + 25);
   });
 
   test('a faster printer finishes first', () => {

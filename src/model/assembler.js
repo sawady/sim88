@@ -14,7 +14,9 @@
 //   strict: MSX88 strict mode. Rejects what SIM88 accepts as extensions to
 //           the MSX88 dialect: character literals ('A'), single-quoted
 //           strings, direct addresses in brackets ([1000h]), and * and / in
-//           expressions.
+//           expressions. Names are case sensitive, as in ASM88 (`lazo:` and
+//           `JNZ LAZO` give "Etiqueta no definida"; tests/fidelity:
+//           asm-case-labels). Outside strict mode they are not.
 //
 // Pass 0 learns the kind of every symbol (code label, data label, constant),
 // so pass 1 can size every instruction before knowing addresses: a data label
@@ -35,24 +37,26 @@ const DIRECTIVES = ['ORG', 'END', 'DB', 'DW', 'EQU', 'OFFSET', 'PTR', 'BYTE', 'W
 export function assemble(source, { strict = false } = {}) {
   const { statements, ended } = parse(source);
   if (!ended) fail('END is missing: the program must finish with the END directive.', undefined);
-  const symbols = collectSymbols(statements);
-  const ctx = { symbols, strict };
+  const key = strict ? (name) => name : (name) => name.toUpperCase();
+  const symbols = collectSymbols(statements, key);
+  const ctx = { symbols, strict, key };
   pass1(statements, ctx);
   return pass2(statements, ctx);
 }
 
 // ------------------------------------------------------------------ pass 0
 
-function collectSymbols(statements) {
+function collectSymbols(statements, keyOf) {
   const symbols = {};
   const define = (name, kind, size, line) => {
-    const key = name.toUpperCase();
-    if (ASM_REGISTERS.includes(key) || REG16.includes(key)) {
+    const upper = name.toUpperCase();
+    if (ASM_REGISTERS.includes(upper) || REG16.includes(upper)) {
       fail(`${name} is a register name and cannot be used as a name.`, line);
     }
-    if (MNEMONICS.includes(key) || DIRECTIVES.includes(key)) {
+    if (MNEMONICS.includes(upper) || DIRECTIVES.includes(upper)) {
       fail(`${name} is a reserved word and cannot be used as a name.`, line);
     }
+    const key = keyOf(name);
     if (symbols[key]) fail(`${name} is already defined (line ${symbols[key].line}).`, line);
     symbols[key] = { name, kind, size, line, value: undefined };
   };
@@ -84,7 +88,7 @@ function evaluate(expr, ctx, line, { partial = false, visiting = new Set() } = {
     }
     case 'offset':
     case 'symbol': {
-      const symbol = ctx.symbols[expr.name.toUpperCase()];
+      const symbol = ctx.symbols[ctx.key(expr.name)];
       if (!symbol) fail(`${expr.name} is not defined.`, line);
       let value = symbol.value;
       if (symbol.kind === 'const') value = constantValue(symbol, ctx, partial, visiting);
@@ -316,18 +320,18 @@ function pass1(statements, ctx) {
   for (const statement of statements) {
     const { label, body, line } = statement;
     if (body && body.kind === 'equ') {
-      ctx.symbols[body.name.toUpperCase()].expr = body.value;
+      ctx.symbols[ctx.key(body.name)].expr = body.value;
       continue;
     }
     if (body && body.kind === 'org') {
       address = evaluateNow(body.value, ctx, line, 'ORG');
       if (address < 0 || address > 0xffff) fail(`ORG ${asmHex(address)} is outside the memory (0000h-FFFFh).`, line);
     }
-    if (label) ctx.symbols[label.toUpperCase()].value = address;
+    if (label) ctx.symbols[ctx.key(label)].value = address;
     statement.address = address;
     if (!body) continue;
     if (body.kind === 'data') {
-      if (body.name) ctx.symbols[body.name.toUpperCase()].value = address;
+      if (body.name) ctx.symbols[ctx.key(body.name)].value = address;
       statement.length = dataLength(body, ctx, line);
     } else if (body.kind === 'instruction') {
       statement.plan = plan(statement, ctx);

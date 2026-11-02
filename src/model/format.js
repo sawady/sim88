@@ -17,3 +17,16 @@ export const toSigned = (value, size) => {
   const sign = 1 << (size - 1);
   return value & sign ? value - (1 << size) : value;
 };
+
+// Code page 437, the character set of MSX88's screen (a DOS program): control
+// codes are drawn as symbols (0Dh is ♪, 0Ah is ◙), not obeyed.
+const CP437_LOW = ' ☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼';
+const CP437_HIGH =
+  '⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀' +
+  'αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■\u00a0';
+
+export function cp437(bytes) {
+  return bytes
+    .map((b) => (b < 0x20 ? CP437_LOW[b] : b < 0x7f ? String.fromCharCode(b) : CP437_HIGH[b - 0x7f]))
+    .join('');
+}

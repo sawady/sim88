@@ -125,10 +125,11 @@ row(0xee, 'OUT', ['DX', 'AL']);
 row(0xef, 'OUT', ['DX', 'AX']);
 
 // Control
-// The MSX88 manual encodes NOP as 98h (CBW on an 8086). 90h, the 8086 NOP,
-// is still decoded as NOP.
-row(0x98, 'NOP');
-row(0x90, 'NOP', [], { asm: false });
+// NOP is 90h, as on the 8086: ASM88 emits 90h and MSX88 runs it
+// (tests/fidelity: nop). The MSX88 manual gives 10011000 (98h), a misprint;
+// 98h is still decoded as NOP.
+row(0x90, 'NOP');
+row(0x98, 'NOP', [], { asm: false });
 row(0xf4, 'HLT');
 
 export const ROWS = rows;

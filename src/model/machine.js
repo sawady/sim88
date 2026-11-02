@@ -7,9 +7,10 @@
 // `history`, which is what stepBack() restores. Snapshots are cheap because
 // memory is copied only when an instruction writes it (see cpu.js).
 
-import { createCpu, execute, getFlag, hardwareInterrupt, MEMORY_SIZE } from './cpu';
+import { createCpu, execute, getFlag, hardwareInterrupt, initialMemory } from './cpu';
 import { decode } from './decoder';
 import { busIO } from './io';
+import { cp437 } from './format';
 import {
   createSystem,
   pendingInterrupt,
@@ -66,7 +67,7 @@ export const createMachine = ({ config = 0, bus = createSystem(config) } = {}) =
 // Loads an assembled program (see assembler.js) into a fresh memory. The
 // switches keep their position and the printer its speed.
 export function loadProgram(machine, program) {
-  const mem = new Uint8Array(MEMORY_SIZE);
+  const mem = initialMemory();
   for (const [address, byte] of program.memory) mem[address] = byte;
   let devices = machine.bus.initialState();
   if (devices.printer && machine.devices.printer) {
@@ -123,12 +124,6 @@ function tickDevices(machine) {
 function acceptedInterrupt(machine) {
   if (!machine.devices.pic || !getFlag(machine.cpu, 'I')) return null;
   return pendingInterrupt(machine.devices);
-}
-
-// Can an interrupt ever end a HLT? I is set and some connected line is unmasked.
-function canBeInterrupted(machine) {
-  if (!machine.devices.pic || !getFlag(machine.cpu, 'I')) return false;
-  return ((machine.bus.lines || 0) & ~machine.devices.pic.imr) !== 0;
 }
 
 // ------------------------------------------------------------ cycle phases
@@ -231,9 +226,8 @@ function fetchOperands(machine) {
 function executeInstruction(machine) {
   const { cpu, events, devices, input, accessed } = machine.pending;
   const alu = events.alu ? { ...machine.alu, RES: events.alu.result } : machine.alu;
-  const output = events.output.length
-    ? machine.output + String.fromCharCode(...events.output)
-    : machine.output;
+  // Every INT 7 writes one line, as MSX88's screen does.
+  const output = events.output.reduce((text, line) => `${text}${cp437(line)}\n`, machine.output);
   const executed = { ...machine, cpu, devices };
   const ticked = tickDevices(executed);
   const next = {
@@ -251,7 +245,9 @@ function executeInstruction(machine) {
     ],
     activeMemory: [...events.memoryWrites, ...ticked.writes],
   };
-  if (events.halted === 'HLT' && canBeInterrupted(next)) {
+  // HLT always waits for an interrupt, even when none can arrive (I = 0, or
+  // every line masked): on MSX88 only ESC ends it (tests/fidelity: hlt-cli).
+  if (events.halted === 'HLT') {
     return {
       ...next,
       cpuHalted: true,

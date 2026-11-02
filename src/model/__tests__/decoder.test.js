@@ -40,13 +40,18 @@ describe('decoder', () => {
     });
     expect(at(0x8a, 0x06, 0x00, 0x10)).toMatchObject({ length: 4, text: 'MOV AL, [1000h]' });
     expect(at(0xc6, 0x07, 0x58)).toMatchObject({ length: 3, text: 'MOV BYTE PTR [BX], 58h' });
-    expect(at(0x8a, 0x47, 0xfe).text).toBe('MOV AL, [BX - 2h]');
-    expect(at(0x8b, 0x87, 0x00, 0x01).text).toBe('MOV AX, [BX + 100h]');
-    expect(at(0x8b, 0x00).text).toBe('MOV AX, [BX + SI]');
+  });
+
+  test('other ModRM memory modes are not SX88 instructions: opcode and ModRM, as MSX88 stops', () => {
+    // MSX88: "código 47 no reconocido", IP after the ModRM byte (tests/fidelity: modrm-bx-disp)
+    expect(at(0x8a, 0x47, 0xfe)).toMatchObject({ mnemonic: null, length: 2 });
+    expect(at(0x8b, 0x87, 0x00, 0x01)).toMatchObject({ mnemonic: null, length: 2 });
+    expect(at(0x8a, 0x04)).toMatchObject({ mnemonic: null, length: 2 }); // [SI]
+    expect(at(0x00, 0x00)).toMatchObject({ mnemonic: null, length: 2 }); // ADD [BX + SI], AL
   });
 
   test('00 is ADD r/m8, r8, as on an 8086', () => {
-    expect(at(0x00, 0x00)).toMatchObject({ mnemonic: 'ADD', length: 2, text: 'ADD [BX + SI], AL' });
+    expect(at(0x00, 0x07)).toMatchObject({ mnemonic: 'ADD', length: 2, text: 'ADD [BX], AL' });
   });
 
   test('groups use the ModRM reg field (80 /4 = AND)', () => {

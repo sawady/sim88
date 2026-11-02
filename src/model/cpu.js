@@ -23,6 +23,27 @@ export const STACK_TOP = 0x8000;
 
 export const FLAG_BITS = { C: 0, P: 2, A: 4, Z: 6, S: 7, T: 8, I: 9, D: 10, O: 11 };
 
+// MSX88 starts with interrupts enabled (I = 1) and every other flag cleared
+// (seen on MSX88 V-3.1: tests/fidelity, init-state).
+export const INITIAL_FLAGS = 1 << FLAG_BITS.I;
+
+// The system interrupts of the MSX88 monitor (INT 0, 3, 6 and 7). Their
+// vectors point into the vector table itself, at 4n+2, where the monitor keeps
+// an IRET (CFh): MSX88's memory starts as 02 00 CF 00 at 0, 0E 00 CF 00 at 0Ch,
+// 1A 00 CF 00 at 18h and 1E 00 CF 00 at 1Ch, and zeros everywhere else.
+export const SYSTEM_VECTORS = [0, 3, 6, 7];
+const IRET_OPCODE = 0xcf;
+const systemVectorTarget = (n) => 4 * n + 2;
+
+export function initialMemory() {
+  const mem = new Uint8Array(MEMORY_SIZE);
+  for (const n of SYSTEM_VECTORS) {
+    mem[4 * n] = systemVectorTarget(n);
+    mem[4 * n + 2] = IRET_OPCODE;
+  }
+  return mem;
+}
+
 export class CpuError extends Error {
   constructor(message, address) {
     super(message);
@@ -31,12 +52,12 @@ export class CpuError extends Error {
   }
 }
 
-export function createCpu({ mem = new Uint8Array(MEMORY_SIZE), ip = CODE_START } = {}) {
+export function createCpu({ mem = initialMemory(), ip = CODE_START } = {}) {
   return {
     mem,
     regs: { AX: 0, BX: 0, CX: 0, DX: 0, SP: STACK_TOP, BP: 0, SI: 0, DI: 0 },
     ip,
-    flags: 0,
+    flags: INITIAL_FLAGS,
   };
 }
 
@@ -80,7 +101,7 @@ class Execution {
       registers: new Set(), // registers read or written
       memoryReads: [],
       memoryWrites: [],
-      output: [], // bytes written to the console (INT 7)
+      output: [], // lines written to the console (INT 7), as arrays of bytes
       needsInput: false, // INT 6 found no key: the instruction must be retried
       ports: [], // { port, value, direction: 'in' | 'out' }
     };
@@ -212,7 +233,14 @@ const CONDITIONS = {
   JG: (f) => !f('Z') && f('S') === f('O'),
 };
 
-// System interrupts handled by the MSX88 monitor (they don't use the vector table).
+// System interrupts handled by the MSX88 monitor. On MSX88, INT 0/3/6/7 go
+// through the vector table like any INT: the flags and IP are pushed, and
+// the vector leads to the monitor's IRET at 4n+2, which returns. The monitor
+// does its job in between. So the stack keeps the pushed IP and flags (below
+// SP), SP and the flags end as they were, and IP points after the INT.
+// A program that replaces one of those vectors gets its own routine and no
+// monitor service (tests/fidelity: int-vector-0-replaced). Hardware
+// interrupts with those types only run the IRET (pic-hw-type-0, -7).
 const SYSTEM_INTERRUPTS = {
   0: (x) => {
     x.events.halted = 'INT 0';
@@ -221,7 +249,7 @@ const SYSTEM_INTERRUPTS = {
     x.events.breakpoint = true;
   },
   6: (x) => {
-    // INT 6: waits for a key and stores its code at the address in BX.
+    // INT 6: waits for a key and stores its code at the address in BX (no echo).
     const code = x.io.readChar();
     if (code === undefined) {
       x.events.needsInput = true;
@@ -230,10 +258,13 @@ const SYSTEM_INTERRUPTS = {
     x.writeMem(x.reg('BX'), 8, code);
   },
   7: (x) => {
-    // INT 7: writes AL bytes starting at the address in BX.
+    // INT 7: writes AL bytes starting at the address in BX, as one line of
+    // the console (an empty one if AL = 0).
     const count = x.reg('AL');
     const start = x.reg('BX');
-    for (let i = 0; i < count; i++) x.events.output.push(x.readMem(start + i, 8));
+    const line = [];
+    for (let i = 0; i < count; i++) line.push(x.readMem(start + i, 8));
+    x.events.output.push(line);
   },
 };
 
@@ -245,6 +276,19 @@ function enterInterrupt(x, n) {
   x.setFlags({ I: false, T: false });
   x.push(x.ip);
   x.ip = x.readMem(n * 4, 16);
+}
+
+function returnFromInterrupt(x) {
+  x.ip = x.pop();
+  x.flags = x.pop();
+}
+
+function softwareInterrupt(x, n) {
+  enterInterrupt(x, n);
+  if (SYSTEM_INTERRUPTS[n] && x.ip === systemVectorTarget(n) && x.readMem(x.ip, 8) === IRET_OPCODE) {
+    SYSTEM_INTERRUPTS[n](x);
+    returnFromInterrupt(x);
+  }
 }
 
 // A hardware interrupt accepted between instructions (vector = the type the
@@ -285,7 +329,8 @@ const EXECUTORS = {
     ])
   ),
 
-  PUSH: (x, [src]) => x.push(x.read(src)),
+  // PUSH SP pushes 0000h on MSX88 (tests/fidelity: stack-push-sp).
+  PUSH: (x, [src]) => x.push(src.type === 'reg' && src.name === 'SP' ? 0 : x.read(src)),
   POP: (x, [dst]) => x.write(dst, x.pop()),
   PUSHF: (x) => x.push(x.flags),
   POPF: (x) => {
@@ -312,15 +357,8 @@ const EXECUTORS = {
     if (release) x.setReg('SP', x.regs.SP + release.value);
   },
 
-  INT: (x, [number]) => {
-    const n = number.value;
-    if (SYSTEM_INTERRUPTS[n]) return SYSTEM_INTERRUPTS[n](x);
-    return enterInterrupt(x, n);
-  },
-  IRET: (x) => {
-    x.ip = x.pop();
-    x.flags = x.pop();
-  },
+  INT: (x, [number]) => softwareInterrupt(x, number.value),
+  IRET: (x) => returnFromInterrupt(x),
   IN: (x, [dst, port], size) => {
     const address = port.type === 'imm' ? port.value : x.reg('DX');
     let value = x.io.in(address) & 0xff;
@@ -345,6 +383,7 @@ const EXECUTORS = {
 };
 
 export const IMPLEMENTED = Object.keys(EXECUTORS);
+
 
 // Executes one decoded instruction. IP must already point to the next one
 // (the machine increments it after decoding, as the real cycle does).
