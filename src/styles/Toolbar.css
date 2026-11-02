@@ -1,12 +1,27 @@
 .toolbar {
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
 }
-.toolbar .strict {
+
+.toolbar button,
+.toolbar label {
+  white-space: nowrap;
+}
+.toolbar .config {
   display: flex;
   align-items: center;
   gap: 4px;
   margin-left: auto;
+  font-family: monospace;
+  color: #555555;
+}
+
+.toolbar .strict {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   padding: 0 8px;
   font-family: monospace;
   color: #555555;

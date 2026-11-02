@@ -34,7 +34,9 @@ It follows the dialect and conventions of MSX88: data at `ORG 1000h`, code at `O
 - Addressing modes: immediate, register, direct (`VAR`, `[1000h]`) and indirect through `[BX]`.
 - Flags Z, S, O, C, A, P and I; 64 KB of memory; interrupt vector table; INT 0 (end),
   INT 3 (breakpoint), INT 6 (read a key) and INT 7 (write to the screen).
-- `IN` / `OUT` on an I/O bus ready for peripherals.
+- `IN` / `OUT` and the MSX88 peripherals, in its four configurations (toolbar): PIO with
+  switches and LEDs, PIC (F10 key, `HLT` waits for an interrupt), timer, printer through the
+  PIO or the handshake (HAND), and the DMA controller (CDMA).
 - Execution animated phase by phase (fetch, decode, IP, operands, execute) at adjustable
   speed, or step by step: one instruction, one phase, or **one instruction back**.
 
@@ -43,7 +45,6 @@ character literals (`'A'`), single-quoted strings, direct addresses in brackets 
 `*` / `/` in expressions. Where MSX88 differs from a real 8086, SIM88 follows MSX88: `JMP` and
 `CALL` carry an absolute address and `NOP` is 98h, so the bytes match ASM88 listings.
 
-Not yet: the peripherals (PIO with LEDs and switches, PIC, timer, handshake, printer, CDMA).
 Where SIM88 is not sure to behave like MSX88, PROGRESS.md lists it under "Open questions".
 
 ## Example
@@ -82,7 +83,8 @@ npm run preview  # serve the production build
 
 Keyboard shortcuts (the ones MSX88 has work the same): `F5` run / pause / resume,
 `F6` micro-step (one phase of the cycle), `F7` step (one instruction), `Shift+F7` step back,
-`Esc` stop, `F8` reset, `+` / `-` (or `Ctrl+Alt+I` / `Ctrl+Alt+D`) faster/slower,
+`Esc` stop, `F8` reset, `F10` interrupt (PIC INT0), `0`–`7` flip the switches,
+`+` / `-` (or `Ctrl+Alt+I` / `Ctrl+Alt+D`) faster/slower,
 `Ctrl+N` new, `Ctrl+O` open, `Ctrl+S` save, `Ctrl+Shift+S` save as.
 
 ## Project layout
@@ -95,6 +97,8 @@ src/model/isa.js         instruction table shared by the assembler and the decod
 src/model/decoder.js     8086 decoder (opcode table + ModRM)
 src/model/alu.js         pure 8/16 bit ALU with flags
 src/model/cpu.js         CPU state (64 KB Uint8Array) and instruction execution
+src/model/io.js          I/O bus (IN/OUT) and the device interface
+src/model/devices/       MSX88 peripherals (PIC, timer, PIO, HAND, printer, CDMA) and configurations
 src/model/machine.js     the fetch-decode-execute cycle as the UI shows it, history for step back
 src/model/__tests__/     model tests
 src/actions, reducers    Redux glue

@@ -14,6 +14,7 @@ import {
 } from '@mdi/js';
 
 import { MACHINE_STATES } from '../model/constants';
+import { CONFIGURATIONS } from '../model/devices';
 
 import '../styles/Toolbar.css';
 
@@ -51,6 +52,16 @@ export default function Toolbar(props) {
       <ToolbarButton icon={mdiStepBackward} onClick={props.stepBack} title="Shift+F7: deshace la última instrucción">Atrás</ToolbarButton>
       <ToolbarButton icon={mdiStop} onClick={props.stop} title="Esc">Detener</ToolbarButton>
       <ToolbarButton icon={mdiSync} onClick={props.reset} title="F8">Resetear</ToolbarButton>
+      <label className="config" title="Conexionado de MSX88 (periféricos)">
+        Conexionado
+        <select value={props.config} onChange={(ev) => props.setConfig(Number(ev.target.value))}>
+          {Object.entries(CONFIGURATIONS).map(([n, c]) => (
+            <option key={n} value={n}>
+              {n}: {c.name}
+            </option>
+          ))}
+        </select>
+      </label>
       <label className="strict" title="Rechaza las extensiones de SIM88: 'A', [1000h], * y /">
         <input
           type="checkbox"

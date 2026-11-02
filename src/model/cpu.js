@@ -237,6 +237,24 @@ const SYSTEM_INTERRUPTS = {
   },
 };
 
+// Interrupt entry, for INT n and for the PIC: push the flags and IP, clear I
+// and T, and jump to the routine in the vector table (4 bytes per vector; the
+// first word is the address of the routine: MSX88 has no segments).
+function enterInterrupt(x, n) {
+  x.push(x.flags);
+  x.setFlags({ I: false, T: false });
+  x.push(x.ip);
+  x.ip = x.readMem(n * 4, 16);
+}
+
+// A hardware interrupt accepted between instructions (vector = the type the
+// PIC gives).
+export function hardwareInterrupt(cpu, vector) {
+  const x = new Execution(cpu, null, NO_IO);
+  enterInterrupt(x, vector);
+  return x.result();
+}
+
 const EXECUTORS = {
   MOV: (x, [dst, src]) => x.write(dst, x.read(src)),
 
@@ -297,13 +315,7 @@ const EXECUTORS = {
   INT: (x, [number]) => {
     const n = number.value;
     if (SYSTEM_INTERRUPTS[n]) return SYSTEM_INTERRUPTS[n](x);
-    // Other interrupts go through the vector table: 4 bytes per vector, the
-    // first word is the address of the routine (MSX88 has no segments).
-    x.push(x.flags);
-    x.setFlags({ I: false, T: false });
-    x.push(x.ip);
-    x.ip = x.readMem(n * 4, 16);
-    return undefined;
+    return enterInterrupt(x, n);
   },
   IRET: (x) => {
     x.ip = x.pop();

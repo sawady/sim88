@@ -4,7 +4,18 @@ import { thunk } from 'redux-thunk';
 
 import reducers from '..';
 import { setStrict } from '../../actions/editor';
-import { start, stepInstruction, stepPhase, stepBack, pause, resume, reset } from '../../actions/machine';
+import {
+  start,
+  stepInstruction,
+  stepPhase,
+  stepBack,
+  pause,
+  resume,
+  reset,
+  setConfig,
+  pressF10,
+  toggleSwitch,
+} from '../../actions/machine';
 import { readReg } from '../../model/cpu';
 
 const PROGRAM = 'ORG 2000h\nMOV AL, 1\nMOV AL, 2\nMOV AL, 3\nHLT\nEND';
@@ -94,6 +105,26 @@ describe('machine controls (actions + reducer)', () => {
     store.dispatch(setStrict(false));
     store.dispatch(start("ORG 2000h\nMOV AL, 'A'\nHLT\nEND"));
     expect(store.getState().editor.error).toBe(undefined);
+  });
+
+  test('configuration, switches, F10 and the 1 Hz timer clock', () => {
+    const store = newStore();
+    store.dispatch(setConfig(2));
+    expect(store.getState().machine.bus.config).toBe(2);
+    store.dispatch(reset());
+    expect(store.getState().machine.bus.config).toBe(2); // reset keeps it
+    store.dispatch(setConfig(0));
+    store.dispatch(toggleSwitch(1));
+    expect(store.getState().machine.devices.switches).toBe(2);
+    store.dispatch(pressF10());
+    expect(store.getState().machine.devices.pic.irr).toBe(1);
+
+    store.dispatch(start('ORG 2000h\nL: JMP L\nEND'));
+    vi.advanceTimersByTime(3000);
+    expect(store.getState().machine.devices.timer.cont).toBe(3);
+    store.dispatch(pause());
+    vi.advanceTimersByTime(3000);
+    expect(store.getState().machine.devices.timer.cont).toBe(3); // no clock while paused
   });
 
   test('reset clears the machine but keeps the speed', () => {

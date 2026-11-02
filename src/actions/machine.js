@@ -5,6 +5,10 @@ const makeErrorMessage = (e) =>
   e.line ? `Error en la línea ${e.line}: ${e.message}` : `Error: ${e.message}`;
 
 let TIMER;
+// The timer's 1 Hz clock runs in real time while the program runs.
+let CLOCK;
+
+const stopClock = () => clearInterval(CLOCK);
 
 export const SHOW_ERROR = 'SHOW_ERROR';
 export const LOAD_PROGRAM = 'LOAD_PROGRAM';
@@ -17,12 +21,21 @@ export const RESUME = 'RESUME';
 export const PAUSE = 'PAUSE';
 export const RESET = 'RESET';
 export const TYPE_KEY = 'TYPE_KEY';
+export const PRESS_F10 = 'PRESS_F10';
+export const TIMER_PULSE = 'TIMER_PULSE';
+export const TOGGLE_SWITCH = 'TOGGLE_SWITCH';
+export const SET_CONFIG = 'SET_CONFIG';
 export const DECREASE_VELOCITY = 'DECREASE_VELOCITY';
 export const INCREASE_VELOCITY = 'INCREASE_VELOCITY';
 
 // Runs one phase of the cycle every `velocity` ms while the machine runs.
 const runLoop = () => (dispatch, getState) => {
   clearTimeout(TIMER);
+  stopClock();
+  CLOCK = setInterval(() => {
+    if (getState().machine.state === MACHINE_STATES.RUNNING) dispatch({ type: TIMER_PULSE });
+    else stopClock();
+  }, 1000);
   const tick = () => {
     if (getState().machine.state !== MACHINE_STATES.RUNNING) return;
     dispatch({ type: STEP_PHASE });
@@ -81,6 +94,7 @@ export const stepBack = () => (dispatch) => {
 
 export const stop = () => {
   clearTimeout(TIMER);
+  stopClock();
   return { type: STOP };
 };
 
@@ -91,6 +105,7 @@ export const resume = () => (dispatch) => {
 
 export const pause = () => {
   clearTimeout(TIMER);
+  stopClock();
   return { type: PAUSE };
 };
 
@@ -105,8 +120,25 @@ export const increaseVelocity = () => changeVelocity(INCREASE_VELOCITY);
 
 export const reset = () => {
   clearTimeout(TIMER);
+  stopClock();
   return { type: RESET };
 };
 
 // A key typed on the simulated keyboard (read by INT 6).
 export const typeKey = (code) => ({ type: TYPE_KEY, code });
+
+// F10: interrupt request on INT0 of the PIC (as in MSX88).
+export const pressF10 = () => ({ type: PRESS_F10 });
+
+// A pulse of the timer clock by hand (while paused or stepping).
+export const timerPulse = () => ({ type: TIMER_PULSE });
+
+// Switch n of the switch bar (keys 0-7 in MSX88).
+export const toggleSwitch = (n) => ({ type: TOGGLE_SWITCH, n });
+
+// MSX88 configuration (0-3): resets the machine with its peripherals.
+export const setConfig = (config) => {
+  clearTimeout(TIMER);
+  stopClock();
+  return { type: SET_CONFIG, config };
+};

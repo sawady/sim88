@@ -10,6 +10,10 @@ import {
   STEP_PHASE,
   STOP,
   TYPE_KEY,
+  PRESS_F10,
+  TIMER_PULSE,
+  TOGGLE_SWITCH,
+  SET_CONFIG,
 } from '../actions/machine';
 import {
   createMachine,
@@ -23,6 +27,9 @@ import {
   stepPhase,
   stop,
   typeKey,
+  pressF10,
+  timerPulse,
+  toggleSwitch,
 } from '../model/machine';
 import { MACHINE_STATES } from '../model/constants';
 
@@ -50,8 +57,16 @@ export default (machine = createMachine(), action) => {
       return machine.program ? stepBack(machine) : machine;
     case TYPE_KEY:
       return machine.state === MACHINE_STATES.STOPPED ? machine : typeKey(machine, action.code);
+    case PRESS_F10:
+      return pressF10(machine);
+    case TIMER_PULSE:
+      return timerPulse(machine);
+    case TOGGLE_SWITCH:
+      return toggleSwitch(machine, action.n);
+    case SET_CONFIG:
+      return { ...createMachine({ config: action.config }), velocity: machine.velocity };
     case RESET:
-      return { ...createMachine(), velocity: machine.velocity };
+      return { ...createMachine({ config: machine.bus.config }), velocity: machine.velocity };
     case INCREASE_VELOCITY:
       return increaseVelocity(machine);
     case DECREASE_VELOCITY:

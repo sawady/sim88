@@ -1,0 +1,107 @@
+.peripherals {
+  margin-top: 20px;
+  padding: 8px;
+  background: #00a8a8;
+  box-shadow: 8px 8px rgba(0, 0, 0, 0.5);
+}
+
+.peripherals .heading {
+  background-color: green;
+  display: inline-block;
+  padding: 0 6px;
+  margin-bottom: 8px;
+}
+
+.peripherals .devices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.peripherals .device {
+  background: royalblue;
+  border: 1px solid white;
+  border-radius: 4px;
+  padding: 6px;
+  min-width: 110px;
+}
+
+.peripherals .device.active {
+  background: tomato;
+}
+
+.peripherals .device .title {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.peripherals .device .subtitle {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.peripherals .registers {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 2px 8px;
+  font-family: monospace;
+}
+
+.peripherals .reg .name {
+  font-style: italic;
+  margin-right: 4px;
+}
+
+.peripherals .action {
+  margin-top: 6px;
+  background: white;
+  color: black;
+  border-radius: 3px;
+  padding: 2px 8px;
+}
+
+.peripherals .leds,
+.peripherals .switches {
+  display: flex;
+  gap: 4px;
+  margin: 4px 0;
+}
+
+.peripherals .led {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #400;
+  border: 1px solid #222;
+}
+
+.peripherals .led.on {
+  background: #ff3030;
+  box-shadow: 0 0 6px #ff3030;
+}
+
+.peripherals .switch {
+  width: 18px;
+  height: 26px;
+  padding: 0;
+  justify-content: center;
+  background: #333;
+  color: white;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.peripherals .switch.on {
+  background: gold;
+  color: black;
+}
+
+.peripherals .paper {
+  background: #fffbe6;
+  color: black;
+  min-height: 3em;
+  width: 21ch;
+  margin: 4px 0 0;
+  padding: 4px;
+  white-space: pre;
+}

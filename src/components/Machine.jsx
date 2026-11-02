@@ -5,6 +5,7 @@ import { typeKey } from '../actions/machine';
 
 import CPU from './CPU';
 import Memory from './Memory';
+import Peripherals from './Peripherals';
 
 import '../styles/Machine.css';
 
@@ -66,6 +67,7 @@ export default function Machine() {
           {output}
         </pre>
       </div>
+      <Peripherals />
     </div>
   );
 }

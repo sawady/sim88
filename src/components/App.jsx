@@ -28,13 +28,16 @@ import {
   stepPhase,
   stepInstruction,
   stepBack,
+  pressF10,
+  toggleSwitch,
+  setConfig,
 } from '../actions/machine';
 
 import '../styles/App.css';
 
 // Keyboard shortcuts. The ones MSX88 defines are kept: F6 runs one phase of
-// the cycle, F7 one instruction, ESC ends the program (and, in task 27/28,
-// F10 interrupts and 0-7 toggle the switches).
+// the cycle, F7 one instruction, ESC ends the program, F10 interrupts (INT0
+// of the PIC) and 0-7 flip the switches.
 
 // Keys that must not be taken from the editor or the keyboard of INT 6.
 const isTyping = (ev) =>
@@ -52,6 +55,7 @@ export default function App() {
   const text = useSelector((state) => state.editor.text);
   const machineState = useSelector((state) => state.machine.state);
   const strict = useSelector((state) => state.editor.strict);
+  const config = useSelector((state) => state.machine.bus.config);
   const fileInput = useRef(null);
 
   const actions = {
@@ -76,6 +80,9 @@ export default function App() {
       else dispatch(start(text));
     },
     setStrict: (value) => dispatch(setStrict(value)),
+    setConfig: (value) => dispatch(setConfig(value)),
+    pressF10: () => dispatch(pressF10()),
+    toggleSwitch: (n) => dispatch(toggleSwitch(n)),
     increase: () => dispatch(increaseVelocity()),
     decrease: () => dispatch(decreaseVelocity()),
   };
@@ -98,14 +105,17 @@ export default function App() {
       [{ key: 'f7', shift: true }, a.stepBack],
       [{ key: 'escape' }, a.stop],
       [{ key: 'f8' }, a.reset],
+      [{ key: 'f10' }, a.pressF10],
       [{ key: 'i', ctrl: true, alt: true }, a.increase],
       [{ key: 'd', ctrl: true, alt: true }, a.decrease],
     ];
     // MSX88: + and - change the speed (not while typing)
+    // and 0-7 flip the switches
     const typingBindings = [
       [{ key: '+' }, a.increase],
       [{ key: '+', shift: true }, a.increase],
       [{ key: '-' }, a.decrease],
+      ...[0, 1, 2, 3, 4, 5, 6, 7].map((n) => [{ key: String(n) }, () => a.toggleSwitch(n)]),
     ];
     const found =
       bindings.find(([binding]) => matches(ev, binding)) ||
@@ -143,7 +153,7 @@ export default function App() {
         onChange={onFileChosen}
         accept=".txt,.asm"
       />
-      <Toolbar {...actions} machineState={machineState} strict={strict} />
+      <Toolbar {...actions} machineState={machineState} strict={strict} config={config} />
       <div className="main">
         <Editor />
         <Machine />

@@ -8,20 +8,20 @@ import { readReg } from '../cpu';
 const latch = {
   name: 'latch',
   ports: [0x30],
-  initial: 0x5a,
-  read: (state) => state,
-  write: (_state, _port, value) => value,
+  read: (devices) => devices.latch,
+  write: (devices, _port, value) => ({ ...devices, latch: value }),
 };
 const counter = {
   name: 'counter',
   ports: [0x31, 0x32],
-  initial: { reads: 0 },
-  read: (state, port) => (port === 0x31 ? 0x34 : 0x12),
-  write: (state) => ({ reads: state.reads + 1 }),
+  read: (_devices, port) => (port === 0x31 ? 0x34 : 0x12),
+  write: (devices) => ({ ...devices, writes: devices.writes + 1 }),
+  tick: (devices) => ({ ...devices, ticks: devices.ticks + 1 }),
 };
+const INITIAL = { latch: 0x5a, writes: 0, ticks: 0 };
 
 const machineFor = (source, devices = [latch, counter]) =>
-  start(loadProgram(createMachine({ bus: createBus(devices) }), assemble(source)));
+  start(loadProgram(createMachine({ bus: createBus(devices, INITIAL) }), assemble(source)));
 
 const runAll = (machine, max = 10000) => {
   let m = machine;
@@ -63,6 +63,11 @@ describe('I/O bus: IN and OUT', () => {
     m = stepInstruction(stepInstruction(m));
     expect(m.devices.latch).toBe(1);
     expect(stepBack(m).devices.latch).toBe(0x5a);
+  });
+
+  test('devices tick once per instruction', () => {
+    const m = runAll(machineFor('NOP\nNOP\nNOP\nHLT\nEND'));
+    expect(m.devices.ticks).toBe(4);
   });
 
   test('two devices cannot share a port', () => {

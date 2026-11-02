@@ -1,22 +1,29 @@
 // I/O bus: the ports that IN and OUT reach, and the devices plugged into them.
 //
-// A device is a plain object:
+// The state of all the devices is one plain object (`devices`, kept in the
+// machine), because MSX88's peripherals are wired together: the PIO or the
+// HAND drive the printer, the timer, the HAND and the CDMA request
+// interrupts from the PIC. A device is:
 //
 //   {
-//     name,                        key of its state in machine.devices
-//     ports: [30h, 31h, ...],      the ports it answers
-//     initial,                     its initial state
-//     read(state, port) -> byte    IN
-//     write(state, port, byte) -> new state   OUT (must not mutate `state`)
+//     name,
+//     ports: [30h, 31h, ...],                  the ports it answers
+//     read(devices, port) -> byte              IN
+//     write(devices, port, byte) -> devices    OUT (returns a new object)
+//     tick(devices, memory) -> devices         optional: one step of time,
+//                                              after every instruction
 //   }
 //
-// Device state lives in the machine, so it is part of every snapshot and
-// "step back" undoes I/O too. Ports nobody answers read as FFh (nothing
-// drives the bus) and ignore writes.
+// `memory` gives devices that use the buses (the CDMA) access to memory:
+// { read(address), write(address, byte) }.
+//
+// Device state is part of every machine snapshot, so "step back" undoes I/O
+// too. Ports nobody answers read as FFh (nothing drives the bus) and ignore
+// writes.
 
 export const UNMAPPED_PORT_VALUE = 0xff;
 
-export function createBus(devices = []) {
+export function createBus(devices = [], initialState = {}) {
   const byPort = new Map();
   for (const device of devices) {
     for (const port of device.ports) {
@@ -29,23 +36,30 @@ export function createBus(devices = []) {
   return {
     devices,
     deviceAt: (port) => byPort.get(port),
-    initialState: () => Object.fromEntries(devices.map((d) => [d.name, d.initial])),
+    initialState: () => initialState,
+    tick: (state, memory) =>
+      devices.reduce((s, device) => (device.tick ? device.tick(s, memory) : s), state),
   };
 }
 
 // The `io` the CPU uses during one instruction. It collects the new device
-// states and consumes keys from `input` (the keyboard buffer of INT 6).
+// state and consumes keys from `input` (the keyboard buffer of INT 6).
 export function busIO(bus, devices, input) {
   const io = {
-    devices: { ...devices },
+    devices,
     input: [...input],
+    accessed: new Set(), // names of the devices used, for the UI
     in(port) {
       const device = bus.deviceAt(port);
-      return device ? device.read(io.devices[device.name], port) & 0xff : UNMAPPED_PORT_VALUE;
+      if (!device) return UNMAPPED_PORT_VALUE;
+      io.accessed.add(device.name);
+      return device.read(io.devices, port) & 0xff;
     },
     out(port, value) {
       const device = bus.deviceAt(port);
-      if (device) io.devices[device.name] = device.write(io.devices[device.name], port, value & 0xff);
+      if (!device) return;
+      io.accessed.add(device.name);
+      io.devices = device.write(io.devices, port, value & 0xff);
     },
     readChar() {
       return io.input.length ? io.input.shift() : undefined;

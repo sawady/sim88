@@ -117,11 +117,22 @@ Taken by Federico Sawady on 2026-11-02.
 - [x] **26. IN, OUT and an I/O bus** · Deps: 16
   Port map with an interface to plug peripherals (`src/model/io.js`); device state lives in the
   machine, so step back undoes I/O. Unmapped ports read FFh ⚠️ (open question 8).
-- [ ] **27. PIO, LED bar and switches** · Deps: 26
-- [ ] **28. PIC and the INT/NMI lines** · Deps: 24, 26
-- [ ] **29. Timer** · Deps: 28
-- [ ] **30. Handshake and Centronics printer** · Deps: 26, 28
-- [ ] **31. CDMA** · Deps: 30, 10
+- [x] **27. PIO, LED bar and switches** · Deps: 26
+  MSX88 configurations 0–3 selectable in the toolbar; PIO at 30h–33h (CA/CB: 1 = input);
+  configuration 0 has switches on PA (buttons or keys 0–7) and LEDs on PB.
+- [x] **28. PIC and the INT/NMI lines** · Deps: 24, 26
+  PIC at 20h–2Bh (EOI, IMR, IRR, ISR, INT0–INT7 vectors), fixed priority with nesting, F10 on
+  INT0. The CPU accepts a request between instructions when I = 1 (shown as its own step).
+  `HLT` waits for an interrupt when one can arrive, else it ends the program. NMI: not used by
+  any MSX88 peripheral, not implemented.
+- [x] **29. Timer** · Deps: 28
+  CONT/COMP at 10h–11h, 1 Hz clock in real time while running (and a "Pulso" button), INT1.
+- [x] **30. Handshake and Centronics printer** · Deps: 26, 28
+  Printer of 20 columns with a 5 character buffer, through the PIO (configuration 1: PA0 BUSY,
+  PA1 STROBE, PB data) or the HAND (40h–41h; configuration 2, by polling or by INT2).
+- [x] **31. CDMA** · Deps: 30, 10
+  50h–57h, configuration 3: memory to memory, and memory to/from the HAND on demand (DREQ is
+  the HAND's INT line); TC requests INT3.
 
 ## UX and infrastructure (can run in parallel)
 
@@ -167,8 +178,28 @@ Resolved by Federico on 2026-11-02 (decisions 5 and 6): JMP/CALL absolute, NOP 9
    clears I, and jumps to the word at 4·n. IRET pops IP and the flags. This matches the MSX88
    manual; INT 0, 3, 6 and 7 are handled by the simulator itself (the "monitor").
 8. **Unmapped I/O ports** read FFh and ignore writes.
+9. **HLT** (rule given by Federico): if I = 1 and some PIC line with something connected (F10 and
+   the timer always; the HAND in configuration 2, the CDMA in 3) is unmasked, the CPU waits for
+   an interrupt, as the MSX88 manual says; otherwise the program ends.
+10. **Timer clock**: 1 Hz in real time while the program runs (not while paused); the "Pulso"
+    button gives a pulse by hand. The timer does not reset CONT by itself: the interrupt routine
+    writes 0, as the course programs do.
+11. **Printer speed**: it prints one character every 8 instructions; BUSY means its 5 character
+    buffer is full, and a character sent while BUSY is lost.
+12. **HAND interrupts** are level triggered: the request stays while bit 7 is set and the printer
+    is not busy (so after the EOI the next character is requested).
+13. **CDMA**: one byte per instruction (the CPU is not held); a transfer starts by writing port
+    57h (the manual says any access; reading 57h does not start it here). Peripheral to memory
+    reads the HAND's DATO.
+14. **Hardware interrupts** always go through the vector table, also for types 0, 3, 6 and 7.
+15. **Configuration 1 printer**: STROBE is PA1 and a character is taken on its rising edge.
 
 ## Log
+
+- 2026-11-02: peripherals (tasks 27–31): the four MSX88 configurations, PIO with LEDs and
+  switches, PIC with F10 and the HLT rule, timer, printer through the PIO or the HAND, CDMA.
+  Peripherals panel in the UI. Checked in headless Chromium: switches to LEDs, F10 interrupt,
+  printing with the HAND, strict mode.
 
 - 2026-11-02: fidelity rule (decision 5): absolute `JMP`/`CALL`, `NOP` = 98h; MSX88 strict mode
   (decision 6); MSX88 shortcuts (F5 run/pause, F6 cycle step, F7 instruction step, Esc stop,
