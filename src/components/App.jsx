@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { Suspense, lazy, useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Toolbar from './Toolbar';
-import Editor from './Editor';
 import Machine from './Machine';
 
 import { MACHINE_STATES } from '../model/constants';
@@ -36,6 +35,9 @@ import {
 } from '../actions/machine';
 
 import '../styles/App.css';
+
+// The Ace editor is most of the bundle: it loads in its own chunk.
+const Editor = lazy(() => import('./Editor'));
 
 // Keyboard shortcuts. The ones MSX88 defines are kept: F6 runs one phase of
 // the cycle, F7 one instruction, ESC ends the program, F10 interrupts (INT0
@@ -163,7 +165,9 @@ export default function App() {
       />
       <Toolbar {...actions} machineState={machineState} strict={strict} config={config} />
       <div className="main">
-        <Editor />
+        <Suspense fallback={<div className="editor-loading">Cargando el editor…</div>}>
+          <Editor />
+        </Suspense>
         <Machine />
       </div>
     </div>

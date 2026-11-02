@@ -22,3 +22,11 @@ button {
 button:hover {
   color: black;
 }
+
+.editor-loading {
+  width: 100%;
+  padding: 16px;
+  background: #272822;
+  color: #75715e;
+  font-family: monospace;
+}

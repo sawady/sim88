@@ -24,8 +24,9 @@ export default defineConfig({
   base: './',
   plugins: [peggyGrammar(), react()],
   build: {
-    // The Ace editor alone is ~600 kB; the app is a single page anyway.
-    chunkSizeWarningLimit: 1000,
+    // The main chunk is ~300 kB; only the lazily loaded Ace editor chunk
+    // (~590 kB) goes over Vite's default 500 kB warning.
+    chunkSizeWarningLimit: 650,
   },
   test: {
     environment: 'node',
