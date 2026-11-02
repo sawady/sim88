@@ -15,6 +15,7 @@ import {
 
 import { MACHINE_STATES } from '../model/constants';
 import { CONFIGURATIONS } from '../model/devices';
+import { EXAMPLES } from '../examples';
 
 import '../styles/Toolbar.css';
 
@@ -52,6 +53,20 @@ export default function Toolbar(props) {
       <ToolbarButton icon={mdiStepBackward} onClick={props.stepBack} title="Shift+F7: deshace la última instrucción">Atrás</ToolbarButton>
       <ToolbarButton icon={mdiStop} onClick={props.stop} title="Esc">Detener</ToolbarButton>
       <ToolbarButton icon={mdiSync} onClick={props.reset} title="F8">Resetear</ToolbarButton>
+      <label className="examples" title="Programas de ejemplo, uno por tema">
+        <select
+          value=""
+          aria-label="Ejemplos"
+          onChange={(ev) => ev.target.value && props.loadExample(ev.target.value)}
+        >
+          <option value="">Ejemplos…</option>
+          {EXAMPLES.map((e) => (
+            <option key={e.id} value={e.id}>
+              {e.title}
+            </option>
+          ))}
+        </select>
+      </label>
       <label className="config" title="Conexionado de MSX88 (periféricos)">
         Conexionado
         <select value={props.config} onChange={(ev) => props.setConfig(Number(ev.target.value))}>

@@ -6,6 +6,7 @@ import Editor from './Editor';
 import Machine from './Machine';
 
 import { MACHINE_STATES } from '../model/constants';
+import { EXAMPLES } from '../examples';
 import {
   DEFAULT_FILE_NAME,
   setTitle,
@@ -13,7 +14,8 @@ import {
   readFile,
   writeFile,
   writeNewFile,
-  loadDefaultProgram,
+  loadInitialProgram,
+  loadExample,
   setStrict,
   loadStrictPreference,
 } from '../actions/editor';
@@ -81,6 +83,12 @@ export default function App() {
     },
     setStrict: (value) => dispatch(setStrict(value)),
     setConfig: (value) => dispatch(setConfig(value)),
+    loadExample: (id) => {
+      const unsaved = text.trim() && !EXAMPLES.some((e) => e.source === text);
+      if (!unsaved || window.confirm('¿Reemplazar el programa actual por el ejemplo?')) {
+        dispatch(loadExample(id));
+      }
+    },
     pressF10: () => dispatch(pressF10()),
     toggleSwitch: (n) => dispatch(toggleSwitch(n)),
     increase: () => dispatch(increaseVelocity()),
@@ -134,7 +142,7 @@ export default function App() {
   useEffect(() => {
     setTitle(DEFAULT_FILE_NAME);
     dispatch(reset());
-    dispatch(loadDefaultProgram());
+    dispatch(loadInitialProgram());
     dispatch(setStrict(loadStrictPreference()));
   }, [dispatch]);
 

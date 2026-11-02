@@ -7,8 +7,10 @@ import { thunk } from 'redux-thunk';
 import './index.css';
 import App from './components/App';
 import reducers from './reducers';
+import { persistProgram } from './actions/editor';
 
 const store = createStore(combineReducers(reducers), applyMiddleware(thunk));
+persistProgram(store);
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>

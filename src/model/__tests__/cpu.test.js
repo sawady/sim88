@@ -311,12 +311,3 @@ describe('CPU: stack, subroutines and interrupts', () => {
   });
 });
 
-describe('examples', () => {
-  test('the default example sums its table', async () => {
-    const { readFileSync } = await import('node:fs');
-    const source = readFileSync(new URL('../../examples/default.asm', import.meta.url), 'utf8');
-    const result = run(source);
-    expect(result.halted).toBe('HLT');
-    expect(byteAt(result.cpu, 0x1006)).toBe(15);
-  });
-});

@@ -140,9 +140,10 @@ Taken by Federico Sawady on 2026-11-02.
   Buttons and shortcuts, execution without a timer, reducer tests. Includes "step back" (decision 4).
   F7 step and F6 micro-step (as MSX88), Shift+F7 back.
 - [x] **33. Highlight the running line in the editor** · Deps: 11
-- [ ] **34. Keep the program in localStorage** · `gfi`
-- [ ] **35. Loadable examples** · `gfi`
-  A menu with example programs from `src/examples/`, one per course topic.
+- [x] **34. Keep the program in localStorage** · `gfi`
+- [x] **35. Loadable examples** · `gfi`
+  A menu with example programs from `src/examples/`, one per course topic; each selects the
+  configuration it needs (`; conexionado: N`) and is tested in strict mode.
 - [ ] **36. i18n es/en**
 - [ ] **37. Screenshot and GIF for the README** · `gfi` · Deps: 9
 - [ ] **38. Load Ace in a separate chunk** · `gfi`
@@ -195,6 +196,10 @@ Resolved by Federico on 2026-11-02 (decisions 5 and 6): JMP/CALL absolute, NOP 9
 15. **Configuration 1 printer**: STROBE is PA1 and a character is taken on its rising edge.
 
 ## Log
+
+- 2026-11-02: the program is kept in localStorage (task 34); "Ejemplos" menu with 9 programs:
+  table sum, subroutines, screen and keyboard, F10, timer, LEDs, printer through the PIO and the
+  HAND, DMA (task 35).
 
 - 2026-11-02: peripherals (tasks 27–31): the four MSX88 configurations, PIO with LEDs and
   switches, PIC with F10 and the HLT rule, timer, printer through the PIO or the HAND, CDMA.

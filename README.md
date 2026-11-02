@@ -40,6 +40,9 @@ It follows the dialect and conventions of MSX88: data at `ORG 1000h`, code at `O
 - Execution animated phase by phase (fetch, decode, IP, operands, execute) at adjustable
   speed, or step by step: one instruction, one phase, or **one instruction back**.
 
+The **Ejemplos** menu has a program for each topic (from a table sum to the DMA controller), and
+the program being edited is kept in the browser between visits.
+
 **MSX88 strict mode** (toolbar toggle) rejects what SIM88 accepts beyond the MSX88 dialect:
 character literals (`'A'`), single-quoted strings, direct addresses in brackets (`[1000h]`), and
 `*` / `/` in expressions. Where MSX88 differs from a real 8086, SIM88 follows MSX88: `JMP` and
