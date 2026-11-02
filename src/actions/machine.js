@@ -5,8 +5,11 @@ const makeErrorMessage = (e) =>
   e.line ? `Error en la línea ${e.line}: ${e.message}` : `Error: ${e.message}`;
 
 let TIMER;
-// The timer's 1 Hz clock runs in real time while the program runs.
+// The timer's clock runs in real time while the program runs, at the
+// frequency chosen in the settings (1 Hz by default).
 let CLOCK;
+
+const DEFAULT_TIMER_HZ = 1;
 
 const stopClock = () => clearInterval(CLOCK);
 
@@ -28,14 +31,20 @@ export const SET_CONFIG = 'SET_CONFIG';
 export const DECREASE_VELOCITY = 'DECREASE_VELOCITY';
 export const INCREASE_VELOCITY = 'INCREASE_VELOCITY';
 
-// Runs one phase of the cycle every `velocity` ms while the machine runs.
-const runLoop = () => (dispatch, getState) => {
-  clearTimeout(TIMER);
+// (Re)starts the clock of the timer: one pulse every 1/timerHz seconds.
+export const restartClock = () => (dispatch, getState) => {
   stopClock();
+  const hz = getState().settings?.timerHz ?? DEFAULT_TIMER_HZ;
   CLOCK = setInterval(() => {
     if (getState().machine.state === MACHINE_STATES.RUNNING) dispatch({ type: TIMER_PULSE });
     else stopClock();
-  }, 1000);
+  }, 1000 / hz);
+};
+
+// Runs one phase of the cycle every `velocity` ms while the machine runs.
+const runLoop = () => (dispatch, getState) => {
+  clearTimeout(TIMER);
+  dispatch(restartClock());
   const tick = () => {
     if (getState().machine.state !== MACHINE_STATES.RUNNING) return;
     dispatch({ type: STEP_PHASE });

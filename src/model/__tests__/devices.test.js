@@ -12,6 +12,7 @@ import {
   timerPulse,
   toggleSwitch,
   typeKey,
+  setPrintInterval,
 } from '../machine';
 import { initialDevices, pendingInterrupt, acknowledgeInterrupt, requestInterrupt } from '../devices';
 import { pic } from '../devices/pic';
@@ -543,5 +544,55 @@ describe('printer', () => {
       )
     );
     expect(m.devices.printer.paper).toBe('12345678901234567890\nAB\nC');
+  });
+});
+
+describe('printer speed', () => {
+  // Sends "ABCDE" (the whole buffer) through the HAND, then counts instructions.
+  const PRINT = `ORG 1000h
+        T DB "ABCDE"
+        F DB ?
+        ORG 2000h
+              MOV BX, OFFSET T
+        L:    MOV AL, [BX]
+              OUT 40h, AL
+              INC BX
+              CMP BX, OFFSET F
+              JNZ L
+        W:    JMP W
+              END`;
+  // Instructions until the five characters are on the paper.
+  const instructionsToPrint = (interval) => {
+    let m = machineFor(PRINT, 2);
+    if (interval) m = setPrintInterval(m, interval);
+    let n = 0;
+    while (m.devices.printer.paper !== 'ABCDE') {
+      m = stepInstruction(m);
+      n += 1;
+      if (n > 10000) throw new Error('did not print');
+    }
+    return n;
+  };
+
+  test(`prints one character every ${PRINT_INTERVAL} instructions by default`, () => {
+    const n = instructionsToPrint();
+    expect(n).toBeGreaterThanOrEqual(5 * PRINT_INTERVAL);
+    expect(n).toBeLessThanOrEqual(5 * PRINT_INTERVAL + 25);
+  });
+
+  test.each([1, 2, 16, 32])('one character every %s instructions', (interval) => {
+    const n = instructionsToPrint(interval);
+    expect(n).toBeGreaterThanOrEqual(5 * interval);
+    expect(n).toBeLessThanOrEqual(5 * interval + 25);
+  });
+
+  test('a faster printer finishes first', () => {
+    expect(instructionsToPrint(1)).toBeLessThan(instructionsToPrint(PRINT_INTERVAL));
+    expect(instructionsToPrint(PRINT_INTERVAL)).toBeLessThan(instructionsToPrint(32));
+  });
+
+  test('loading a program keeps the speed of the printer', () => {
+    const m = setPrintInterval(createMachine({ config: 2 }), 3);
+    expect(loadProgram(m, assemble(PRINT)).devices.printer.interval).toBe(3);
   });
 });

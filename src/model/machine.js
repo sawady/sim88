@@ -17,6 +17,7 @@ import {
   requestInterrupt,
   timerPulse as pulse,
 } from './devices';
+import { setPrintInterval as withPrintInterval } from './devices/printer';
 import {
   INITIAL_VELOCITY,
   MIN_VELOCITY,
@@ -63,11 +64,14 @@ export const createMachine = ({ config = 0, bus = createSystem(config) } = {}) =
 });
 
 // Loads an assembled program (see assembler.js) into a fresh memory. The
-// switches keep their position.
+// switches keep their position and the printer its speed.
 export function loadProgram(machine, program) {
   const mem = new Uint8Array(MEMORY_SIZE);
   for (const [address, byte] of program.memory) mem[address] = byte;
-  const devices = machine.bus.initialState();
+  let devices = machine.bus.initialState();
+  if (devices.printer && machine.devices.printer) {
+    devices = withPrintInterval(devices, machine.devices.printer.interval);
+  }
   return {
     ...machine,
     ...display(),
@@ -333,6 +337,12 @@ export const pressF10 = (machine) =>
 // One pulse of the timer's 1 Hz clock.
 export const timerPulse = (machine) =>
   machine.devices.timer ? fromOutside(machine, 'devices', pulse) : machine;
+
+// Speed of the printer: one character every `interval` instructions.
+export const setPrintInterval = (machine, interval) =>
+  machine.devices.printer
+    ? fromOutside(machine, 'devices', (d) => withPrintInterval(d, interval))
+    : machine;
 
 // Flips switch n (0-7) of the switch bar (configuration 0).
 export const toggleSwitch = (machine, n) =>

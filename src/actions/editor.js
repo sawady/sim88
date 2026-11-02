@@ -1,27 +1,9 @@
 import { EXAMPLES, DEFAULT_EXAMPLE } from '../examples';
 import { setConfig } from './machine';
+import { storage } from '../storage';
 
 export const DEFAULT_FILE_NAME = 'newfile.asm';
 export const DEFAULT_PROGRAM = DEFAULT_EXAMPLE.source;
-
-// localStorage may be missing or throw (private windows, blocked storage):
-// then nothing is remembered.
-const storage = {
-  get(key) {
-    try {
-      return window.localStorage.getItem(key);
-    } catch (e) {
-      return null;
-    }
-  },
-  set(key, value) {
-    try {
-      window.localStorage.setItem(key, value);
-    } catch (e) {
-      // not remembered
-    }
-  },
-};
 
 const PROGRAM_KEY = 'sim88.program';
 const FILE_KEY = 'sim88.file';

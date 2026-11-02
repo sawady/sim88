@@ -2,14 +2,34 @@
 // It is driven through a Centronics interface: STROBE (data valid) and
 // BUSY (it cannot take data: the buffer is full).
 //
-// It prints one character from the buffer every PRINT_INTERVAL instructions,
-// so a fast program has to wait for BUSY.
+// It prints one character from the buffer every `interval` instructions
+// (PRINT_INTERVAL by default; the UI lets the user change it), so a fast
+// program has to wait for BUSY.
 
 export const PRINTER_COLUMNS = 20;
 export const PRINTER_BUFFER = 5;
-export const PRINT_INTERVAL = 8; // instructions per printed character
+export const PRINT_INTERVAL = 8; // instructions per printed character, by default
 
-export const initialPrinter = () => ({ buffer: [], paper: '', column: 0, countdown: PRINT_INTERVAL });
+export const initialPrinter = (interval = PRINT_INTERVAL) => ({
+  buffer: [],
+  paper: '',
+  column: 0,
+  interval,
+  countdown: interval,
+});
+
+// Changes the speed of the printer: one character every `interval` instructions.
+// A character being printed is not delayed by a slower speed.
+export const setPrintInterval = (devices, interval) => ({
+  ...devices,
+  printer: {
+    ...devices.printer,
+    interval,
+    countdown: devices.printer.buffer.length
+      ? Math.min(devices.printer.countdown, interval)
+      : interval,
+  },
+});
 
 export const printerBusy = (devices) => devices.printer.buffer.length >= PRINTER_BUFFER;
 
@@ -45,5 +65,6 @@ export function printerTick(devices) {
     return { ...devices, printer: { ...printer, countdown: printer.countdown - 1 } };
   }
   const [byte, ...buffer] = printer.buffer;
-  return { ...devices, printer: { ...print(printer, byte), buffer, countdown: PRINT_INTERVAL } };
+  const interval = printer.interval ?? PRINT_INTERVAL;
+  return { ...devices, printer: { ...print(printer, byte), buffer, countdown: interval } };
 }

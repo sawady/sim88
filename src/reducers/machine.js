@@ -15,6 +15,7 @@ import {
   TOGGLE_SWITCH,
   SET_CONFIG,
 } from '../actions/machine';
+import { SET_PRINT_INTERVAL } from '../actions/settings';
 import {
   createMachine,
   decreaseVelocity,
@@ -30,6 +31,7 @@ import {
   pressF10,
   timerPulse,
   toggleSwitch,
+  setPrintInterval,
 } from '../model/machine';
 import { MACHINE_STATES } from '../model/constants';
 
@@ -37,6 +39,13 @@ import { MACHINE_STATES } from '../model/constants';
 const manual = (machine, f) => {
   const next = f({ ...machine, state: MACHINE_STATES.RUNNING });
   return next.state === MACHINE_STATES.RUNNING ? { ...next, state: MACHINE_STATES.PAUSED } : next;
+};
+
+// A new machine for `config` that keeps the speed of the simulation and of the printer.
+const fresh = (machine, config) => {
+  const next = { ...createMachine({ config }), velocity: machine.velocity };
+  const interval = machine.devices.printer?.interval;
+  return interval ? setPrintInterval(next, interval) : next;
 };
 
 export default (machine = createMachine(), action) => {
@@ -64,9 +73,11 @@ export default (machine = createMachine(), action) => {
     case TOGGLE_SWITCH:
       return toggleSwitch(machine, action.n);
     case SET_CONFIG:
-      return { ...createMachine({ config: action.config }), velocity: machine.velocity };
+      return fresh(machine, action.config);
     case RESET:
-      return { ...createMachine({ config: machine.bus.config }), velocity: machine.velocity };
+      return fresh(machine, machine.bus.config);
+    case SET_PRINT_INTERVAL:
+      return setPrintInterval(machine, action.interval);
     case INCREASE_VELOCITY:
       return increaseVelocity(machine);
     case DECREASE_VELOCITY:
