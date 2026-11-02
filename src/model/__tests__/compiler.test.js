@@ -54,8 +54,7 @@ describe('compiler: MOV encoding (8086 opcodes)', () => {
     expect(() => assemble('MOV AL, 300\nEND')).toThrow();
   });
 
-  // BUG: lower case register names fall through compileReg (index -1).
-  test.fails('lower case registers assemble like upper case ones', () => {
+  test('lower case registers assemble like upper case ones', () => {
     expect(bytes('mov al, 1\nEND')).toEqual(bytes('MOV AL, 1\nEND'));
   });
 

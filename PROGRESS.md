@@ -32,14 +32,14 @@ Taken by Federico Sawady on 2026-11-02.
 
 ## Phase 0: assembler bugs
 
-- [ ] **1. Normalize register names to upper case** · `gfi`
+- [x] **1. Normalize register names to upper case** · `gfi`
   `mov al, 1` assembles like `MOV AL, 1`.
-- [ ] **2. Accept CRLF line endings** · `gfi`
+- [x] **2. Accept CRLF line endings** · `gfi`
   Files saved on Windows parse.
-- [ ] **3. PUSHF/POPF are zero operand instructions** · `gfi`
+- [x] **3. PUSHF/POPF are zero operand instructions** · `gfi`
   Keywords need a word boundary; a register does not match the prefix of a name (`AXIS`).
-- [ ] **4. Allow an empty program (just `END`)** · `gfi`
-- [ ] **5. Initial values of the registers and SP** · `gfi`
+- [x] **4. Allow an empty program (just `END`)** · `gfi`
+- [x] **5. Initial values of the registers and SP** · `gfi`
   Registers start at 0 and SP at a documented value (8000h, the top of user memory ⚠️).
 - [ ] **6. Friendly errors for unsupported instructions**
   Never a `TypeError`: unknown or not yet implemented instructions give a message with the line.

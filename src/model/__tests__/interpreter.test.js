@@ -14,13 +14,10 @@ describe('machine: initial state', () => {
     expect(m.state).toBe('STOPPED');
   });
 
-  // BUG/leftover: createMachine initializes every register with 10 (000Ah).
-  test('registers currently start at 000Ah', () => {
-    expect(reg(createMachine(), 'AX')).toBe(10);
-  });
-
-  test.fails('registers start at 0', () => {
-    expect(reg(createMachine(), 'AX')).toBe(0);
+  test('registers start at 0 and SP at 8000h (top of the user memory)', () => {
+    const m = createMachine();
+    for (const r of ['AX', 'BX', 'CX', 'DX']) expect(reg(m, r)).toBe(0);
+    expect(m.SP.value).toBe(hex('8000'));
   });
 });
 

@@ -43,7 +43,8 @@ export const DEFAULT_IR = 0x0
 
 export const DEFAULT_IP = 0x2000
 
-export const DEFAULT_SP = MEMORY_SIZE + 1
+// Top of the user memory (0000h-7FFFh): the first PUSH writes 7FFEh-7FFFh.
+export const DEFAULT_SP = 0x8000
 
 export const DEFAULT_DECODER_VALUE = '????'
 

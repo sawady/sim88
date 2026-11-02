@@ -32,7 +32,7 @@ const createReg = (name, value) => ({ type: REG, name, value });
 const createFlag = (name, value) => ({ type: FLAG, name, value });
 
 const addReg = (res, reg) => {
-  res[reg] = createReg(reg, 10);
+  res[reg] = createReg(reg, 0);
   return res;
 }
 

@@ -21,8 +21,7 @@ describe('parser: program structure', () => {
     expect(() => parse('MOV AL, 1\n')).toThrow(/end of input/);
   });
 
-  // The grammar requires at least one statement before END.
-  test.fails('an empty program (just END) is valid', () => {
+  test('an empty program (just END) is valid', () => {
     expect(parse('END')).toHaveLength(1);
   });
 
@@ -39,14 +38,15 @@ describe('parser: program structure', () => {
     expect(first('mov AL, 1\nEND').type).toBe('MOV');
   });
 
-  // BUG: registers keep the source casing ("al"), and the compiler only knows
-  // upper case names, so `mov al, 1` assembles to garbage (see compiler tests).
-  test.fails('register names are normalized to upper case', () => {
+  test('register names are normalized to upper case', () => {
     expect(first('mov al, 1\nEND').p1.value).toBe('AL');
   });
 
-  // BUG: ENDLINE is only "\n", so files saved with Windows line endings fail.
-  test.fails('accepts CRLF line endings', () => {
+  test('a register does not match the prefix of a longer name', () => {
+    expect(first('MOV AL, AXIS\nEND').p2).toEqual({ type: 'VARIABLE', name: 'AXIS' });
+  });
+
+  test('accepts CRLF line endings', () => {
     expect(parse('MOV AL, 1\r\nEND')).toHaveLength(2);
   });
 
@@ -114,8 +114,7 @@ describe('parser: instruction groups', () => {
     }
   });
 
-  // BUG: UNOP is tried before ZOP, so PUSHF/POPF parse as PUSH F / POP F.
-  test.fails('PUSHF and POPF are zero operand ops', () => {
+  test('PUSHF and POPF are zero operand ops', () => {
     expect(first('PUSHF\nEND')).toMatchObject({ type: 'PUSHF', group: 'ZOP' });
     expect(first('POPF\nEND')).toMatchObject({ type: 'POPF', group: 'ZOP' });
   });

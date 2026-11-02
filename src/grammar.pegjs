@@ -22,19 +22,19 @@
 }
 
 PROGRAM
-  = sts:(_ STATEMENT __ COMMENT* __ ENDLINE _)+ e:END .* 
+  = sts:(_ STATEMENT __ COMMENT* __ ENDLINE _)* _ e:END .* 
     { return sts.map(function(x) { return x[1] }).filter(function(x) { return x !== null; } ).concat(e) }
 
 STATEMENT =
   op:BINOP _ p1:PARAM1 _ "," _ p2:PARAM2 { return { line: line(), type: op, p1: p1, p2: p2, group: 'BINARY' } }
-  / op:UNOP _ p1:PARAM1 { return { line: line(), type: op, p1: p1, group: 'UNARY' } }
   / op:ZOP { return { line: line(), type: op, group: 'ZOP' } }
+  / op:UNOP _ p1:PARAM1 { return { line: line(), type: op, p1: p1, group: 'UNARY' } }
   / op:JMP _ label:LABEL { return { line: line(), type: op, label: label, group: 'JMP' } }
   / name:NAME _ type:TYPE _ value:(VALUE / "?") { return { line: line(), type: name.type, name: name.name, vartype: type, value: value, group: 'VARIABLE' } }
   / v:NAME _ "EQU" _ value:VALUE { return { line: line(), type: 'CONSTANT', name: v.name, value: value, group: 'CONSTANT' } }
   / COMMENT { return null }
 
-COMMENT = ';' ([^\n]*)
+COMMENT = ';' ([^\r\n]*)
 
 BINOP
   = op:(
@@ -47,9 +47,9 @@ BINOP
     / "AND"i
     / "OR"i
     / "XOR"i
-    )
-    { return op.toUpperCase() } 
-  
+    ) !IDCHAR
+    { return op.toUpperCase() }
+
 UNOP
   = op:(
       "NEG"i
@@ -57,7 +57,7 @@ UNOP
     / "INC"i
     / "PUSH"i
     / "POP"i
-    ) 
+    ) !IDCHAR
     { return op.toUpperCase() }
   
 ZOP
@@ -69,7 +69,7 @@ ZOP
     / "STI"i
     / "NOP"i
     / "HLT"i
-    ) { return op.toUpperCase() }
+    ) !IDCHAR { return op.toUpperCase() }
 
 JMP
   = op:(
@@ -83,7 +83,7 @@ JMP
      / "JO"i
      / "JNO"i
      / "JMP"i
-     )
+     ) !IDCHAR
      { return op.toUpperCase() }
   
 LABEL
@@ -102,7 +102,9 @@ NAME "variable"
   = v:([a-zA-Z_][a-zA-Z_0-9]*) { return { type: 'VARIABLE', name: v[0].concat(v[1].join(''))} }
 
 REG "register"
-  = reg:("AX"i / "BX"i / "[BX]"i / "CX"i / "DX"i / "AL"i / "AH"i / "BL"i / "BH"i / "CL"i / "CH"i / "DL"i / "DH"i) { return { type: 'REGISTER', value: reg } } 
+  = reg:("AX"i / "BX"i / "[BX]"i / "CX"i / "DX"i / "AL"i / "AH"i / "BL"i / "BH"i / "CL"i / "CH"i / "DL"i / "DH"i) !IDCHAR { return { type: 'REGISTER', value: reg.toUpperCase() } }
+
+IDCHAR = [a-zA-Z_0-9]
   
 VALUE = NAME / HEXA / DECIMAL
 
@@ -113,7 +115,7 @@ DECIMAL "decimal"
   = neg:("-"?) ns:([0-9]+) { return { type: 'DECIMAL', value: makeInteger(ns, neg, false) } }
 
 ENDLINE "end of line"
-  = "\n"
+  = "\r\n" / "\n"
 
 END
   = "END"i { return { line: line(), group: 'END', type: 'END' } }
