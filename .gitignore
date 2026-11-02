@@ -30,3 +30,6 @@ yarn-error.log*
 
 # fonts downloaded by scripts/fetch-font.mjs (CC BY-SA 4.0, not kept in the repository)
 /src/fonts/vendor
+
+# Python bytecode (tools/oracle)
+__pycache__/
