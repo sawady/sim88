@@ -81,6 +81,12 @@ Every push to `master` is built and published to GitHub Pages by
 `.github/workflows/deploy.yml` (Pages must be configured with
 "Source: GitHub Actions").
 
+## Contributing
+
+The plan, its progress and the design decisions live in [PROGRESS.md](PROGRESS.md).
+Bug reports, questions and ideas are welcome as GitHub issues; see
+[CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## License
 
 [MIT](LICENSE) © Federico Sawady
