@@ -1,4 +1,4 @@
-import parser from '../grammar';
+import { parse } from '../model/parser';
 import compile from '../model/compiler';
 import { MACHINE_STATES } from '../model/constants';
 import { fromHexToInt } from '../model/conversions';
@@ -39,10 +39,9 @@ const executeProgram = async (dispatch, getState) => {
   try {
     await startExecutionCycle(doStep(dispatch, getState));
   } catch (e) {
-    console.log(JSON.parse(JSON.stringify(e)));
     dispatch({
       type: SHOW_ERROR,
-      message: e,
+      message: makeErrorMessage(e),
     })
     dispatch(stop());
   }
@@ -67,13 +66,11 @@ export const start = (text) => (dispatch, getState) => {
   dispatch({ type: START });
   try {
     // Produce de AST
-    const ast = parser.parse(text);
+    const ast = parse(text);
     // Do static checks
     staticCheck(ast);
-    console.log('ast', ast);
     // Compile AST
     const compiled = compile(fromHexToInt('2000'), ast);
-    console.log('compiled', compiled);
     dispatch(loadProgram(compiled));
     executeProgram(dispatch, getState);
   } catch (e) {
@@ -81,6 +78,7 @@ export const start = (text) => (dispatch, getState) => {
       type: SHOW_ERROR,
       message: makeErrorMessage(e),
     })
+    dispatch(stop());
   }
 };
 
