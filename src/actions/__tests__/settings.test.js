@@ -43,7 +43,7 @@ describe('settings', () => {
 
   test('defaults: classic blue theme, no CRT effect, timer at 1 Hz, printer every 8 instructions', () => {
     const s = loadSettings();
-    expect(s).toMatchObject({ theme: 'borland', crt: false, zoom: 'auto', timerHz: 1, printInterval: 8 });
+    expect(s).toMatchObject({ theme: 'borland', crt: false, zoom: 'auto', timerHz: 1, printInterval: 8, aluMode: 'msx88' });
     expect(DEFAULT_TIMER_HZ).toBe(1);
     expect(PRINT_INTERVAL).toBe(8);
     expect(TIMER_PRESETS).toEqual([0.5, 1, 2, 5, 10]);
@@ -51,7 +51,7 @@ describe('settings', () => {
 
   test('invalid or unknown values are ignored', () => {
     expect(
-      cleanSettings({ theme: 'nope', lang: 'fr', timerHz: 0, printInterval: 2.5, crt: 'yes', foo: 1 })
+      cleanSettings({ theme: 'nope', lang: 'fr', timerHz: 0, printInterval: 2.5, crt: 'yes', foo: 1, aluMode: '80286' })
     ).toEqual({});
     expect(cleanSettings({ theme: 'amber', timerHz: 0.5, printInterval: 3 })).toEqual({
       theme: 'amber',
@@ -146,6 +146,46 @@ describe('printer speed', () => {
     expect(interval(store)).toBe(3);
     store.dispatch(start(LOOP));
     expect(interval(store)).toBe(3);
+    store.dispatch(stop());
+    vi.useRealTimers();
+  });
+});
+
+describe('ALU mode', () => {
+  const aluMode = (store) => store.getState().machine.aluMode;
+
+  test('is MSX88 by default, reaches the machine and is remembered', () => {
+    const store = newStore();
+    expect(store.getState().settings.aluMode).toBe('msx88');
+    expect(aluMode(store)).toBe('msx88');
+    store.dispatch(setSettings({ aluMode: '8086' }));
+    expect(store.getState().settings.aluMode).toBe('8086');
+    expect(aluMode(store)).toBe('8086');
+    expect(JSON.parse(saved.get('sim88.settings')).aluMode).toBe('8086');
+
+    const again = newStore();
+    again.dispatch(loadSavedSettings());
+    expect(again.getState().settings.aluMode).toBe('8086');
+    expect(aluMode(again)).toBe('8086');
+  });
+
+  test('an invalid mode is ignored', () => {
+    const store = newStore();
+    store.dispatch(setSettings({ aluMode: '8086' }));
+    store.dispatch(setSettings({ aluMode: 'MSX88' }));
+    expect(aluMode(store)).toBe('8086');
+  });
+
+  test('is kept across resets, configuration changes and loading a program', () => {
+    vi.useFakeTimers();
+    const store = newStore();
+    store.dispatch(setSettings({ aluMode: '8086' }));
+    store.dispatch(setConfig(2));
+    expect(aluMode(store)).toBe('8086');
+    store.dispatch(reset());
+    expect(aluMode(store)).toBe('8086');
+    store.dispatch(start(LOOP));
+    expect(aluMode(store)).toBe('8086');
     store.dispatch(stop());
     vi.useRealTimers();
   });

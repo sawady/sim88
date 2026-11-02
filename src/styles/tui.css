@@ -288,6 +288,12 @@
   overflow: hidden;
 }
 
+/* HLT: the CPU waits for an interrupt (a state of its own, not a hang). */
+.statusbar .state.halted {
+  background: var(--msg-bg);
+  color: var(--msg-fg);
+}
+
 /* ------------------------------------------------------------- dialogs */
 
 .modal {
@@ -463,6 +469,30 @@
 
 .keys-table td {
   padding: 0;
+}
+
+/* MSX88 / 8086 differences: three columns, the cells wrap. */
+.diff-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0 0 var(--ch);
+}
+
+.diff-table th,
+.diff-table td {
+  font-weight: normal;
+  text-align: left;
+  vertical-align: top;
+  padding: 0 calc(var(--cw) * 2) 0 0;
+}
+
+.diff-table th {
+  color: var(--dlg-title);
+  white-space: pre;
+}
+
+.diff-table thead th {
+  text-decoration: underline;
 }
 
 @media (prefers-reduced-motion: reduce) {

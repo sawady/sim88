@@ -11,6 +11,8 @@ import Screen from './Screen';
 import Peripherals from './Peripherals';
 import {
   AboutDialog,
+  AluDialog,
+  AluHelpDialog,
   AppearanceDialog,
   ConfigDialog,
   ConfirmDialog,
@@ -91,7 +93,7 @@ export default function App() {
   const text = useSelector((state) => state.editor.text);
   const assemblerError = useSelector((state) => state.editor.error);
   const errorLine = useSelector((state) => state.editor.errorLine);
-  const { state: machineState, velocity, message, error, waitingInput } = useSelector((s) => s.machine);
+  const { state: machineState, velocity, message, error, waitingInput, cpuHalted } = useSelector((s) => s.machine);
   const strict = useSelector((state) => state.editor.strict);
   const config = useSelector((state) => state.machine.bus.config);
   const settings = useSelector((state) => state.settings);
@@ -206,6 +208,7 @@ export default function App() {
         { id: 'config', label: t.marked('menu.options.config'), action: () => setDialog({ type: 'config' }) },
         { id: 'strict', label: t.marked('menu.options.strict'), checked: strict, action: actions.toggleStrict },
         { id: 'frequencies', label: t.marked('menu.options.simulation'), action: () => setDialog({ type: 'frequency' }) },
+        { id: 'alu', label: t.marked('menu.options.alu'), action: () => setDialog({ type: 'alu' }) },
         { separator: true },
         { id: 'appearance', label: t.marked('menu.options.appearance'), action: () => setDialog({ type: 'appearance' }) },
         { id: 'language', label: t.marked('menu.options.language'), action: () => setDialog({ type: 'language' }) },
@@ -216,6 +219,7 @@ export default function App() {
       label: t.marked('menu.help'),
       items: [
         { id: 'keys', label: t.marked('menu.help.keys'), shortcut: 'F1', action: actions.help },
+        { id: 'alu', label: t.marked('menu.help.alu'), action: () => setDialog({ type: 'aluHelp' }) },
         { id: 'about', label: t.marked('menu.help.about'), action: () => setDialog({ type: 'about' }) },
       ],
     },
@@ -334,7 +338,12 @@ export default function App() {
   }
   const shownMessage = !shownError && message ? translateMessage(lang, message) : null;
 
-  const keys = [
+  // After HLT the CPU waits for an interrupt (as MSX88, even when none can
+  // come): the status bar says so for as long as it lasts, and keeps only
+  // the two keys that end the wait (F10 interrupts, Esc stops), so the whole
+  // text fits.
+  const halted = cpuHalted && machineState !== MACHINE_STATES.STOPPED;
+  const allKeys = [
     { key: 'F1', label: t('keys.help'), action: actions.help },
     { key: 'F5', label: t(`keys.${runLabel}`), action: actions.runPauseResume },
     { key: 'F6', label: t('keys.microStep'), action: actions.stepPhase },
@@ -342,7 +351,17 @@ export default function App() {
     { key: 'F10', label: t('keys.interrupt'), action: actions.pressF10 },
     { key: 'Esc', label: t('keys.stop'), action: actions.stop },
   ];
-  const stateText = [t(`state.${machineState}`), t('state.speed', { ms: velocity }), strict && t('state.strict')]
+  const keys = halted ? allKeys.filter(({ key }) => key === 'F10' || key === 'Esc') : allKeys;
+  const stateText = (
+    halted
+      ? [t('state.halted'), machineState === MACHINE_STATES.PAUSED && t('state.PAUSED')]
+      : [
+          t(`state.${machineState}`),
+          t('state.speed', { ms: velocity }),
+          strict && t('state.strict'),
+          settings.aluMode === '8086' && t('state.alu8086'),
+        ]
+  )
     .filter(Boolean)
     .join(' │ ');
 
@@ -404,11 +423,13 @@ export default function App() {
           )}
           {win('peripherals', t('win.peripherals'), { bodyClassName: 'scroll' }, <Peripherals />)}
         </main>
-        <StatusBar keys={keys} state={stateText} />
+        <StatusBar keys={keys} state={stateText} halted={halted} />
         {dialog?.type === 'config' && (
           <ConfigDialog config={config} onChoose={(c) => dispatch(setConfig(c))} onClose={close} />
         )}
         {dialog?.type === 'frequency' && <FrequencyDialog onClose={close} />}
+        {dialog?.type === 'alu' && <AluDialog onClose={close} />}
+        {dialog?.type === 'aluHelp' && <AluHelpDialog onClose={close} />}
         {dialog?.type === 'appearance' && <AppearanceDialog onClose={close} />}
         {dialog?.type === 'language' && <LanguageDialog onClose={close} />}
         {dialog?.type === 'keys' && <KeysDialog onClose={close} />}

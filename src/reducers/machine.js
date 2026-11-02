@@ -15,7 +15,7 @@ import {
   TOGGLE_SWITCH,
   SET_CONFIG,
 } from '../actions/machine';
-import { SET_PRINT_INTERVAL } from '../actions/settings';
+import { SET_PRINT_INTERVAL, SET_ALU_MODE } from '../actions/settings';
 import {
   createMachine,
   decreaseVelocity,
@@ -32,6 +32,7 @@ import {
   timerPulse,
   toggleSwitch,
   setPrintInterval,
+  setAluMode,
 } from '../model/machine';
 import { MACHINE_STATES } from '../model/constants';
 
@@ -41,9 +42,10 @@ const manual = (machine, f) => {
   return next.state === MACHINE_STATES.RUNNING ? { ...next, state: MACHINE_STATES.PAUSED } : next;
 };
 
-// A new machine for `config` that keeps the speed of the simulation and of the printer.
+// A new machine for `config` that keeps the speed of the simulation and of
+// the printer, and the ALU mode.
 const fresh = (machine, config) => {
-  const next = { ...createMachine({ config }), velocity: machine.velocity };
+  const next = { ...createMachine({ config, aluMode: machine.aluMode }), velocity: machine.velocity };
   const interval = machine.devices.printer?.interval;
   return interval ? setPrintInterval(next, interval) : next;
 };
@@ -78,6 +80,8 @@ export default (machine = createMachine(), action) => {
       return fresh(machine, machine.bus.config);
     case SET_PRINT_INTERVAL:
       return setPrintInterval(machine, action.interval);
+    case SET_ALU_MODE:
+      return setAluMode(machine, action.mode);
     case INCREASE_VELOCITY:
       return increaseVelocity(machine);
     case DECREASE_VELOCITY:

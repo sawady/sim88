@@ -90,6 +90,31 @@ differs must be listed, with the reason, in
 Programs whose name starts with `exp-` are experiments about timing: they run
 on MSX88 but are not compared (their results depend on the wall clock).
 
+The corpus runs with the ALU **as MSX88**, the default setting. With
+**Options › ALU: as 8086** eight programs differ, all because of the four cases
+below: `alu-adc-sbb-flags`, `alu-add-adc-8`, `alu-inc-dec-flags`,
+`alu-inc-dec-neg`, `alu-logic`, `alu-not-flags`, `stack` and `stack-push-sp`.
+
+## Where MSX88 and the 8086 differ: the ALU setting
+
+The original MSX88 departs from a real 8086 (and, for `NOT`, from its own
+manual) in four places. SIM88 copies MSX88 by default, because then results
+match the original simulator that course exercises and listings are checked
+against. The setting **Options › ALU** (`aluMode` in the settings, `'msx88'` or
+`'8086'`) switches to the 8086 behaviour, to discuss the difference in class;
+**Help › Differences from the 8086** shows the same table in the interface.
+
+| Instruction | As MSX88 (default) | As a real 8086 | Evidence |
+|---|---|---|---|
+| `INC`, `DEC` | clear C | leave C alone | `alu-inc-dec-flags`, `alu-inc-dec-neg` |
+| `ADC`, `SBB` with C = 1 | `ADD` / `SUB`, then `INC` / `DEC` of the result, with the flags of that last step: C ends 0 (and A can differ) | one addition / subtraction with the carry: C, O and A of the whole result | `alu-adc-sbb-flags`, `alu-add-adc-8` |
+| `NOT` | 8 bits: Z = P = 1, C O S A = 0; 16 bits: all six 0 | changes no flag (also what the MSX88 manual says) | `alu-not-flags`, `alu-logic` |
+| `PUSH SP` | pushes 0000h | pushes SP after the decrement (SP − 2); the 80286 and later push it before | `stack-push-sp`, `stack` |
+
+In code: `src/model/alu.js` exports both sets of operations (`ALU_MODES`), and
+`execute()` / `step()` in `src/model/cpu.js` take `{ aluMode }`; the machine
+keeps the mode as a setting (stepping back does not undo it).
+
 ## By area
 
 "Identical" means every program of the area gives the same bytes, registers,

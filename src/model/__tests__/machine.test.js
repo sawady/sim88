@@ -7,6 +7,7 @@ import {
   stepPhase,
   stepInstruction,
   stepBack,
+  setAluMode,
   EXECUTION_CYCLE,
   HISTORY_LIMIT,
 } from '../machine';
@@ -142,5 +143,41 @@ describe('machine: step back (a snapshot per instruction)', () => {
   test('history is bounded', () => {
     const m = runAll(machineFor(`MOV CX, ${HISTORY_LIMIT + 10}\nL: DEC CX\nJNZ L\nINT 0\nEND`), 100000);
     expect(m.history.length).toBe(HISTORY_LIMIT);
+  });
+});
+
+describe('machine: ALU mode', () => {
+  const PUSH_SP = 'PUSH SP\nPOP AX\nINT 0\nEND';
+
+  test('a new machine copies MSX88; setAluMode switches to the 8086 and back', () => {
+    const m = createMachine();
+    expect(m.aluMode).toBe('msx88');
+    expect(setAluMode(m, '8086').aluMode).toBe('8086');
+    expect(setAluMode(m, 'z80')).toBe(m);
+    expect(createMachine({ aluMode: '8086' }).aluMode).toBe('8086');
+  });
+
+  test('the cycle runs the instructions in the chosen mode', () => {
+    expect(readReg(runAll(machineFor(PUSH_SP)).cpu, 'AX')).toBe(0);
+    const as8086 = start(loadProgram(createMachine({ aluMode: '8086' }), assemble(PUSH_SP)));
+    expect(readReg(runAll(as8086).cpu, 'AX')).toBe(0x7ffe);
+  });
+
+  test('NOT as 8086 does not highlight the flags (it writes none)', () => {
+    const source = 'MOV AL, 1\nNOT AL\nINT 0\nEND';
+    const msx88 = stepInstruction(stepInstruction(machineFor(source)));
+    expect(msx88.activeComponents).toContain('FLAGS');
+    const as8086 = stepInstruction(stepInstruction(setAluMode(machineFor(source), '8086')));
+    expect(as8086.activeComponents).toContain('RES');
+    expect(as8086.activeComponents).not.toContain('FLAGS');
+  });
+
+  test('is kept when loading a program and when stepping back (it is a setting)', () => {
+    let m = setAluMode(machineFor('MOV AL, 1\nMOV AL, 2\nINT 0\nEND'), '8086');
+    m = loadProgram(m, assemble(PUSH_SP));
+    expect(m.aluMode).toBe('8086');
+    m = stepInstruction(start(m));
+    m = setAluMode(m, 'msx88');
+    expect(stepBack(m).aluMode).toBe('msx88');
   });
 });

@@ -1,8 +1,10 @@
 import React from 'react';
+import classNames from 'classnames';
 
 // The bottom line: function keys (clickable) and the state of the machine.
-// keys: [{ key: 'F5', label, action }]
-export default function StatusBar({ keys, state }) {
+// keys: [{ key: 'F5', label, action }]. `halted` marks the state as the CPU
+// waiting after HLT (shown in colors of its own, and read by screen readers).
+export default function StatusBar({ keys, state, halted = false }) {
   return (
     <div className="statusbar">
       {keys.map(({ key, label, action }) => (
@@ -10,7 +12,7 @@ export default function StatusBar({ keys, state }) {
           <span className="hot">{key}</span> {label}
         </button>
       ))}
-      <span className="state">
+      <span className={classNames('state', { halted })} title={state} aria-live="polite">
         {state}
       </span>
     </div>

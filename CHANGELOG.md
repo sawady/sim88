@@ -28,6 +28,12 @@ tagged releases yet. The planned work and its status live in [PROGRESS.md](PROGR
 
 ### Added
 
+- Options › ALU: as MSX88 (default) or as a real 8086, for the four places where they differ
+  (INC/DEC and C, ADC/SBB with carry, NOT and the flags, `PUSH SP`); Help › Differences from the
+  8086 explains them. The status bar shows `ALU 8086` while it is on.
+- While the CPU waits after `HLT`, the status bar and the CPU window say so ("CPU halted (HLT):
+  waiting for an interrupt — Esc to stop") for as long as it lasts.
+
 - Fidelity checked against the original MSX88 V-3.1: `tools/oracle` runs MSX88, ASM88 and
   LINK88 in an emulated PC (QEMU + FreeDOS in Docker), a corpus of 70 programs in
   `tests/fidelity` keeps what they did, and the test suite compares SIM88 with it.

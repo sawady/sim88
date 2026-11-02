@@ -12,7 +12,8 @@
 //
 // Flags the 8086 leaves undefined (A after AND/OR/XOR) are set to 0.
 //
-// MSX88 V-3.1 differs from the 8086 in four places, and SIM88 copies it
+// MSX88 V-3.1 differs from the 8086 in three places of the ALU (a fourth
+// difference, PUSH SP, is in cpu.js). By default SIM88 copies MSX88
 // (fidelity rule; evidence in tests/fidelity: alu-adc-sbb-flags,
 // alu-inc-dec-flags, alu-not-flags, run on the original MSX88):
 //   - INC and DEC clear C (the 8086 leaves it alone).
@@ -20,6 +21,8 @@
 //     result, and the flags are those of the INC / DEC: so C ends 0.
 //   - NOT sets flags: 8 bits leave Z = P = 1 and C O S A = 0; 16 bits leave
 //     the six at 0 (the 8086, and the MSX88 manual, say NOT changes none).
+// The "ALU: as 8086" setting uses the 8086 versions instead (the *8086
+// functions below). ALU_MODES[mode] has the operations of each mode.
 
 const mask = (size) => (size === 8 ? 0xff : 0xffff);
 const signBit = (size) => (size === 8 ? 0x80 : 0x8000);
@@ -114,6 +117,20 @@ export function dec(size, a) {
   return { result, flags: { ...flags, C: false } };
 }
 
+// The 8086 versions of the four operations where MSX88 differs.
+
+// ADC / SBB: one addition (subtraction) with the carry, flags of the whole.
+export const adc8086 = (size, a, b, carry) => add(size, a, b, carry ? 1 : 0);
+export const sbb8086 = (size, a, b, carry) => sub(size, a, b, carry ? 1 : 0);
+
+// INC / DEC: ADD / SUB 1 that leave C as it was (no C in the flags).
+const withoutC = ({ result, flags: { C, ...flags } }) => ({ result, flags });
+export const inc8086 = (size, a) => withoutC(add(size, a, 1));
+export const dec8086 = (size, a) => withoutC(sub(size, a, 1));
+
+// NOT changes no flag.
+export const not8086 = (size, a) => ({ result: ~a & mask(size), flags: {} });
+
 // Two operand operations by mnemonic. `carry` is the current C flag.
 export const BINARY = {
   ADD: (size, a, b) => add(size, a, b),
@@ -127,3 +144,13 @@ export const BINARY = {
 };
 
 export const UNARY = { INC: inc, DEC: dec, NEG: neg, NOT: not };
+
+export const BINARY_8086 = { ...BINARY, ADC: adc8086, SBB: sbb8086 };
+export const UNARY_8086 = { ...UNARY, INC: inc8086, DEC: dec8086, NOT: not8086 };
+
+// 'msx88' (the default: as the original MSX88) or '8086' (as a real 8086).
+export const DEFAULT_ALU_MODE = 'msx88';
+export const ALU_MODES = {
+  msx88: { BINARY, UNARY },
+  8086: { BINARY: BINARY_8086, UNARY: UNARY_8086 },
+};

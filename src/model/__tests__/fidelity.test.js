@@ -11,7 +11,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, test, expect } from 'vitest';
-import { loadCorpus, compareProgram, initialMemory, FIDELITY_DIR } from '../../../tests/fidelity/compare';
+import { loadCorpus, compareProgram, initialMemory, FIDELITY_DIR, FIDELITY_ALU_MODE } from '../../../tests/fidelity/compare';
+import { DEFAULT_ALU_MODE } from '../alu';
 
 const corpus = loadCorpus();
 const initial = initialMemory();
@@ -26,6 +27,11 @@ if (process.env.FIDELITY_REPORT) {
 }
 
 describe('fidelity corpus vs the MSX88 oracle', () => {
+  test('the corpus runs with the ALU as MSX88, the default setting', () => {
+    expect(FIDELITY_ALU_MODE).toBe('msx88');
+    expect(DEFAULT_ALU_MODE).toBe('msx88');
+  });
+
   test('every program has a golden file from the oracle', () => {
     expect(results.filter((r) => !r.golden).map((r) => r.name)).toEqual([]);
   });

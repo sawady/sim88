@@ -26,6 +26,7 @@ import {
 import { MACHINE_STATES } from '../../src/model/constants';
 
 export const FIDELITY_DIR = path.resolve(__dirname);
+export const FIDELITY_ALU_MODE = 'msx88';
 export const PROGRAMS_DIR = path.join(FIDELITY_DIR, 'programs');
 export const GOLDEN_DIR = path.join(FIDELITY_DIR, 'golden');
 
@@ -144,7 +145,11 @@ function plannedEvents(meta) {
 
 export function runSim88(program, meta) {
   const config = Number(meta.config || 0);
-  let machine = loadProgram(createMachine({ config }), program);
+  // The golden files come from MSX88: the ALU runs as MSX88 (the default
+  // setting). As '8086', eight programs differ: alu-adc-sbb-flags,
+  // alu-add-adc-8, alu-inc-dec-flags, alu-inc-dec-neg, alu-logic,
+  // alu-not-flags, stack and stack-push-sp.
+  let machine = loadProgram(createMachine({ config, aluMode: FIDELITY_ALU_MODE }), program);
   const events = plannedEvents(meta);
   if (events.switches !== null) {
     for (let bit = 0; bit < 8; bit++) if (events.switches & (1 << bit)) machine = toggleSwitch(machine, bit);

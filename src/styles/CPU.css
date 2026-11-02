@@ -78,3 +78,11 @@
   padding-left: var(--cw);
   color: var(--label);
 }
+
+.phase.halted {
+  color: var(--act-fg);
+  background: var(--act-bg);
+  margin-right: auto;
+  display: inline-block;
+  padding: 0 var(--cw);
+}

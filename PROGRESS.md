@@ -38,7 +38,8 @@ Taken by Federico Sawady on 2026-11-02.
    *Updated 2026-11-02:* the original MSX88 is now the reference ([docs/fidelity.md](docs/fidelity.md)):
    ASM88 emits `NOP` as 90h, so SIM88 does too; where MSX88 differs from the 8086 and from its
    own manual (ADC/SBB with carry, INC/DEC and C, NOT and the flags, `PUSH SP`), SIM88 copies
-   MSX88.
+   MSX88. *Updated 2026-11-02 (task 49):* those four are a setting, Options › ALU, "as MSX88"
+   (the default, because it matches the original) or "as 8086", to discuss them in class.
 6. **SIM88 extensions** (`'A'`, single-quoted strings, `[1000h]`, `*` and `/`) are kept and
    documented as extensions; **MSX88 strict mode** (a toggle in the UI) rejects them. The extra
    assembler errors (missing `END`, no code at 2000h) are kept.
@@ -195,6 +196,17 @@ Taken by Federico Sawady on 2026-11-02.
 - [ ] **48. Read the printer's paper in the oracle** · Deps: 47
   Compare what MSX88 prints (F5 shows the paper), the HAND by interrupts and the CDMA with the
   printer; the PIO printer (configuration 1).
+- [x] **49. Setting "ALU: as MSX88 / as 8086"** · Deps: 47
+  The four places where MSX88 differs from the 8086 (INC/DEC and C, ADC/SBB with C = 1, NOT and
+  the flags, `PUSH SP`) follow the setting `aluMode`: `msx88` (default) or `8086`. `alu.js`
+  exports both sets (`ALU_MODES`); `execute()` takes `{ aluMode }`; the machine keeps the mode
+  (`SET_ALU_MODE`, like the printer speed) across resets, configurations and step back.
+  Options › ALU picks it, Help › Differences from the 8086 explains it, the status bar shows
+  `ALU 8086`. The fidelity corpus runs as MSX88 (63 of 65; 8 programs differ as 8086).
+- [x] **50. Show the HLT wait clearly**
+  While the CPU waits after `HLT`, the status bar says "CPU detenida (HLT): esperando
+  interrupción — Esc para terminar" (in the message colors, keeping only F10 and Esc), and the
+  CPU window shows "■ HLT: esperando interrupción" instead of the next phase.
 
 ## Open questions (MSX88 fidelity)
 
@@ -249,6 +261,10 @@ Still open:
 19. **8086 short forms and BP/SI/DI written as bytes**: not known whether MSX88 runs them.
 
 ## Log
+
+- 2026-11-02: ALU setting, as MSX88 (default) or as 8086 (task 49), explained in Options › ALU,
+  Help › Differences from the 8086, the README and docs/fidelity.md; the HLT wait has its own
+  state in the status bar and the CPU window (task 50).
 
 - 2026-11-02: MSX88 oracle and fidelity corpus (task 47). SIM88 now follows MSX88 in: I = 1 at
   start, the monitor's vectors and INT 0/3/6/7 through the stack, INT 7 one line per call, HLT

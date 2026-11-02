@@ -8,6 +8,7 @@
 // memory is copied only when an instruction writes it (see cpu.js).
 
 import { createCpu, execute, getFlag, hardwareInterrupt, initialMemory } from './cpu';
+import { ALU_MODES, DEFAULT_ALU_MODE } from './alu';
 import { decode } from './decoder';
 import { busIO } from './io';
 import { cp437 } from './format';
@@ -47,10 +48,12 @@ const display = () => ({
 });
 
 // `config` is the MSX88 configuration (0-3, see devices/index.js). Tests can
-// pass their own `bus` (see io.js).
-export const createMachine = ({ config = 0, bus = createSystem(config) } = {}) => ({
+// pass their own `bus` (see io.js). `aluMode` is 'msx88' (as the original) or
+// '8086' (see alu.js and cpu.js).
+export const createMachine = ({ config = 0, bus = createSystem(config), aluMode = DEFAULT_ALU_MODE } = {}) => ({
   cpu: createCpu(),
   ...display(),
+  aluMode,
   bus,
   devices: bus.initialState(),
   input: [], // keys typed and not read yet by INT 6
@@ -88,8 +91,9 @@ export function loadProgram(machine, program) {
   };
 }
 
+// The ALU mode is a setting, not part of the run: step back keeps it.
 const snapshot = (machine) => {
-  const { history, velocity, state, ...rest } = machine;
+  const { history, velocity, state, aluMode, ...rest } = machine;
   return rest;
 };
 
@@ -200,7 +204,7 @@ function fetchOperands(machine) {
   let result;
   const io = busIO(machine.bus, machine.devices, machine.input);
   try {
-    result = execute(machine.cpu, machine.instruction, io);
+    result = execute(machine.cpu, machine.instruction, io, { aluMode: machine.aluMode });
   } catch (e) {
     return halt(machine, { error: e.message });
   }
@@ -240,7 +244,7 @@ function executeInstruction(machine) {
     output,
     activeComponents: [
       ...events.registers,
-      ...(events.alu ? ['RES', 'FLAGS'] : []),
+      ...(events.alu ? ['RES', ...(events.alu.flags === false ? [] : ['FLAGS'])] : []),
       ...deviceComponents(accessed),
     ],
     activeMemory: [...events.memoryWrites, ...ticked.writes],
@@ -339,6 +343,10 @@ export const setPrintInterval = (machine, interval) =>
   machine.devices.printer
     ? fromOutside(machine, 'devices', (d) => withPrintInterval(d, interval))
     : machine;
+
+// How the ALU behaves where MSX88 and the 8086 differ: 'msx88' or '8086'.
+// It applies from the next instruction on.
+export const setAluMode = (machine, aluMode) => (ALU_MODES[aluMode] ? { ...machine, aluMode } : machine);
 
 // Flips switch n (0-7) of the switch bar (configuration 0).
 export const toggleSwitch = (machine, n) =>

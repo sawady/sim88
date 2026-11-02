@@ -29,6 +29,7 @@ describe('dictionaries', () => {
     help: Object.keys(es).filter((k) => k.startsWith('menu.help.')),
     sim: ['dlg.sim.timer', 'dlg.sim.printer', 'dlg.ok', 'dlg.cancel'],
     look: ['dlg.look.theme', 'dlg.look.crt', 'dlg.look.zoom', 'dlg.ok', 'dlg.cancel'],
+    alu: ['dlg.alu.mode', 'dlg.ok', 'dlg.cancel'],
   };
   test.each(Object.entries(menus))('hotkeys of %s are unique in both languages', (name, keys) => {
     for (const dict of [es, en]) {

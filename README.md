@@ -70,6 +70,8 @@ the program being edited is kept in the browser between visits.
 - **Configuration**: the four MSX88 peripheral configurations.
 - **Frequencies**: the timer clock (1 Hz in real time by default; 0.5, 2, 5, 10 Hz or any value
   from 0.1 to 50 Hz) and the printer speed (one character every 8 instructions by default).
+- **ALU: MSX88 or 8086**: where MSX88 and a real 8086 differ (see below), behave as MSX88 (the
+  default) or as the 8086.
 - **Appearance**: the theme (classic blue, MSX88, green phosphor, amber phosphor, high contrast),
   an optional CRT effect (scanlines, off by default) and the text size. The grid is scaled by
   whole factors of the 8x16 font where the screen allows it.
@@ -78,9 +80,38 @@ the program being edited is kept in the browser between visits.
 **MSX88 strict mode** (Options menu) rejects what SIM88 accepts beyond the MSX88 dialect:
 character literals (`'A'`), single-quoted strings, direct addresses in brackets (`[1000h]`), and
 `*` / `/` in expressions. Where MSX88 differs from a real 8086, SIM88 follows MSX88: `JMP` and
-`CALL` carry an absolute address and `NOP` is 98h, so the bytes match ASM88 listings.
+`CALL` carry an absolute address, so the bytes match ASM88 listings, and the ALU behaves as
+MSX88's unless you choose otherwise (below).
 
 Where SIM88 is not sure to behave like MSX88, PROGRESS.md lists it under "Open questions".
+
+### MSX88 and the 8086
+
+MSX88 V-3.1 does four things differently from a real 8086 (checked by running the original, see
+[docs/fidelity.md](docs/fidelity.md)). By default SIM88 does what MSX88 does, because results
+then match the original simulator, which course exercises and listings are checked against.
+**Options › ALU** switches to what the 8086 does, which makes a good classroom discussion
+(**Help › Differences from the 8086** shows the same table):
+
+| Instruction | As MSX88 (default) | As a real 8086 |
+|---|---|---|
+| `INC`, `DEC` | clear C | leave C alone |
+| `ADC`, `SBB` with C = 1 | add (subtract), then `INC` (`DEC`) the result; the flags are those of the `INC` (`DEC`), so C ends 0 | one addition (subtraction) with the carry; C, O and A of the whole result |
+| `NOT` | sets flags: 8 bits leave Z = P = 1 and the rest 0; 16 bits leave all 0 | changes no flag |
+| `PUSH SP` | pushes 0000h | pushes SP after the decrement (SP − 2), as the 8086 and 8088 do |
+
+So with the MSX88 ALU a multi-word addition (`ADD` then `ADC`, `ADC`...) loses the carry out of
+any word after the first, and `INC CX` in a loop clears a carry the program wanted to keep. The
+choice is remembered, applies from the next instruction, and the status bar shows `ALU 8086`
+while it is on.
+
+### HLT
+
+`HLT` waits for an interrupt, even when none can arrive (I = 0 or every PIC line masked), as
+MSX88 does: only F10 (when the PIC lets it through) or Esc gets it out. Programs that end in
+`HLT` therefore stay there; the status bar says *CPU halted (HLT): waiting for an interrupt —
+Esc to stop* for as long as it lasts, and the CPU window shows the same in place of the next
+phase.
 
 ## Example
 

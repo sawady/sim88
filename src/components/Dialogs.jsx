@@ -7,6 +7,7 @@ import { useT } from '../i18n';
 import {
   LANGUAGES,
   THEMES,
+  ALU_MODE_IDS,
   ZOOMS,
   TIMER_PRESETS,
   PRINT_PRESETS,
@@ -202,6 +203,74 @@ export function AppearanceDialog({ onClose }) {
         onChange={(zoom) => set({ zoom })}
         options={ZOOMS.map((z) => ({ value: z, label: z === 'auto' ? t('dlg.look.zoomAuto') : t('dlg.look.zoomN', { n: z }) }))}
       />
+    </Dialog>
+  );
+}
+
+// The four places where MSX88 V-3.1 differs from a real 8086, as a table:
+// what each one does in each mode. Shown in the ALU dialog and in Help.
+const ALU_DIFFERENCES = ['incDec', 'adcSbb', 'not', 'pushSp'];
+
+function AluDifferences() {
+  const t = useT();
+  return (
+    <table className="diff-table">
+      <thead>
+        <tr>
+          <th scope="col">{t('dlg.alu.instruction')}</th>
+          <th scope="col">MSX88</th>
+          <th scope="col">8086</th>
+        </tr>
+      </thead>
+      <tbody>
+        {ALU_DIFFERENCES.map((id) => (
+          <tr key={id}>
+            <th scope="row">{t(`dlg.alu.${id}`)}</th>
+            <td>{t(`dlg.alu.${id}.msx88`)}</td>
+            <td>{t(`dlg.alu.${id}.8086`)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+// ALU: as MSX88 (the default) or as a real 8086.
+export function AluDialog({ onClose }) {
+  const t = useT();
+  const dispatch = useDispatch();
+  const current = useSelector((state) => state.settings.aluMode);
+  const [mode, setMode] = useState(current);
+  const ok = () => {
+    if (mode !== current) dispatch(setSettings({ aluMode: mode }));
+    onClose();
+  };
+  return (
+    <Dialog title={t('dlg.alu.title')} width={76} onClose={onClose} onSubmit={ok} buttons={<OkCancel onOk={ok} onCancel={onClose} />}>
+      <RadioGroup
+        label={t.marked('dlg.alu.mode')}
+        name="alu-mode"
+        value={mode}
+        onChange={setMode}
+        options={ALU_MODE_IDS.map((id) => ({ value: id, label: t(`dlg.alu.mode.${id}`) }))}
+      />
+      <p className="help">{t('dlg.alu.text')}</p>
+      <AluDifferences />
+      <p className="help">{t('dlg.alu.default')}</p>
+    </Dialog>
+  );
+}
+
+// Help › Differences from the 8086: the same table, to read.
+export function AluHelpDialog({ onClose }) {
+  const t = useT();
+  const mode = useSelector((state) => state.settings.aluMode);
+  return (
+    <Dialog title={t('dlg.aluHelp.title')} width={76} onClose={onClose} buttons={<Button label={t.marked('dlg.close')} onClick={onClose} />}>
+      <p className="help">{t('dlg.alu.text')}</p>
+      <AluDifferences />
+      <p className="help">{t('dlg.alu.default')}</p>
+      <p className="help">{t('dlg.aluHelp.current', { mode: t(`dlg.alu.mode.${mode}`) })}</p>
     </Dialog>
   );
 }

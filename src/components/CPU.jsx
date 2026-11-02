@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 import { getFlag } from '../model/cpu';
 import { hex8, hex16 } from '../model/format';
-import { REGISTERS, ALU_REGISTERS, FLAGS } from '../model/constants';
+import { REGISTERS, ALU_REGISTERS, FLAGS, MACHINE_STATES } from '../model/constants';
 import { Group } from './tui/Frame';
 import { useT } from '../i18n';
 
@@ -28,7 +28,8 @@ function Register({ name, value, active, size = 16, title }) {
 export default function CPU() {
   const t = useT();
   const machine = useSelector((state) => state.machine);
-  const { cpu, alu, activeComponents, decoder, instruction, IR, phase } = machine;
+  const { cpu, alu, activeComponents, decoder, instruction, IR, phase, cpuHalted, state } = machine;
+  const halted = cpuHalted && state !== MACHINE_STATES.STOPPED;
   const isActive = (name) => activeComponents.includes(name);
 
   return (
@@ -67,7 +68,11 @@ export default function CPU() {
           {instruction ? `${hex16(instruction.address)}: ${instruction.text}` : ' '}
         </div>
       </Group>
-      <div className="phase">{t('cpu.nextPhase', { phase: t(`cpu.phase${phase}`) })}</div>
+      {halted ? (
+        <div className="phase halted">{t('cpu.halted')}</div>
+      ) : (
+        <div className="phase">{t('cpu.nextPhase', { phase: t(`cpu.phase${phase}`) })}</div>
+      )}
     </div>
   );
 }

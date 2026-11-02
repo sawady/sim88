@@ -1,6 +1,6 @@
 // Test helpers: assemble and run programs headlessly.
 import { assemble } from '../assembler';
-import { createCpu, step, readReg, getFlag, initialMemory } from '../cpu';
+import { createCpu, step, readReg, getFlag, initialMemory, NO_IO } from '../cpu';
 import { hex8 } from '../format';
 
 export const hex = (s) => parseInt(s, 16);
@@ -29,15 +29,16 @@ export function cpuWith(memoryBytes = {}, { ip = 0x2000, regs = {}, flags = 0 } 
 export const cpuWithCode = (codeBytes, options) =>
   cpuWith(Object.fromEntries(codeBytes.map((b, i) => [0x2000 + i, b])), options);
 
-// Assembles and runs until HLT / INT 0, at the CPU level.
-export function run(source, { maxInstructions = 10000 } = {}) {
+// Assembles and runs until HLT / INT 0, at the CPU level. `aluMode`: 'msx88'
+// (the default) or '8086'.
+export function run(source, { maxInstructions = 10000, aluMode = 'msx88' } = {}) {
   const program = assemble(source);
   const mem = initialMemory();
   for (const [address, byte] of program.memory) mem[address] = byte;
   let cpu = createCpu({ mem, ip: program.entry });
   let output = '';
   for (let i = 0; i < maxInstructions; i++) {
-    const result = step(cpu);
+    const result = step(cpu, NO_IO, { aluMode });
     cpu = result.cpu;
     // one line per INT 7
     output += result.events.output.map((line) => `${String.fromCharCode(...line)}\n`).join('');

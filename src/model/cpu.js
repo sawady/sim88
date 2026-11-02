@@ -11,7 +11,7 @@
 //   flags,                       16 bit FLAGS word (8086 layout, see FLAG_BITS)
 // }
 
-import { BINARY as ALU_BINARY, UNARY as ALU_UNARY } from './alu';
+import { ALU_MODES, DEFAULT_ALU_MODE } from './alu';
 import { decode } from './decoder';
 import { REG8 } from './isa';
 import { asmHex, hex16 } from './format';
@@ -82,12 +82,19 @@ export const NO_IO = {
   readChar: () => undefined,
 };
 
+// Options of the CPU. aluMode: 'msx88' copies the four places where MSX88
+// differs from the 8086 (INC/DEC, ADC/SBB and NOT flags, in alu.js, and
+// PUSH SP); '8086' does what a real 8086 does.
+export const DEFAULT_OPTIONS = { aluMode: DEFAULT_ALU_MODE };
+
 // Mutable scratch copy of the state while one instruction executes.
 class Execution {
-  constructor(cpu, instruction, io) {
+  constructor(cpu, instruction, io, options = DEFAULT_OPTIONS) {
     this.cpu = cpu;
     this.instruction = instruction;
     this.io = io;
+    this.alu = ALU_MODES[options.aluMode] ?? ALU_MODES[DEFAULT_ALU_MODE];
+    this.as8086 = this.alu === ALU_MODES['8086'];
     this.regs = { ...cpu.regs };
     this.ip = cpu.ip;
     this.flags = cpu.flags;
@@ -97,7 +104,7 @@ class Execution {
     this.events = {
       halted: null, // 'HLT' | 'INT 0'
       breakpoint: false,
-      alu: null, // { op1, op2, result }
+      alu: null, // { op1, op2, result, size, flags: false when no flag was written }
       registers: new Set(), // registers read or written
       memoryReads: [],
       memoryWrites: [],
@@ -303,12 +310,12 @@ const EXECUTORS = {
   MOV: (x, [dst, src]) => x.write(dst, x.read(src)),
 
   ...Object.fromEntries(
-    Object.entries(ALU_BINARY).map(([mnemonic, operation]) => [
+    Object.keys(ALU_MODES[DEFAULT_ALU_MODE].BINARY).map((mnemonic) => [
       mnemonic,
       (x, [dst, src], size) => {
         const a = x.read(dst);
         const b = x.read(src);
-        const { result, flags } = operation(size, a, b, x.flag('C'));
+        const { result, flags } = x.alu.BINARY[mnemonic](size, a, b, x.flag('C'));
         x.setFlags(flags);
         if (mnemonic !== 'CMP') x.write(dst, result);
         x.events.alu = { op1: a, op2: b, result, size };
@@ -317,20 +324,25 @@ const EXECUTORS = {
   ),
 
   ...Object.fromEntries(
-    Object.entries(ALU_UNARY).map(([mnemonic, operation]) => [
+    Object.keys(ALU_MODES[DEFAULT_ALU_MODE].UNARY).map((mnemonic) => [
       mnemonic,
       (x, [operand], size) => {
         const a = x.read(operand);
-        const { result, flags } = operation(size, a);
+        const { result, flags } = x.alu.UNARY[mnemonic](size, a);
         x.setFlags(flags);
         x.write(operand, result);
-        x.events.alu = { op1: a, op2: null, result, size };
+        // (NOT as 8086 writes no flag)
+        x.events.alu = { op1: a, op2: null, result, size, flags: Object.keys(flags).length > 0 };
       },
     ])
   ),
 
-  // PUSH SP pushes 0000h on MSX88 (tests/fidelity: stack-push-sp).
-  PUSH: (x, [src]) => x.push(src.type === 'reg' && src.name === 'SP' ? 0 : x.read(src)),
+  // PUSH SP pushes 0000h on MSX88 (tests/fidelity: stack-push-sp); the
+  // 8086 and 8088 push SP after the decrement (the 80286 changed it to before).
+  PUSH: (x, [src]) => {
+    if (src.type === 'reg' && src.name === 'SP') x.push(x.as8086 ? (x.reg('SP') - 2) & 0xffff : 0);
+    else x.push(x.read(src));
+  },
   POP: (x, [dst]) => x.write(dst, x.pop()),
   PUSHF: (x) => x.push(x.flags),
   POPF: (x) => {
@@ -387,8 +399,8 @@ export const IMPLEMENTED = Object.keys(EXECUTORS);
 
 // Executes one decoded instruction. IP must already point to the next one
 // (the machine increments it after decoding, as the real cycle does).
-export function execute(cpu, instruction, io = NO_IO) {
-  const x = new Execution(cpu, instruction, io);
+export function execute(cpu, instruction, io = NO_IO, options = DEFAULT_OPTIONS) {
+  const x = new Execution(cpu, instruction, io, options);
   const run = instruction.mnemonic && EXECUTORS[instruction.mnemonic];
   if (!instruction.mnemonic) {
     throw new CpuError(
@@ -407,8 +419,8 @@ export function execute(cpu, instruction, io = NO_IO) {
 }
 
 // Fetch, decode and execute one instruction.
-export function step(cpu, io = NO_IO) {
+export function step(cpu, io = NO_IO, options = DEFAULT_OPTIONS) {
   const instruction = decode(cpu.mem, cpu.ip);
   const advanced = { ...cpu, ip: (cpu.ip + instruction.length) & 0xffff };
-  return { instruction, ...execute(advanced, instruction, io) };
+  return { instruction, ...execute(advanced, instruction, io, options) };
 }

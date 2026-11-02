@@ -341,3 +341,69 @@ describe('CPU: stack, subroutines and interrupts', () => {
   });
 });
 
+
+describe('CPU: ALU mode (as MSX88 by default, or as a real 8086)', () => {
+  const both = (source) => ({ msx88: run(source).cpu, i8086: run(source, { aluMode: '8086' }).cpu });
+
+  test('INC / DEC: MSX88 clears C, the 8086 keeps it', () => {
+    const { msx88, i8086 } = both('MOV AL, 0FFh\nADD AL, 1\nINC BL\nHLT\nEND');
+    expect(flag(msx88, 'C')).toBe(false);
+    expect(flag(i8086, 'C')).toBe(true);
+    expect(reg(msx88, 'BL')).toBe(1);
+    expect(reg(i8086, 'BL')).toBe(1);
+    const dec = both('MOV AL, 0\nSUB AL, 1\nDEC BX\nHLT\nEND');
+    expect(flag(dec.msx88, 'C')).toBe(false);
+    expect(flag(dec.i8086, 'C')).toBe(true);
+    expect(reg(dec.i8086, 'BX')).toBe(0xffff);
+  });
+
+  test('ADC with C = 1: same result, the carry out only on the 8086', () => {
+    // FFh + 1 sets C; then FFh + 0 + C = 100h
+    const { msx88, i8086 } = both('MOV AL, 0FFh\nADD AL, 1\nMOV BL, 0FFh\nADC BL, 0\nHLT\nEND');
+    expect(reg(msx88, 'BL')).toBe(0);
+    expect(reg(i8086, 'BL')).toBe(0);
+    expect(flag(msx88, 'C')).toBe(false);
+    expect(flag(i8086, 'C')).toBe(true);
+    expect(flag(i8086, 'Z')).toBe(true);
+  });
+
+  test('a 48 bit addition: the carry gets past the second word only on the 8086', () => {
+    // BX:DX:AX = 0000:FFFF:FFFFh + 1
+    const source = 'MOV AX, 0FFFFh\nMOV DX, 0FFFFh\nMOV BX, 0\nADD AX, 1\nADC DX, 0\nADC BX, 0\nHLT\nEND';
+    const { msx88, i8086 } = both(source);
+    expect([reg(i8086, 'BX'), reg(i8086, 'DX'), reg(i8086, 'AX')]).toEqual([1, 0, 0]);
+    expect([reg(msx88, 'BX'), reg(msx88, 'DX'), reg(msx88, 'AX')]).toEqual([0, 0, 0]);
+  });
+
+  test('SBB with C = 1: the borrow out only on the 8086', () => {
+    const { msx88, i8086 } = both('MOV AL, 0\nSUB AL, 1\nMOV BL, 0\nSBB BL, 0\nHLT\nEND');
+    expect(reg(msx88, 'BL')).toBe(0xff);
+    expect(reg(i8086, 'BL')).toBe(0xff);
+    expect(flag(msx88, 'C')).toBe(false);
+    expect(flag(i8086, 'C')).toBe(true);
+  });
+
+  test('NOT: MSX88 sets fixed flags, the 8086 leaves them as they were', () => {
+    // 7Fh + 1 = 80h: S = O = A = 1, Z = P = C = 0
+    const { msx88, i8086 } = both('MOV AL, 7Fh\nADD AL, 1\nNOT AL\nHLT\nEND');
+    expect(reg(msx88, 'AL')).toBe(0x7f);
+    expect(reg(i8086, 'AL')).toBe(0x7f);
+    expect(['Z', 'P', 'S', 'O', 'A', 'C'].map((f) => flag(msx88, f))).toEqual([true, true, false, false, false, false]);
+    expect(['Z', 'P', 'S', 'O', 'A', 'C'].map((f) => flag(i8086, f))).toEqual([false, false, true, true, true, false]);
+  });
+
+  test('PUSH SP: MSX88 pushes 0000h, the 8086 pushes SP after the decrement', () => {
+    const { msx88, i8086 } = both('PUSH SP\nPOP AX\nHLT\nEND');
+    expect(reg(msx88, 'AX')).toBe(0);
+    expect(reg(i8086, 'AX')).toBe(0x7ffe);
+    expect(msx88.regs.SP).toBe(0x8000);
+    expect(i8086.regs.SP).toBe(0x8000);
+  });
+
+  test('without options, and with an unknown mode, the CPU behaves as MSX88', () => {
+    const code = cpuWithCode([0x54], { regs: { SP: 0x1234 } }); // PUSH SP
+    expect(wordAt(step(code).cpu, 0x1232)).toBe(0);
+    expect(wordAt(step(code, undefined, { aluMode: 'z80' }).cpu, 0x1232)).toBe(0);
+    expect(wordAt(step(code, undefined, { aluMode: '8086' }).cpu, 0x1232)).toBe(0x1232);
+  });
+});

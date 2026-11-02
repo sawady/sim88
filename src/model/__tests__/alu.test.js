@@ -1,5 +1,26 @@
 import { describe, expect, test } from 'vitest';
-import { add, adc, sub, sbb, cmp, and, or, xor, not, neg, inc, dec, parity } from '../alu';
+import {
+  add,
+  adc,
+  sub,
+  sbb,
+  cmp,
+  and,
+  or,
+  xor,
+  not,
+  neg,
+  inc,
+  dec,
+  parity,
+  adc8086,
+  sbb8086,
+  inc8086,
+  dec8086,
+  not8086,
+  ALU_MODES,
+  DEFAULT_ALU_MODE,
+} from '../alu';
 
 // Flags that are on, as a sorted string ('CZ'), for the flags the operation defines
 const on = ({ flags }) =>
@@ -133,4 +154,101 @@ test('parity of the low byte', () => {
   expect(parity(0xff)).toBe(true);
   expect(parity(0x100)).toBe(true); // high byte ignored
   expect(parity(0b0111_0000)).toBe(false);
+});
+
+describe('ALU modes: as MSX88 (default) and as a real 8086', () => {
+  test('the default mode is MSX88, and each mode has every operation', () => {
+    expect(DEFAULT_ALU_MODE).toBe('msx88');
+    expect(Object.keys(ALU_MODES).sort()).toEqual(['8086', 'msx88']);
+    for (const { BINARY: b, UNARY: u } of Object.values(ALU_MODES)) {
+      expect(Object.keys(b).sort()).toEqual(['ADC', 'ADD', 'AND', 'CMP', 'OR', 'SBB', 'SUB', 'XOR']);
+      expect(Object.keys(u).sort()).toEqual(['DEC', 'INC', 'NEG', 'NOT']);
+    }
+    // Only the four differences change.
+    for (const op of ['ADD', 'SUB', 'CMP', 'AND', 'OR', 'XOR']) {
+      expect(ALU_MODES['8086'].BINARY[op]).toBe(ALU_MODES.msx88.BINARY[op]);
+    }
+    expect(ALU_MODES['8086'].UNARY.NEG).toBe(ALU_MODES.msx88.UNARY.NEG);
+  });
+
+  test.each([
+    // op, size, a, carry in, result: MSX88 flags / 8086 flags (C in the 8086 flags only)
+    ['INC', 8, 0x7f, null, 0x80, 'AOS', 'AOS'],
+    ['INC', 8, 0xff, null, 0x00, 'APZ', 'APZ'],
+    ['DEC', 8, 0x00, null, 0xff, 'APS', 'APS'],
+    ['DEC', 16, 0x8000, null, 0x7fff, 'AOP', 'AOP'],
+  ])('%s%i %i: same result; MSX88 clears C, the 8086 leaves it out', (op, size, a, _, result, msx, i86) => {
+    const m = ALU_MODES.msx88.UNARY[op](size, a);
+    const r = ALU_MODES['8086'].UNARY[op](size, a);
+    expect(m.result).toBe(result);
+    expect(r.result).toBe(result);
+    expect(on(m)).toBe(msx);
+    expect(m.flags.C).toBe(false);
+    expect(on(r)).toBe(i86);
+    expect('C' in r.flags).toBe(false); // the CPU keeps the C it had
+  });
+
+  test.each([
+    // size, a, b, result, 8086 flags on, MSX88 flags on
+    [8, 0xff, 0x00, 0x00, 'ACPZ', 'APZ'], // FFh + 0 + 1: carry out
+    [8, 0x7f, 0x00, 0x80, 'AOS', 'AOS'], // 7Fh + 0 + 1: signed overflow
+    [8, 0x0f, 0x00, 0x10, 'A', 'A'],
+    [8, 0xff, 0xff, 0xff, 'ACPS', 'PS'], // FFh + FFh + 1 = 1FFh
+    [16, 0xffff, 0x0000, 0x0000, 'ACPZ', 'APZ'],
+    [16, 0x8000, 0x7fff, 0x0000, 'ACPZ', 'APZ'],
+  ])('ADC%i %i + %i with C = 1', (size, a, b, result, i86, msx) => {
+    const r = ALU_MODES['8086'].BINARY.ADC(size, a, b, true);
+    const m = ALU_MODES.msx88.BINARY.ADC(size, a, b, true);
+    expect(r.result).toBe(result);
+    expect(m.result).toBe(result);
+    expect(on(r)).toBe(i86);
+    expect(on(m)).toBe(msx);
+  });
+
+  test.each([
+    // size, a, b, result, 8086 flags on, MSX88 flags on
+    [8, 0x00, 0x00, 0xff, 'ACPS', 'APS'], // 0 - 0 - 1: borrow
+    [8, 0x80, 0x00, 0x7f, 'AO', 'AO'], // -128 - 0 - 1: signed overflow
+    [8, 0x10, 0x0f, 0x00, 'APZ', 'PZ'], // A differs too: MSX88 takes it from the DEC
+    [8, 0x05, 0x05, 0xff, 'ACPS', 'APS'],
+    [16, 0x0000, 0xffff, 0x0000, 'ACPZ', 'PZ'], // 0 - FFFFh - 1 = -10000h
+  ])('SBB%i %i - %i with C = 1', (size, a, b, result, i86, msx) => {
+    const r = ALU_MODES['8086'].BINARY.SBB(size, a, b, true);
+    const m = ALU_MODES.msx88.BINARY.SBB(size, a, b, true);
+    expect(r.result).toBe(result);
+    expect(m.result).toBe(result);
+    expect(on(r)).toBe(i86);
+    expect(on(m)).toBe(msx);
+  });
+
+  test('ADC / SBB with C = 0 are ADD / SUB in both modes', () => {
+    for (const mode of Object.values(ALU_MODES)) {
+      expect(mode.BINARY.ADC(8, 0xff, 0x01, false)).toEqual(add(8, 0xff, 0x01));
+      expect(mode.BINARY.SBB(16, 0x0000, 0x0001, false)).toEqual(sub(16, 0x0000, 0x0001));
+    }
+  });
+
+  test('the 8086 ADC / SBB match a wide addition / subtraction', () => {
+    for (const [a, b] of [[0x12, 0x34], [0x80, 0x7f], [0xf8, 0x07], [0x00, 0xff]]) {
+      const r = adc8086(8, a, b, true);
+      expect(r.result).toBe((a + b + 1) & 0xff);
+      expect(r.flags.C).toBe(a + b + 1 > 0xff);
+      const s = sbb8086(8, a, b, true);
+      expect(s.result).toBe((a - b - 1) & 0xff);
+      expect(s.flags.C).toBe(a - b - 1 < 0);
+    }
+  });
+
+  test('NOT: MSX88 sets fixed flags, the 8086 changes none', () => {
+    expect(on(ALU_MODES.msx88.UNARY.NOT(8, 0x0f))).toBe('PZ');
+    expect(on(ALU_MODES.msx88.UNARY.NOT(16, 0x0f0f))).toBe('');
+    expect(Object.keys(ALU_MODES.msx88.UNARY.NOT(16, 0)).length).toBe(2);
+    expect(not8086(8, 0x0f)).toEqual({ result: 0xf0, flags: {} });
+    expect(not8086(16, 0x0000)).toEqual({ result: 0xffff, flags: {} });
+  });
+
+  test('the 8086 INC / DEC wrap like ADD / SUB 1', () => {
+    expect(inc8086(16, 0xffff).result).toBe(0);
+    expect(dec8086(8, 0).result).toBe(0xff);
+  });
 });
