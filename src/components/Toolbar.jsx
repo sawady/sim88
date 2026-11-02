@@ -8,6 +8,9 @@ import {
   mdiFile,
   mdiFolderOpen,
   mdiContentSave,
+  mdiDebugStepOver,
+  mdiDebugStepInto,
+  mdiStepBackward,
 } from '@mdi/js';
 
 import { MACHINE_STATES } from '../model/constants';
@@ -20,8 +23,8 @@ const Icon = ({ path }) => (
   </svg>
 );
 
-const ToolbarButton = ({ icon, onClick, children }) => (
-  <button onClick={onClick}>
+const ToolbarButton = ({ icon, onClick, title, children }) => (
+  <button onClick={onClick} title={title}>
     <Icon path={icon} />
     {children}
   </button>
@@ -30,21 +33,24 @@ const ToolbarButton = ({ icon, onClick, children }) => (
 export default function Toolbar(props) {
   return (
     <div className="toolbar">
-      <ToolbarButton icon={mdiFile} onClick={props.newFile}>Nuevo</ToolbarButton>
-      <ToolbarButton icon={mdiFolderOpen} onClick={props.openFile}>Abrir</ToolbarButton>
-      <ToolbarButton icon={mdiContentSave} onClick={props.saveFile}>Guardar</ToolbarButton>
-      <ToolbarButton icon={mdiContentSave} onClick={props.saveFileAs}>Guardar como...</ToolbarButton>
+      <ToolbarButton icon={mdiFile} onClick={props.newFile} title="Ctrl+N">Nuevo</ToolbarButton>
+      <ToolbarButton icon={mdiFolderOpen} onClick={props.openFile} title="Ctrl+O">Abrir</ToolbarButton>
+      <ToolbarButton icon={mdiContentSave} onClick={props.saveFile} title="Ctrl+S">Guardar</ToolbarButton>
+      <ToolbarButton icon={mdiContentSave} onClick={props.saveFileAs} title="Ctrl+Shift+S">Guardar como...</ToolbarButton>
       {props.machineState === MACHINE_STATES.RUNNING && (
-        <ToolbarButton icon={mdiPause} onClick={props.pause}>Pausar</ToolbarButton>
+        <ToolbarButton icon={mdiPause} onClick={props.pause} title="F6">Pausar</ToolbarButton>
       )}
       {props.machineState === MACHINE_STATES.PAUSED && (
-        <ToolbarButton icon={mdiPlay} onClick={props.resume}>Reanudar</ToolbarButton>
+        <ToolbarButton icon={mdiPlay} onClick={props.resume} title="F6">Reanudar</ToolbarButton>
       )}
       {props.machineState === MACHINE_STATES.STOPPED && (
-        <ToolbarButton icon={mdiPlay} onClick={props.start}>Ejecutar</ToolbarButton>
+        <ToolbarButton icon={mdiPlay} onClick={props.start} title="F5">Ejecutar</ToolbarButton>
       )}
-      <ToolbarButton icon={mdiStop} onClick={props.stop}>Detener</ToolbarButton>
-      <ToolbarButton icon={mdiSync} onClick={props.reset}>Resetear</ToolbarButton>
+      <ToolbarButton icon={mdiDebugStepOver} onClick={props.stepInstruction} title="F10: una instrucción">Paso</ToolbarButton>
+      <ToolbarButton icon={mdiDebugStepInto} onClick={props.stepPhase} title="F11: una fase del ciclo">Micro-paso</ToolbarButton>
+      <ToolbarButton icon={mdiStepBackward} onClick={props.stepBack} title="Shift+F10: deshace la última instrucción">Atrás</ToolbarButton>
+      <ToolbarButton icon={mdiStop} onClick={props.stop} title="F7">Detener</ToolbarButton>
+      <ToolbarButton icon={mdiSync} onClick={props.reset} title="F8">Resetear</ToolbarButton>
     </div>
   );
 }

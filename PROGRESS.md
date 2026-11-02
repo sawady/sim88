@@ -40,70 +40,73 @@ Taken by Federico Sawady on 2026-11-02.
   Keywords need a word boundary; a register does not match the prefix of a name (`AXIS`).
 - [x] **4. Allow an empty program (just `END`)** · `gfi`
 - [x] **5. Initial values of the registers and SP** · `gfi`
-  Registers start at 0 and SP at a documented value (8000h, the top of user memory ⚠️).
+  Registers start at 0 and SP at 8000h, the top of the user memory ⚠️ (open question 3).
 - [x] **6. Friendly errors for unsupported instructions**
   Never a `TypeError`: unknown or not yet implemented instructions give a message with the line.
 - [x] **7. Size and range checks** · Deps: 6
   `MOV AL, BX` and `MOV AL, 300` are errors with the line.
-- [ ] **8. Decode MOV reg, reg (8A/8B + ModRM)**
+- [x] **8. Decode MOV reg, reg (8A/8B + ModRM)**
   The cycle runs `MOV BX, AX`.
 - [x] **9. Remove the debug panel from the UI** · `gfi`
   No "RESULTADO AST / COMPILED"; errors are shown with error styling.
 
 ## Phase 1: memory and two-pass assembler
 
-- [ ] **10. 64 KB memory and virtualized view** · Deps: decision 4
+- [x] **10. 64 KB memory and virtualized view** · Deps: decision 4
   0000h–FFFFh on a `Uint8Array`, O(1) access, a snapshot per step. The memory view is virtualized
   and follows IP; the UI is fluid at maximum speed.
-- [ ] **11. Two-pass assembler with a symbol table** · Deps: 6
+- [x] **11. Two-pass assembler with a symbol table** · Deps: 6
   Pass 1 computes addresses of labels (`LOOP:`), variables and constants; pass 2 emits bytes.
   The assembler returns an address → source line map (used by 33).
-- [ ] **12. ORG directive** · Deps: 10, 11
+- [x] **12. ORG directive** · Deps: 10, 11
   Several ORG blocks, code and data in separate areas, error if two blocks overlap. Execution
   starts at 2000h.
-- [ ] **13. DB/DW: `?`, lists and strings** · Deps: 11, 12
+- [x] **13. DB/DW: `?`, lists and strings** · Deps: 11, 12
   `DB ?` reserves a byte; `DW` is little endian; `TABLE DB 1, 2, 4, 8`; `MSG DB "hello"`.
-- [ ] **14. EQU** · Deps: 11
+- [x] **14. EQU** · Deps: 11
   Constants are replaced wherever an immediate is accepted and take no memory.
-- [ ] **15. `END` as a directive and `HLT` to halt** · Deps: 11
+- [x] **15. `END` as a directive and `HLT` to halt** · Deps: 11
   As in decision 3. The default example and the tests are updated.
 
 ## Phase 2: addressing modes
 
-- [ ] **16. Opcode table decoder + ModRM** · Deps: 8
+- [x] **16. Opcode table decoder + ModRM** · Deps: 8
   Adding an instruction means adding table rows. A decoded instruction without an implementation
   stops the machine with a clear error.
-- [ ] **17. Memory operands: direct, indirect through BX, immediate to memory** · Deps: 10, 11, 16
+- [x] **17. Memory operands: direct, indirect through BX, immediate to memory** · Deps: 10, 11, 16
   `MOV AL, VAR`, `MOV [1000h], AX`, `MOV AX, [BX]`, `MOV VAR, 5`, encoded as on the 8086
   (`[BX]` is mod=00 r/m=111; direct is mod=00 r/m=110 + disp16). Memory to memory is rejected.
+  `BYTE PTR` / `WORD PTR` when the size is not given by a register or a variable. `[BX + n]` is
+  rejected because MSX88 does not have it (the decoder does understand it).
 
 ## Phase 3: ALU and flags
 
-- [ ] **18. Pure ALU with flags (`src/model/alu.js`)** · `gfi`
+- [x] **18. Pure ALU with flags (`src/model/alu.js`)** · `gfi`
   8 and 16 bit ADD, ADC, SUB, SBB, CMP, AND, OR, XOR, NEG, NOT, INC, DEC with Z, S, O, C, A, P.
   Exhaustive edge case tests.
-- [ ] **19. NOT in the grammar** · `gfi`
-- [ ] **20. ALU in the cycle and the UI** · Deps: 16, 17, 18, 19
+- [x] **19. NOT in the grammar** · `gfi`
+- [x] **20. ALU in the cycle and the UI** · Deps: 16, 17, 18, 19
   The instructions of 18 assemble, decode and run with every operand kind of 17; the UI shows
   flags and the real OP1/OP2/RES.
 
 ## Phase 4: control flow and stack
 
-- [ ] **21. JMP and conditional jumps (IP relative)** · Deps: 11, 20
+- [x] **21. JMP and conditional jumps (IP relative)** · Deps: 11, 20
   `JMP`, `JZ`, `JNZ`, `JS`, `JNS`, `JC`, `JNC`, `JO`, `JNO`; error when the target is out of
   range. Tested with a counting loop.
-- [ ] **22. Stack: PUSH, POP, PUSHF, POPF** · Deps: 3, 5, 10, 16
+- [x] **22. Stack: PUSH, POP, PUSHF, POPF** · Deps: 3, 5, 10, 16
   SP decreases by 2, little endian. The UI highlights SP and the stack area.
-- [ ] **23. CALL and RET** · Deps: 21, 22
+- [x] **23. CALL and RET** · Deps: 21, 22
   A subroutine with parameters in registers, with a test.
 
 ## Phase 5: interrupts and I/O
 
-- [ ] **24. INT, IRET, STI, CLI and the vector table** · Deps: 22, 10
+- [x] **24. INT, IRET, STI, CLI and the vector table** · Deps: 22, 10
   256 vectors in the first KB; `INT n` pushes flags and IP and jumps; IRET returns. STI/CLI set I.
 - [ ] **25. System interrupts 0, 3, 6 and 7, and a console in the UI** · Deps: 24
   INT 0 ends, INT 3 is a breakpoint (pause), INT 6 reads a character into `[BX]`, INT 7 writes
   AL bytes from BX to a console.
+  Done: INT 0, INT 3, INT 7 and the console. Missing: INT 6 (keyboard input in the UI).
 - [ ] **26. IN, OUT and an I/O bus** · Deps: 16
   Port map with an interface to plug peripherals.
 - [ ] **27. PIO, LED bar and switches** · Deps: 26
@@ -114,9 +117,10 @@ Taken by Federico Sawady on 2026-11-02.
 
 ## UX and infrastructure (can run in parallel)
 
-- [ ] **32. "Step" (one instruction) and "micro-step" (one cycle phase) buttons** · `gfi`
+- [x] **32. "Step" (one instruction) and "micro-step" (one cycle phase) buttons** · `gfi`
   Buttons and shortcuts, execution without a timer, reducer tests. Includes "step back" (decision 4).
-- [ ] **33. Highlight the running line in the editor** · Deps: 11
+  F10 step, F11 micro-step, Shift+F10 back.
+- [x] **33. Highlight the running line in the editor** · Deps: 11
 - [ ] **34. Keep the program in localStorage** · `gfi`
 - [ ] **35. Loadable examples** · `gfi`
   A menu with example programs from `src/examples/`, one per course topic.
@@ -134,9 +138,47 @@ Taken by Federico Sawady on 2026-11-02.
 Assumptions made where MSX88 behavior is not confirmed. Each one is implemented in the most
 reasonable way and waits for confirmation.
 
-- (none yet)
+Federico: please confirm or correct. Sources are in the MSX88 notes kept outside the repo
+(manual v3 by R. de Diego, UNLP guides and practice sheets, ASM88 `.LST` listings).
+
+1. **JMP and CALL encoding.** ASM88 listings show `E9`/`E8` followed by the *absolute* target
+   address. SIM88 follows decision 2 and uses the real 8086 encoding (relative displacement),
+   so the bytes differ from an MSX88 listing for those two instructions. Conditional jumps match
+   (`7x` + rel8).
+2. **NOP opcode.** The MSX88 manual lists NOP as 98h (CBW on an 8086); SIM88 uses 90h. Not seen
+   in any listing.
+3. **Initial SP = 8000h.** Inferred from the UNLP stack diagrams (the first PUSH writes
+   7FFEh–7FFFh). The other registers and the flags start at 0 (not documented).
+4. **Execution starts at 2000h.** If the program has instructions but none at 2000h, SIM88 gives
+   an assembler error ("put the code after ORG 2000h"). This is a SIM88 addition.
+5. **HLT** stops the program, like INT 0. On MSX88 HLT "stops the CPU until an external
+   interrupt"; that matters once the PIC exists (task 28).
+6. **INT 3** pauses the simulation (the "Reanudar" button continues).
+7. **Names are case insensitive** (labels, variables, constants), as in MASM. Not confirmed.
+8. **Extensions accepted by SIM88**, not found in MSX88 material: character literals (`'A'`),
+   single-quoted strings, direct addresses in brackets (`MOV AL, [1000h]`), and `*` / `/` in
+   expressions. Rejected because MSX88 lacks them: `[BX + n]`, PUSH/POP of 8-bit registers or
+   memory, and jumps other than JZ/JNZ/JS/JNS/JC/JNC/JO/JNO.
+9. **A missing END is an error.** Not confirmed what ASM88 does.
+10. **`DB ?` / `DW ?`** reserve memory without writing it. Memory starts zeroed in SIM88; on
+    MSX88 it holds whatever was there.
+11. **Encodings chosen by the assembler** follow the ASM88 listings: general forms only (no
+    `A0`–`A3`, no accumulator immediates, no `40+r` INC). `INT 3` is assembled as `CD 03` (not
+    `CC`). The decoder understands all of these short forms anyway.
+12. **INT n through the vector table** pushes the flags and IP (no CS: there are no segments),
+    clears I, and jumps to the word at 4·n. IRET pops IP and the flags. This matches the MSX88
+    manual; INT 0, 3, 6 and 7 are handled by the simulator itself (the "monitor").
 
 ## Log
+
+- 2026-11-02: phase 0 done (tasks 1–9). New core: line-based peggy grammar, two-pass assembler
+  with symbols, ORG, DB/DW (`?`, lists, strings, DUP), EQU, OFFSET, PTR and expressions; ISA table
+  shared by the assembler and a ModRM decoder; pure ALU with flags; CPU with 64 KB `Uint8Array`
+  memory (copy on write) running MOV, the ALU instructions, jumps, stack, CALL/RET, INT/IRET,
+  STI/CLI, NOP and HLT; machine with the 5 cycle phases and a snapshot per instruction (step
+  back). UI: virtualized memory with "go to", step / micro-step / back buttons, running line
+  highlighted in the editor, INT 7 console, error and status boxes. Checked in headless Chromium
+  with the default example (sum of a table at 1000h, code at 2000h, loop, HLT, END).
 
 - 2026-11-02: modernization merged (#5): Vite, React 19, Redux 5, peggy, Vitest, CI, GitHub Pages.
   Decisions 1–4 taken. This file replaces the plan kept outside the repo.

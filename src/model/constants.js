@@ -1,65 +1,30 @@
-// No imports here: conversions.js imports this module, and a cycle breaks
-// whoever imports conversions.js first.
+// UI level constants. CPU constants (memory size, initial IP and SP) are in cpu.js.
 
-export const IR = 'IR'
-export const IP = 'IP'
-export const SP = 'SP'
-export const AX = 'AX'
-export const AL = 'AL'
-export const AH = 'AH'
-export const BX = 'BX'
-export const BL = 'BL'
-export const BH = 'BH'
-export const CX = 'CX'
-export const CL = 'CL'
-export const CH = 'CH'
-export const DX = 'DX'
-export const DL = 'DL'
-export const DH = 'DH'
-export const REG = 'REG'
-export const FLAG = 'FLAG'
-export const DECODER = 'DECODER'
-export const REGISTER = 'REGISTER'
-export const DECIMAL = 'DECIMAL'
-export const HEXADECIMAL = 'HEXADECIMAL'
-export const BINARY = 'BINARY'
-export const UNARY = 'UNARY'
-export const VARIABLE = 'VARIABLE'
-export const CONSTANT = 'CONSTANT'
-export const DB = 'DB'
-export const END = 'END'
-export const ERROR = 'ERROR'
-export const MOV = 'MOV'
+export const IR = 'IR';
+export const IP = 'IP';
+export const SP = 'SP';
+export const DECODER = 'DECODER';
 
-export const INITIAL_VELOCITY = 500 // ms
+export const INITIAL_VELOCITY = 500; // ms per phase of the cycle
 
-export const MIN_VELOCITY = 10000 // ms
+export const MIN_VELOCITY = 10000; // ms
 
-export const MAX_VELOCITY = 10 // ms
+export const MAX_VELOCITY = 10; // ms
 
-export const MEMORY_SIZE = 1000 // 57343 is the total amount for 64kb
+export const DEFAULT_DECODER_VALUE = '????';
 
-export const DEFAULT_IR = 0x0
+// Registers shown in the CPU, and the flags in the order MSX88 shows them.
+export const REGISTERS = ['AX', 'BX', 'CX', 'DX'];
 
-export const DEFAULT_IP = 0x2000
+export const ALU_REGISTERS = ['OP1', 'OP2', 'RES'];
 
-// Top of the user memory (0000h-7FFFh): the first PUSH writes 7FFEh-7FFFh.
-export const DEFAULT_SP = 0x8000
-
-export const DEFAULT_DECODER_VALUE = '????'
-
-export const REGISTERS = [AX, BX, CX, DX];
-
-export const LOW_REGISTERS = REGISTERS.map(x => x[0] + 'L')
-
-export const HIGH_REGISTERS = REGISTERS.map(x => x[0] + 'H')
-
-export const ALU_REGISTERS = ['OP1', 'OP2', 'RES']
-
-export const FLAGS = ['i', 'z', 's', 'o', 'c', 'a', 'p']
+export const FLAGS = ['I', 'Z', 'S', 'O', 'C', 'A', 'P'];
 
 export const MACHINE_STATES = {
   RUNNING: 'RUNNING',
   PAUSED: 'PAUSED',
   STOPPED: 'STOPPED',
-}
+};
+
+// Names of the phases of the cycle (see EXECUTION_CYCLE in machine.js)
+export const PHASE_NAMES_UI = ['Captación', 'Decodificación', 'Incremento de IP', 'Operandos', 'Ejecución'];

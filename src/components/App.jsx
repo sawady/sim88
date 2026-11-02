@@ -23,6 +23,9 @@ import {
   resume,
   increaseVelocity,
   decreaseVelocity,
+  stepPhase,
+  stepInstruction,
+  stepBack,
 } from '../actions/machine';
 
 import '../styles/App.css';
@@ -54,6 +57,9 @@ export default function App() {
     pause: () => dispatch(pause()),
     resume: () => dispatch(resume()),
     reset: () => dispatch(reset()),
+    stepPhase: () => dispatch(stepPhase(text)),
+    stepInstruction: () => dispatch(stepInstruction(text)),
+    stepBack: () => dispatch(stepBack()),
     pauseOrResume: () => {
       if (machineState === MACHINE_STATES.RUNNING) dispatch(pause());
       if (machineState === MACHINE_STATES.PAUSED) dispatch(resume());
@@ -78,6 +84,9 @@ export default function App() {
       [{ key: 'f6' }, a.pauseOrResume],
       [{ key: 'f7' }, a.stop],
       [{ key: 'f8' }, a.reset],
+      [{ key: 'f10' }, a.stepInstruction],
+      [{ key: 'f11' }, a.stepPhase],
+      [{ key: 'f10', shift: true }, a.stepBack],
       [{ key: 'i', ctrl: true, alt: true }, a.increase],
       [{ key: 'd', ctrl: true, alt: true }, a.decrease],
     ];

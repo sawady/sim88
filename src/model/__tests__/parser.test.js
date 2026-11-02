@@ -1,155 +1,161 @@
 import { describe, expect, test } from 'vitest';
 import { parse } from '../parser';
 
-const first = (src) => parse(src)[0];
+const statements = (src) => parse(src).statements;
+const body = (line) => parse(line).statements[0].body;
+const operands = (line) => body(line).operands;
 
 describe('parser: program structure', () => {
-  test('parses a minimal program terminated by END', () => {
-    expect(parse('MOV AL, 1\nEND')).toEqual([
-      {
-        line: 1,
-        type: 'MOV',
-        group: 'BINARY',
-        p1: { type: 'REGISTER', value: 'AL' },
-        p2: { type: 'DECIMAL', value: 1 },
-      },
-      { line: 2, group: 'END', type: 'END' },
+  test('one statement per line, with its line number and source', () => {
+    const { statements: sts, ended } = parse('MOV AL, 1\nEND');
+    expect(ended).toBe(true);
+    expect(sts.map((s) => [s.line, s.body.kind])).toEqual([
+      [1, 'instruction'],
+      [2, 'end'],
     ]);
-  });
-
-  test('END is mandatory', () => {
-    expect(() => parse('MOV AL, 1\n')).toThrow(/end of input/);
+    expect(sts[0].source).toBe('MOV AL, 1');
   });
 
   test('an empty program (just END) is valid', () => {
-    expect(parse('END')).toHaveLength(1);
+    expect(statements('END')).toHaveLength(1);
   });
 
   test('everything after END is ignored', () => {
-    expect(parse('MOV AL, 1\nEND this is ignored\nMOV AL, 2')).toHaveLength(2);
+    expect(statements('MOV AL, 1\nEND this is ignored\nnot even parsed !!')).toHaveLength(2);
   });
 
   test('skips comments and blank lines, keeping source line numbers', () => {
-    const ast = parse('; header\n\n  MOV AL, 1 ; trailing comment\nEND');
-    expect(ast.map((x) => x.line)).toEqual([3, 4]);
-  });
-
-  test('mnemonics are case insensitive and normalized to upper case', () => {
-    expect(first('mov AL, 1\nEND').type).toBe('MOV');
-  });
-
-  test('register names are normalized to upper case', () => {
-    expect(first('mov al, 1\nEND').p1.value).toBe('AL');
-  });
-
-  test('a register does not match the prefix of a longer name', () => {
-    expect(first('MOV AL, AXIS\nEND').p2).toEqual({ type: 'VARIABLE', name: 'AXIS' });
+    const sts = statements('; header\n\n  MOV AL, 1 ; trailing comment\nEND');
+    expect(sts.map((x) => x.line)).toEqual([3, 4]);
   });
 
   test('accepts CRLF line endings', () => {
-    expect(parse('MOV AL, 1\r\nEND')).toHaveLength(2);
+    expect(statements('MOV AL, 1\r\nEND\r\n')).toHaveLength(2);
   });
 
-  test('reports syntax errors with location', () => {
+  test('mnemonics, registers and directives are case insensitive', () => {
+    expect(body('mov al, 1')).toEqual({
+      kind: 'instruction',
+      mnemonic: 'MOV',
+      operands: [
+        { kind: 'register', name: 'AL' },
+        { kind: 'number', value: 1 },
+      ],
+    });
+    expect(body('org 1000h').kind).toBe('org');
+    expect(body('dato db 1').kind).toBe('data');
+  });
+
+  test('reports syntax errors with the line', () => {
     let error;
     try {
-      parse('MOV AL 1\nEND');
+      parse('MOV AL, 1\nMOV AL 1\nEND');
     } catch (e) {
       error = e;
     }
-    expect(error.name).toBe('SyntaxError');
-    expect(error.location.start.line).toBe(1);
+    expect(error.name).toBe('AsmError');
+    expect(error.line).toBe(2);
+    expect(error.message).toMatch(/Syntax error/);
+  });
+});
+
+describe('parser: labels and definitions', () => {
+  test('code labels take a colon, with or without a statement', () => {
+    expect(statements('LAZO: DEC CX')[0]).toMatchObject({ label: 'LAZO', body: { mnemonic: 'DEC' } });
+    expect(statements('RUTHAND:PUSH AX')[0]).toMatchObject({ label: 'RUTHAND' });
+    expect(statements('FIN:')[0]).toMatchObject({ label: 'FIN', body: null });
+  });
+
+  test('data definitions: name DB/DW values', () => {
+    expect(body('NUM1 DB 5')).toEqual({
+      kind: 'data',
+      name: 'NUM1',
+      size: 8,
+      values: [{ kind: 'number', value: 5 }],
+    });
+    expect(body('W DW ?')).toMatchObject({ size: 16, values: [{ kind: 'uninit' }] });
+    expect(body('DB 1, 2')).toMatchObject({ name: null, values: [{ value: 1 }, { value: 2 }] });
+  });
+
+  test('tables, strings and DUP', () => {
+    expect(body('TABLA DB 1, 2, 4, 8').values.map((v) => v.value)).toEqual([1, 2, 4, 8]);
+    expect(body('MSJ DB "hola mundo", "$"').values).toEqual([
+      { kind: 'string', value: 'hola mundo' },
+      { kind: 'string', value: '$' },
+    ]);
+    expect(body('A DW 3 DUP (1234h, 0)').values[0]).toMatchObject({
+      kind: 'dup',
+      count: { value: 3 },
+      values: [{ value: 0x1234 }, { value: 0 }],
+    });
+  });
+
+  test('constants with EQU', () => {
+    expect(body('PA EQU 30h')).toEqual({ kind: 'equ', name: 'PA', value: { kind: 'number', value: 0x30 } });
   });
 });
 
 describe('parser: operands', () => {
-  test('decimal, negative and hexadecimal literals', () => {
-    expect(first('MOV AX, 10\nEND').p2).toEqual({ type: 'DECIMAL', value: 10 });
-    expect(first('MOV AX, -10\nEND').p2).toEqual({ type: 'DECIMAL', value: -10 });
-    expect(first('MOV AX, 0FFh\nEND').p2).toEqual({ type: 'HEXADECIMAL', value: 255 });
-    expect(first('MOV AX, 1000H\nEND').p2).toEqual({ type: 'HEXADECIMAL', value: 4096 });
+  test('decimal, negative, hexadecimal and binary literals', () => {
+    expect(operands('MOV AX, 10')[1]).toEqual({ kind: 'number', value: 10 });
+    expect(operands('MOV AX, -10')[1]).toEqual({ kind: 'neg', value: { kind: 'number', value: 10 } });
+    expect(operands('MOV AX, 0FFh')[1]).toEqual({ kind: 'number', value: 255 });
+    expect(operands('MOV AX, 1000H')[1]).toEqual({ kind: 'number', value: 4096 });
+    expect(operands('MOV AL, 01111111B')[1]).toEqual({ kind: 'number', value: 127 });
   });
 
   test('hexadecimal literals must start with a digit (FFh is a name, as in MASM)', () => {
-    expect(first('MOV AL, FFh\nEND').p2).toEqual({ type: 'VARIABLE', name: 'FFh' });
+    expect(operands('MOV AL, FFh')[1]).toEqual({ kind: 'symbol', name: 'FFh' });
   });
 
-  test('numbers must fit in 16 bits (-32768..65535)', () => {
-    expect(() => parse('MOV AX, 65536\nEND')).toThrow(/out of range/);
-    expect(() => parse('MOV AX, -32769\nEND')).toThrow(/out of range/);
-    expect(first('MOV AX, 65535\nEND').p2.value).toBe(65535);
+  test('character literals', () => {
+    expect(operands("MOV AL, 'A'")[1]).toEqual({ kind: 'number', value: 65 });
   });
 
-  test('all general purpose registers, 8 and 16 bits', () => {
-    for (const r of ['AX', 'BX', 'CX', 'DX', 'AL', 'AH', 'BL', 'BH', 'CL', 'CH', 'DL', 'DH']) {
-      expect(first(`MOV ${r}, 1\nEND`).p1).toEqual({ type: 'REGISTER', value: r });
+  test('registers, and a register does not match the prefix of a longer name', () => {
+    for (const r of ['AX', 'BX', 'CX', 'DX', 'SP', 'AL', 'AH', 'BL', 'BH', 'CL', 'CH', 'DL', 'DH']) {
+      expect(operands(`MOV ${r}, 1`)[0]).toEqual({ kind: 'register', name: r });
     }
+    expect(operands('MOV AL, AXIS')[1]).toEqual({ kind: 'symbol', name: 'AXIS' });
   });
 
-  test('[BX] is parsed as a REGISTER operand (no distinct memory operand yet)', () => {
-    expect(first('MOV AX, [BX]\nEND').p2).toEqual({ type: 'REGISTER', value: '[BX]' });
-  });
-
-  test('a name as operand is a VARIABLE reference', () => {
-    expect(first('MOV AL, dato\nEND').p2).toEqual({ type: 'VARIABLE', name: 'dato' });
-  });
-});
-
-describe('parser: instruction groups', () => {
-  test('binary ops', () => {
-    for (const op of ['MOV', 'ADD', 'ADC', 'SUB', 'SBB', 'CMP', 'AND', 'OR', 'XOR']) {
-      expect(first(`${op} AX, BX\nEND`)).toMatchObject({ type: op, group: 'BINARY' });
-    }
-  });
-
-  test('unary ops', () => {
-    for (const op of ['NEG', 'DEC', 'INC', 'PUSH', 'POP']) {
-      expect(first(`${op} AX\nEND`)).toMatchObject({ type: op, group: 'UNARY' });
-    }
-  });
-
-  test('zero operand ops', () => {
-    for (const op of ['RET', 'CLI', 'STI', 'NOP', 'HLT']) {
-      expect(first(`${op}\nEND`)).toMatchObject({ type: op, group: 'ZOP' });
-    }
-  });
-
-  test('PUSHF and POPF are zero operand ops', () => {
-    expect(first('PUSHF\nEND')).toMatchObject({ type: 'PUSHF', group: 'ZOP' });
-    expect(first('POPF\nEND')).toMatchObject({ type: 'POPF', group: 'ZOP' });
-  });
-
-  test('jumps and CALL take a label written as ":name" (lower case only)', () => {
-    expect(first('JMP :fin\nEND')).toMatchObject({ type: 'JMP', label: 'fin', group: 'JMP' });
-    expect(first('CALL :rutina\nEND')).toMatchObject({ type: 'CALL', group: 'JMP' });
-    expect(() => parse('JMP :Fin\nEND')).toThrow();
-  });
-
-  test.todo('label definitions (`loop: INC AX`) and jumps to `loop` without the colon');
-
-  test('variables declared with DB', () => {
-    expect(first('dato DB 20h\nEND')).toEqual({
-      line: 1,
-      type: 'VARIABLE',
-      group: 'VARIABLE',
-      name: 'dato',
-      vartype: 'DB',
-      value: { type: 'HEXADECIMAL', value: 32 },
+  test('memory operands: [BX], [address], and sizes with PTR', () => {
+    expect(operands('MOV AX, [BX]')[1]).toEqual({ kind: 'memory', base: 'BX', disp: null });
+    expect(operands('MOV AX, [1000h]')[1]).toEqual({
+      kind: 'memory',
+      base: null,
+      disp: { kind: 'number', value: 0x1000 },
     });
-    expect(first('dato DB ?\nEND').value).toBe('?');
-  });
-
-  test('constants declared with EQU', () => {
-    expect(first('N EQU 10\nEND')).toMatchObject({
-      type: 'CONSTANT',
-      group: 'CONSTANT',
-      name: 'N',
-      value: { type: 'DECIMAL', value: 10 },
+    expect(operands('MOV WORD PTR [BX], 1006H')[0]).toEqual({
+      kind: 'memory',
+      base: 'BX',
+      disp: null,
+      ptr: 16,
     });
+    expect(operands('INC BYTE PTR DATO')[0]).toEqual({ kind: 'symbol', name: 'DATO', ptr: 8 });
   });
 
-  test.todo('DW variables');
-  test.todo('tables (`tabla DB 1, 2, 4, 8`) and strings (`msg DB "hola"`)');
-  test.todo('ORG directive');
-  test.todo('direct memory operands (`[1000h]`, variables as memory) and IN/OUT, INT, IRET');
+  test('OFFSET and expressions', () => {
+    expect(operands('MOV BX, OFFSET DATO')[1]).toEqual({ kind: 'offset', name: 'DATO' });
+    expect(operands('MOV CL, OFFSET FIN - OFFSET DATO')[1]).toEqual({
+      kind: 'binary',
+      op: '-',
+      left: { kind: 'offset', name: 'FIN' },
+      right: { kind: 'offset', name: 'DATO' },
+    });
+    expect(operands('OUT PIC+1, AL')[0]).toMatchObject({ kind: 'binary', op: '+' });
+  });
+
+  test('zero operand instructions, including PUSHF and POPF', () => {
+    for (const op of ['PUSHF', 'POPF', 'RET', 'IRET', 'CLI', 'STI', 'NOP', 'HLT']) {
+      expect(body(op)).toEqual({ kind: 'instruction', mnemonic: op, operands: [] });
+    }
+  });
+
+  test('NOT, INT, IN and OUT parse as instructions', () => {
+    expect(body('NOT AX')).toMatchObject({ mnemonic: 'NOT', operands: [{ name: 'AX' }] });
+    expect(body('INT 0')).toMatchObject({ mnemonic: 'INT' });
+    expect(body('IN AL, DX')).toMatchObject({ mnemonic: 'IN' });
+    expect(body('OUT 30h, AL')).toMatchObject({ mnemonic: 'OUT' });
+  });
 });

@@ -2,3 +2,7 @@
   width: 100% !important;
   height: calc(100% - 26px) !important;
 }
+.editor .running-line {
+  position: absolute;
+  background: rgba(255, 99, 71, 0.35);
+}

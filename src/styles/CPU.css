@@ -130,3 +130,18 @@
 .flags .flag.off {
   background-color: gray;
 }
+
+.cpu .redbox.decoder .instruction {
+  margin-top: 5px;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.cpu .phase {
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.flags.active .flag {
+  outline: 1px solid tomato;
+}

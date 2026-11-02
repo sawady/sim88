@@ -13,24 +13,33 @@ const STATE_LABELS = {
 };
 
 export default function Machine() {
-  const error = useSelector((state) => state.editor.error);
-  const machineState = useSelector((state) => state.machine.state);
-  const velocity = useSelector((state) => state.machine.velocity);
+  const assemblerError = useSelector((state) => state.editor.error);
+  const { state, velocity, message, error, output } = useSelector((s) => s.machine);
+  const shownError = assemblerError || (error && `Error de ejecución: ${error}`);
 
   return (
     <div className="machine">
       <div className="status">
-        <span>Estado: {STATE_LABELS[machineState] || machineState}</span>
+        <span>Estado: {STATE_LABELS[state] || state}</span>
         <span>Velocidad: {velocity}ms</span>
       </div>
-      {error && (
+      {shownError && (
         <div className="error" role="alert">
-          {error}
+          {shownError}
+        </div>
+      )}
+      {!shownError && message && (
+        <div className="message" role="status">
+          {message}
         </div>
       )}
       <div className="layout">
         <CPU />
         <Memory />
+      </div>
+      <div className="console">
+        <div className="title">Pantalla (INT 7)</div>
+        <pre aria-label="Pantalla">{output}</pre>
       </div>
     </div>
   );
