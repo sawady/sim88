@@ -182,8 +182,11 @@ Taken by Federico Sawady on 2026-11-02.
   `src/examples/en/` has an English version of every example (comments, strings and labels), with
   the same lines and instructions. The Examples menu and the first visit use the language of the
   interface, and an example nobody has edited follows it when the language changes.
-- [ ] **45. Visual checks of the themes in CI** · Deps: 42
-  Screenshots with Playwright against `vite preview` (today they are taken by hand).
+- [x] **45. Visual checks of the themes in CI** · Deps: 42
+  `tests/visual` takes screenshots with Playwright against `vite preview`: the five themes, the
+  CRT effect, the English interface, a menu and a dialog. The references are
+  `docs/screenshots/`, so the README cannot go stale. CI and `npm run test:visual:docker` use the
+  same image, so the comparison is exact.
 - [ ] **46. A layout for phones** · Deps: 41
   Small screens stack the windows and scroll; a touch friendly layout (bigger keys, the function
   key bar as buttons) would help.

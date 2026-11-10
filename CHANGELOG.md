@@ -28,6 +28,7 @@ tagged releases yet. The planned work and its status live in [PROGRESS.md](PROGR
 
 ### Added
 
+- Visual checks of the interface in CI (Playwright), with the README's screenshots as references.
 - The example programs come in English too (`src/examples/en`), following the language of the
   interface.
 - Options › ALU: as MSX88 (default) or as a real 8086, for the four places where they differ

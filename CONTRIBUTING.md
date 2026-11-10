@@ -20,6 +20,7 @@ npm install
 npm test         # Vitest, model tests in src/model/__tests__
 npm run dev      # http://localhost:5173
 npm run build
+npm run test:visual:docker   # screenshots of the interface (needs Docker)
 ```
 
 Guidelines:
@@ -34,6 +35,9 @@ Guidelines:
   pattern in `src/i18n/messages.js` (a test scans `src/model` for them).
 - Themes are CSS variables in `src/styles/themes.css`; a test checks that each one defines all
   of them with enough contrast.
+- `docs/screenshots/` holds the reference images of the visual checks (`tests/visual`), which CI
+  runs in the Playwright image. If you change how the interface looks on purpose, rewrite them
+  with `npm run test:visual:docker -- --update-snapshots` and commit them.
 - `npm install` downloads the screen font (CC BY-SA 4.0) into `src/fonts/vendor/`, which is not
   committed.
 

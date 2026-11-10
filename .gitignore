@@ -33,3 +33,7 @@ yarn-error.log*
 
 # Python bytecode (tools/oracle)
 __pycache__/
+
+# Playwright (npm run test:visual)
+/test-results
+/playwright-report

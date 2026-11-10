@@ -17,3 +17,22 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+
+  # Same image as scripts/visual.sh; keep its version equal to @playwright/test in package.json.
+  visual:
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/playwright:v1.65.0-noble
+    env:
+      CI: 1
+      HOME: /root
+    steps:
+      - uses: actions/checkout@v7
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright test
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: visual-diffs
+          path: test-results/
+          retention-days: 7
