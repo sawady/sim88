@@ -1,0 +1,248 @@
+{
+ "program": "exp-printer-speed.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00",
+     "00"
+    ],
+    "line": 9,
+    "dup": 8
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "B0",
+     "00"
+    ],
+    "line": 11
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "E6",
+     "41"
+    ],
+    "line": 12
+   },
+   {
+    "address": "2004",
+    "bytes": [
+     "B0",
+     "41"
+    ],
+    "line": 13
+   },
+   {
+    "address": "2006",
+    "bytes": [
+     "E6",
+     "40"
+    ],
+    "line": 14
+   },
+   {
+    "address": "2008",
+    "bytes": [
+     "E6",
+     "40"
+    ],
+    "line": 15
+   },
+   {
+    "address": "200A",
+    "bytes": [
+     "E6",
+     "40"
+    ],
+    "line": 16
+   },
+   {
+    "address": "200C",
+    "bytes": [
+     "E6",
+     "40"
+    ],
+    "line": 17
+   },
+   {
+    "address": "200E",
+    "bytes": [
+     "BB",
+     "00",
+     "10"
+    ],
+    "line": 18
+   },
+   {
+    "address": "2011",
+    "bytes": [
+     "B1",
+     "08"
+    ],
+    "line": 19
+   },
+   {
+    "address": "2013",
+    "bytes": [
+     "BA",
+     "00",
+     "00"
+    ],
+    "line": 20
+   },
+   {
+    "address": "2016",
+    "bytes": [
+     "FF",
+     "C2"
+    ],
+    "line": 21
+   },
+   {
+    "address": "2018",
+    "bytes": [
+     "E4",
+     "41"
+    ],
+    "line": 22
+   },
+   {
+    "address": "201A",
+    "bytes": [
+     "80",
+     "E0",
+     "01"
+    ],
+    "line": 23
+   },
+   {
+    "address": "201D",
+    "bytes": [
+     "75",
+     "F7"
+    ],
+    "line": 24
+   },
+   {
+    "address": "201F",
+    "bytes": [
+     "89",
+     "17"
+    ],
+    "line": 25
+   },
+   {
+    "address": "2021",
+    "bytes": [
+     "81",
+     "C3",
+     "02",
+     "00"
+    ],
+    "line": 26
+   },
+   {
+    "address": "2025",
+    "bytes": [
+     "B0",
+     "42"
+    ],
+    "line": 27
+   },
+   {
+    "address": "2027",
+    "bytes": [
+     "E6",
+     "40"
+    ],
+    "line": 28
+   },
+   {
+    "address": "2029",
+    "bytes": [
+     "FE",
+     "C9"
+    ],
+    "line": 29
+   },
+   {
+    "address": "202B",
+    "bytes": [
+     "75",
+     "E6"
+    ],
+    "line": 30
+   },
+   {
+    "address": "202D",
+    "bytes": [
+     "CD",
+     "00"
+    ],
+    "line": 31
+   }
+  ],
+  "symbols": [
+   {
+    "name": "T",
+    "type": "Word",
+    "value": "1000"
+   },
+   {
+    "name": "OTRO",
+    "type": "Label",
+    "value": "2013"
+   },
+   {
+    "name": "ESPERA",
+    "type": "Label",
+    "value": "2016"
+   }
+  ]
+ },
+ "run": {
+  "status": "stopped",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0042",
+   "BX": "1010",
+   "CX": "0000",
+   "DX": "04C1",
+   "IP": "202F",
+   "SP": "8000"
+  },
+  "flags": "0244",
+  "memory": {
+   "1000": "FB05FF052D0623062406FB05A005C104",
+   "2000": "B000E641B041E640E640E640E640BB0010B108BA0000FFC2E44180E00175F7891781C30200B042E640FEC975E6CD",
+   "7FFC": "2F204402",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  }
+ }
+}

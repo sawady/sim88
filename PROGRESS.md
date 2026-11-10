@@ -252,7 +252,7 @@ Resolved with the oracle on 2026-11-02:
 10. **Timer**: the clock is real time, not tied to the instructions (`exp-timer-speed-*`), and
     the timer does not reset CONT by itself (`timer-cont-reset`).
 11. **Printer**: BUSY goes to 1 when the 4th character is waiting (`exp-printer-buffer`), and it
-    prints in real time.
+    prints in real time (question 18).
 13. **CDMA**: reading 57h also starts a transfer; memory to memory in block mode moves the whole
     block at once; CTRL reads 80h (TC = 1) after a reset (`cdma-*`, `io-ports-initial-c3`).
 14. **Hardware interrupts with type 0, 3, 6 or 7** go through the vector table and only run the
@@ -272,14 +272,26 @@ Resolved with the oracle on 2026-11-02:
     of the buffer, and the rest is lost (`printer-cdma-block`); on demand everything is printed
     (`printer-cdma-demand`). SIM88 copies it (decided by Federico on 2026-11-10).
 
+18. **Printer and timer speed**: MSX88 runs both on the wall clock. The printer prints one
+    character every 5 seconds (`exp-printer-seconds`: 40 seconds for 8 characters in both runs),
+    while the instructions run meanwhile change from character to character and from run to run
+    (`exp-printer-speed`). SIM88's timer runs on the wall clock too (Options › Frequencies); its
+    printer prints every N instructions **on purpose** (2026-11-10): the result of
+    `hand-printer-polling` is a ratio between the host's speed and the wall clock, which SIM88's
+    animated execution (0.02 to 20 instructions per second) cannot keep. See
+    [docs/fidelity.md](docs/fidelity.md), "Time".
+
 Still open:
 
-18. **Printer and timer speed**: MSX88 runs them on the wall clock; SIM88 keeps them on the
-    settings of Options › Frequencies (the printer by instructions). `hand-printer-polling`
-    differs because of that.
 19. **8086 short forms and BP/SI/DI written as bytes**: not known whether MSX88 runs them.
 
 ## Log
+
+- 2026-11-10: printer speed checked with the oracle (`exp-printer-speed`, `exp-printer-seconds`,
+  each run twice): MSX88 prints one character every 5 seconds of wall clock, and the instructions
+  run meanwhile depend on the host. `hand-printer-polling` is now a difference on purpose
+  (question 18); the corpus has 82 programs, 71 of the 73 compared match, both differences on
+  purpose.
 
 - 2026-11-02: ALU setting, as MSX88 (default) or as 8086 (task 49), explained in Options › ALU,
   Help › Differences from the 8086, the README and docs/fidelity.md; the HLT wait has its own

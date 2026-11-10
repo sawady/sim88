@@ -43,8 +43,8 @@ It follows the dialect and conventions of MSX88: data at `ORG 1000h`, code at `O
 `INT 0` to finish (`HLT` waits for an interrupt, as in MSX88), `END` to close the source.
 
 **Fidelity:** a corpus of test programs runs on the original MSX88 and on SIM88, and the
-results are compared in CI: see [docs/fidelity.md](docs/fidelity.md) (63 of 65 programs match;
-the 2 differences are explained there).
+results are compared in CI: see [docs/fidelity.md](docs/fidelity.md) (71 of 73 programs match;
+the 2 differences are on purpose and explained there).
 
 What works today:
 
@@ -74,7 +74,8 @@ in the browser between visits.
 
 - **Configuration**: the four MSX88 peripheral configurations.
 - **Frequencies**: the timer clock (1 Hz in real time by default; 0.5, 2, 5, 10 Hz or any value
-  from 0.1 to 50 Hz) and the printer speed (one character every 8 instructions by default).
+  from 0.1 to 50 Hz) and the printer speed (one character every 8 instructions by default; MSX88 prints one every
+  5 seconds of wall clock, see [docs/fidelity.md](docs/fidelity.md)).
 - **ALU: MSX88 or 8086**: where MSX88 and a real 8086 differ (see below), behave as MSX88 (the
   default) or as the 8086.
 - **Appearance**: the theme (classic blue, MSX88, green phosphor, amber phosphor, high contrast),

@@ -1,0 +1,56 @@
+
+								p gina: 1 
+
+ Listado Fuente: exp-printer-speed.lst
+ Programa Fuente en: exp-printer-speed.asm
+ Fecha: -
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; compare: no
+			      2	;; config: 2
+			      3	;; timeout: 60
+			      4	; Experiment (not compared): fill the HAND print
+				er's buffer (BUSY = 1), then
+			      5	; count loop turns (4 instructions each) until B
+				USY goes to 0, send one more
+			      6	; character to fill it again, and repeat 8 times
+				. The counts tell how fast
+			      7	; MSX88 prints, in instructions, and whether it 
+				is always the same.
+			      8	        ORG 1000H
+ 1000 8[		      9	T       DW 8 DUP (0)
+	     00 00
+		      ]
+			     10	        ORG 2000H
+ 2000 B0 00		     11	        MOV AL, 0
+ 2002 E6 41		     12	        OUT 41H, AL
+ 2004 B0 41		     13	        MOV AL, 41H
+ 2006 E6 40		     14	        OUT 40H, AL
+ 2008 E6 40		     15	        OUT 40H, AL
+ 200A E6 40		     16	        OUT 40H, AL
+ 200C E6 40		     17	        OUT 40H, AL
+ 200E BB 00 10		     18	        MOV BX, OFFSET T
+ 2011 B1 08		     19	        MOV CL, 8
+ 2013 BA 00 00		     20	OTRO:   MOV DX, 0
+ 2016 FF C2		     21	ESPERA: INC DX
+ 2018 E4 41		     22	        IN AL, 41H
+ 201A 80 E0 01		     23	        AND AL, 1
+ 201D 75 F7		     24	        JNZ ESPERA
+ 201F 89 17		     25	        MOV [BX], DX
+ 2021 81 C3 02 00	     26	        ADD BX, 2
+ 2025 B0 42		     27	        MOV AL, 42H
+ 2027 E6 40		     28	        OUT 40H, AL
+ 2029 FE C9		     29	        DEC CL
+ 202B 75 E6		     30	        JNZ OTRO
+ 202D CD 00		     31	        INT 0
+			     32	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ T       	Word		1000h
+ OTRO    	Label		2013h
+ ESPERA  	Label		2016h

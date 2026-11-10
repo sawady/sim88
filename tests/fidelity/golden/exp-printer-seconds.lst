@@ -1,0 +1,88 @@
+
+								p gina: 1 
+
+ Listado Fuente: exp-printer-seconds.lst
+ Programa Fuente en: exp-printer-seconds.asm
+ Fecha: -
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; compare: no
+			      2	;; config: 2
+			      3	;; timeout: 90
+			      4	; Experiment (not compared): exp-printer-speed w
+				ith the timer at 1 Hz counting
+			      5	; seconds (SEG). Fill the printer's buffer, then
+				 8 times wait for BUSY = 0
+			      6	; (counting loop turns in T) and send one more c
+				haracter. SEG over 8 is the
+			      7	; time to print one character; T is how many ins
+				tructions run meanwhile.
+			      8	        ORG 1000H
+ 1000 8[		      9	T       DW 8 DUP (0)
+	     00 00
+		      ]
+ 1010 00 00		     10	SEG     DW 0
+			     11	        ORG 44H
+ 0044 00 30		     12	        DW RUT
+			     13	        ORG 3000H
+ 3000 50		     14	RUT:    PUSH AX
+ 3001 8B 06 10 10	     15	        MOV AX, SEG
+ 3005 81 C0 01 00	     16	        ADD AX, 1
+ 3009 89 06 10 10	     17	        MOV SEG, AX
+ 300D B0 00		     18	        MOV AL, 0
+ 300F E6 10		     19	        OUT 10H, AL
+ 3011 B0 20		     20	        MOV AL, 20H
+ 3013 E6 20		     21	        OUT 20H, AL
+ 3015 58		     22	        POP AX
+ 3016 CF		     23	        IRET
+			     24	        ORG 2000H
+ 2000 FA		     25	        CLI
+ 2001 B0 11		     26	        MOV AL, 11H
+ 2003 E6 25		     27	        OUT 25H, AL
+ 2005 B0 FD		     28	        MOV AL, 0FDH
+ 2007 E6 21		     29	        OUT 21H, AL
+ 2009 B0 01		     30	        MOV AL, 1
+ 200B E6 11		     31	        OUT 11H, AL
+ 200D B0 00		     32	        MOV AL, 0
+ 200F E6 41		     33	        OUT 41H, AL
+ 2011 B0 41		     34	        MOV AL, 41H
+ 2013 E6 40		     35	        OUT 40H, AL
+ 2015 E6 40		     36	        OUT 40H, AL
+ 2017 E6 40		     37	        OUT 40H, AL
+ 2019 E6 40		     38	        OUT 40H, AL
+ 201B B0 00		     39	        MOV AL, 0
+ 201D E6 10		     40	        OUT 10H, AL
+ 201F BB 00 10		     41	        MOV BX, OFFSET T
+ 2022 B1 08		     42	        MOV CL, 8
+ 2024 FB		     43	        STI
+ 2025 BA 00 00		     44	OTRO:   MOV DX, 0
+ 2028 FF C2		     45	ESPERA: INC DX
+ 202A E4 41		     46	        IN AL, 41H
+ 202C 80 E0 01		     47	        AND AL, 1
+ 202F 75 F7		     48	        JNZ ESPERA
+ 2031 89 17		     49	        MOV [BX], DX
+
+
+
+								p gina: 2 
+
+ 2033 81 C3 02 00	     50	        ADD BX, 2
+ 2037 B0 42		     51	        MOV AL, 42H
+ 2039 E6 40		     52	        OUT 40H, AL
+ 203B FE C9		     53	        DEC CL
+ 203D 75 E6		     54	        JNZ OTRO
+ 203F FA		     55	        CLI
+ 2040 CD 00		     56	        INT 0
+			     57	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ T       	Word		1000h
+ SEG     	Word		1010h
+ RUT     	Label		3000h
+ OTRO    	Label		2025h
+ ESPERA  	Label		2028h

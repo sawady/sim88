@@ -8,7 +8,9 @@
 //
 // It prints one character from the buffer every `interval` instructions
 // (PRINT_INTERVAL by default; the UI lets the user change it), so a fast
-// program has to wait for BUSY.
+// program has to wait for BUSY. MSX88 prints one character every 5 seconds
+// of wall clock instead (tests/fidelity: exp-printer-seconds); SIM88 counts
+// instructions on purpose, see docs/fidelity.md, "Time".
 
 import type { Devices, PrinterState } from './types';
 
