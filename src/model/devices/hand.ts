@@ -10,17 +10,19 @@
 // goes to INT2 of the PIC (configuration 2) or to DREQ of the CDMA
 // (configuration 3).
 
+import type { Device } from '../io';
+import type { Devices, HandState } from './types';
 import { printerBusy, printerReceive } from './printer';
 import { setInterruptLine } from './pic';
 
 export const HAND_BASE = 0x40;
 
-export const initialHand = () => ({ data: 0, status: 0 });
+export const initialHand = (): HandState => ({ data: 0, status: 0 });
 
-export const handInterruptLine = (devices) =>
+export const handInterruptLine = (devices: Devices): boolean =>
   (devices.hand.status & 0x80) !== 0 && !printerBusy(devices);
 
-export const hand = {
+export const hand: Device<Devices> = {
   name: 'hand',
   ports: [HAND_BASE, HAND_BASE + 1],
   read(devices, port) {

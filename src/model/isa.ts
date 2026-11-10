@@ -2,7 +2,7 @@
 //
 // The same table drives the decoder (opcode byte -> instruction) and the
 // assembler (mnemonic + operands -> bytes), so adding an instruction is adding
-// rows here plus its behavior in cpu.js.
+// rows here plus its behavior in cpu.ts.
 //
 // Operand codes (as in the Intel manuals):
 //   Eb, Ew   register or memory, from the ModRM r/m field (8 / 16 bits)
@@ -26,16 +26,32 @@
 // the 8086 short forms (A0-A3, accumulator immediates, 40+r INC/DEC, 83),
 // which the decoder still understands.
 
+import type { Size } from './alu';
+
+// A row of the table (see above).
+export interface Row {
+  opcode: number;
+  mnemonic: string;
+  operands: string[];
+  ext?: number;
+  asm?: boolean;
+}
+
+// Opcodes whose instruction is chosen by the ModRM reg field.
+export interface Group {
+  group: (Row | null)[];
+}
+
 export const REG8 = ['AL', 'CL', 'DL', 'BL', 'AH', 'CH', 'DH', 'BH'];
 export const REG16 = ['AX', 'CX', 'DX', 'BX', 'SP', 'BP', 'SI', 'DI'];
 
 // Registers the assembler accepts (MSX88 has no BP, SI, DI or segments).
 export const ASM_REGISTERS = ['AX', 'BX', 'CX', 'DX', 'SP', 'AL', 'AH', 'BL', 'BH', 'CL', 'CH', 'DL', 'DH'];
 
-export const regSize = (name) => (REG8.includes(name) ? 8 : REG16.includes(name) ? 16 : undefined);
+export const regSize = (name: string): Size | undefined => (REG8.includes(name) ? 8 : REG16.includes(name) ? 16 : undefined);
 
-const rows = [];
-const row = (opcode, mnemonic, operands = [], options = {}) =>
+const rows: Row[] = [];
+const row = (opcode: number, mnemonic: string, operands: string[] = [], options: Partial<Row> = {}) =>
   rows.push({ opcode, mnemonic, operands, ...options });
 
 // MOV
@@ -135,21 +151,21 @@ row(0xf4, 'HLT');
 export const ROWS = rows;
 
 // opcode -> row, or opcode -> [8 rows indexed by the ModRM reg field] for groups
-export const OPCODES = (() => {
-  const table = new Array(256).fill(null);
+export const OPCODES: (Row | Group | null)[] = (() => {
+  const table: (Row | Group | null)[] = new Array(256).fill(null);
   for (const r of rows) {
     if (r.ext === undefined) {
       table[r.opcode] = r;
     } else {
       if (!table[r.opcode]) table[r.opcode] = { group: new Array(8).fill(null) };
-      table[r.opcode].group[r.ext] = r;
+      (table[r.opcode] as Group).group[r.ext] = r;
     }
   }
   return table;
 })();
 
 // mnemonic -> rows the assembler may emit, in preference order
-export const ASM_ROWS = rows.reduce((acc, r) => {
+export const ASM_ROWS = rows.reduce<Record<string, Row[]>>((acc, r) => {
   if (r.asm === false) return acc;
   (acc[r.mnemonic] = acc[r.mnemonic] || []).push(r);
   return acc;
@@ -157,11 +173,11 @@ export const ASM_ROWS = rows.reduce((acc, r) => {
 
 export const MNEMONICS = Object.keys(ASM_ROWS);
 
-export const hasModRM = (r) =>
+export const hasModRM = (r: Row): boolean =>
   r.ext !== undefined || r.operands.some((o) => o[0] === 'E' || o[0] === 'G');
 
 // ModRM r/m field for memory operands (mod != 11)
-export const RM_BASES = [
+export const RM_BASES: string[][] = [
   ['BX', 'SI'], ['BX', 'DI'], ['BP', 'SI'], ['BP', 'DI'],
   ['SI'], ['DI'], ['BP'], ['BX'],
 ];

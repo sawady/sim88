@@ -21,22 +21,24 @@
 // transfer to the printer waits while the printer is busy. When CONT gets to
 // 0, TC requests INT3 from the PIC.
 
+import type { BusMemory, Device } from '../io';
+import type { CdmaState, Devices } from './types';
 import { handInterruptLine } from './hand';
 import { printerReceive } from './printer';
 import { requestInterrupt } from './pic';
 
 export const CDMA_BASE = 0x50;
 
-export const initialCdma = () => ({ rf: 0, cont: 0, rd: 0, ctrl: 0, running: false, paused: false, tc: true });
+export const initialCdma = (): CdmaState => ({ rf: 0, cont: 0, rd: 0, ctrl: 0, running: false, paused: false, tc: true });
 
-const withCdma = (devices, changes) => ({ ...devices, cdma: { ...devices.cdma, ...changes } });
+const withCdma = (devices: Devices, changes: Partial<CdmaState>): Devices => ({ ...devices, cdma: { ...devices.cdma, ...changes } });
 
-const setLow = (word, byte) => (word & 0xff00) | byte;
-const setHigh = (word, byte) => (word & 0x00ff) | (byte << 8);
+const setLow = (word: number, byte: number): number => (word & 0xff00) | byte;
+const setHigh = (word: number, byte: number): number => (word & 0x00ff) | (byte << 8);
 
-const start = (devices) => withCdma(devices, { running: true, paused: false, tc: false });
+const start = (devices: Devices): Devices => withCdma(devices, { running: true, paused: false, tc: false });
 
-export const cdma = {
+export const cdma: Device<Devices> = {
   name: 'cdma',
   ports: Array.from({ length: 8 }, (_, i) => CDMA_BASE + i),
   read(devices, port) {
@@ -97,7 +99,7 @@ export const cdma = {
 };
 
 // Moves one byte.
-function transferByte(devices, memory) {
+function transferByte(devices: Devices, memory: BusMemory): Devices {
   const state = devices.cdma;
   const memoryToMemory = (state.ctrl & 2) !== 0;
   const toPeripheral = (state.ctrl & 4) !== 0;

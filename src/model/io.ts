@@ -24,12 +24,50 @@
 
 export const UNMAPPED_PORT_VALUE = 0x00;
 
-export function createBus(devices = [], initialState = {}) {
-  const byPort = new Map();
+// What the CDMA sees of the memory.
+export interface BusMemory {
+  read(address: number): number;
+  write(address: number, byte: number): void;
+}
+
+// `S` is the state of all the devices (see the comment above). Only a device
+// with ports has read and write (the printer has neither: it is reached
+// through the PIO or the HAND).
+export interface Device<S> {
+  name: string;
+  ports: number[];
+  read?(devices: S, port: number): number;
+  write?(devices: S, port: number, value: number): S;
+  afterRead?(devices: S, port: number): S;
+  tick?(devices: S, memory: BusMemory): S;
+}
+
+export interface Bus<S> {
+  devices: Device<S>[];
+  deviceAt(port: number): Device<S> | undefined;
+  initialState(): S;
+  tick(state: S, memory: BusMemory): S;
+}
+
+// What an instruction can do outside the CPU (see cpu.ts).
+export interface CpuIO {
+  in(port: number): number;
+  out(port: number, value: number): void;
+  readChar(): number | undefined;
+}
+
+export interface BusIO<S> extends CpuIO {
+  devices: S;
+  input: number[];
+  accessed: Set<string>;
+}
+
+export function createBus<S>(devices: Device<S>[] = [], initialState: S = {} as S): Bus<S> {
+  const byPort = new Map<number, Device<S>>();
   for (const device of devices) {
     for (const port of device.ports) {
       if (byPort.has(port)) {
-        throw new Error(`Port ${port} is used by ${byPort.get(port).name} and ${device.name}`);
+        throw new Error(`Port ${port} is used by ${byPort.get(port)!.name} and ${device.name}`);
       }
       byPort.set(port, device);
     }
@@ -45,16 +83,16 @@ export function createBus(devices = [], initialState = {}) {
 
 // The `io` the CPU uses during one instruction. It collects the new device
 // state and consumes keys from `input` (the keyboard buffer of INT 6).
-export function busIO(bus, devices, input) {
-  const io = {
+export function busIO<S>(bus: Bus<S>, devices: S, input: number[]): BusIO<S> {
+  const io: BusIO<S> = {
     devices,
     input: [...input],
-    accessed: new Set(), // names of the devices used, for the UI
+    accessed: new Set<string>(), // names of the devices used, for the UI
     in(port) {
       const device = bus.deviceAt(port);
       if (!device) return UNMAPPED_PORT_VALUE;
       io.accessed.add(device.name);
-      const value = device.read(io.devices, port) & 0xff;
+      const value = device.read!(io.devices, port) & 0xff;
       if (device.afterRead) io.devices = device.afterRead(io.devices, port);
       return value;
     },
@@ -62,7 +100,7 @@ export function busIO(bus, devices, input) {
       const device = bus.deviceAt(port);
       if (!device) return;
       io.accessed.add(device.name);
-      io.devices = device.write(io.devices, port, value & 0xff);
+      io.devices = device.write!(io.devices, port, value & 0xff);
     },
     readChar() {
       return io.input.length ? io.input.shift() : undefined;

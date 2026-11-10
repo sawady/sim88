@@ -12,19 +12,22 @@
 // INT3 the end of a CDMA transfer (configuration 3). INT0 has the highest
 // priority.
 
+import type { Device } from '../io';
+import type { Devices, PicState } from './types';
+
 export const PIC_BASE = 0x20;
 export const EOI_COMMAND = 0x20;
 
-export const initialPic = () => ({ imr: 0xff, irr: 0, isr: 0, vectors: [0, 0, 0, 0, 0, 0, 0, 0] });
+export const initialPic = (): PicState => ({ imr: 0xff, irr: 0, isr: 0, vectors: [0, 0, 0, 0, 0, 0, 0, 0] });
 
-const lowestBit = (value) => {
+const lowestBit = (value: number): number | null => {
   for (let n = 0; n < 8; n++) if (value & (1 << n)) return n;
   return null;
 };
 
-const withPic = (devices, changes) => ({ ...devices, pic: { ...devices.pic, ...changes } });
+const withPic = (devices: Devices, changes: Partial<PicState>): Devices => ({ ...devices, pic: { ...devices.pic, ...changes } });
 
-export const pic = {
+export const pic: Device<Devices> = {
   name: 'pic',
   ports: Array.from({ length: 12 }, (_, i) => PIC_BASE + i),
   read(devices, port) {
@@ -65,11 +68,11 @@ export const pic = {
 };
 
 // An interrupt request on line n (F10, the timer, the end of a DMA transfer).
-export const requestInterrupt = (devices, n) =>
+export const requestInterrupt = (devices: Devices, n: number): Devices =>
   withPic(devices, { irr: devices.pic.irr | (1 << n) });
 
 // A line that stays active while its condition holds (the HAND's INT line).
-export const setInterruptLine = (devices, n, active) => {
+export const setInterruptLine = (devices: Devices, n: number, active: boolean): Devices => {
   const bit = 1 << n;
   const irr = active ? devices.pic.irr | bit : devices.pic.irr & ~bit;
   return irr === devices.pic.irr ? devices : withPic(devices, { irr });
@@ -77,7 +80,7 @@ export const setInterruptLine = (devices, n, active) => {
 
 // The line the PIC presents to the CPU, or null: the highest priority
 // unmasked request, if it has more priority than the one in service.
-export function pendingInterrupt(devices) {
+export function pendingInterrupt(devices: Devices): number | null {
   const { irr, imr, isr } = devices.pic;
   const n = lowestBit(irr & ~imr);
   if (n === null) return null;
@@ -87,7 +90,7 @@ export function pendingInterrupt(devices) {
 
 // The CPU accepts line n (INTA): the request moves to "in service" and the
 // PIC gives the vector number.
-export function acknowledgeInterrupt(devices, n) {
+export function acknowledgeInterrupt(devices: Devices, n: number): { devices: Devices; vector: number } {
   const bit = 1 << n;
   return {
     devices: withPic(devices, { irr: devices.pic.irr & ~bit, isr: devices.pic.isr | bit }),

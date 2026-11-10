@@ -18,6 +18,7 @@ Requires Node.js 20.19+.
 ```sh
 npm install
 npm test         # Vitest, model tests in src/model/__tests__
+npm run typecheck   # tsc, strict, on src/model
 npm run dev      # http://localhost:5173
 npm run build
 npm run test:visual:docker   # screenshots of the interface (needs Docker)

@@ -12,28 +12,30 @@
 //   0: switches on PA, LEDs on PB
 //   1: printer: PA0 BUSY (input), PA1 STROBE (output), PB the data
 
+import type { Device } from '../io';
+import type { Devices, PioState } from './types';
 import { printerBusy, printerReceive } from './printer';
 
 export const PIO_BASE = 0x30;
 
-export const initialPio = () => ({ pa: 0, pb: 0, ca: 0xff, cb: 0xff });
+export const initialPio = (): PioState => ({ pa: 0, pb: 0, ca: 0xff, cb: 0xff });
 
-const withPio = (devices, changes) => ({ ...devices, pio: { ...devices.pio, ...changes } });
+const withPio = (devices: Devices, changes: Partial<PioState>): Devices => ({ ...devices, pio: { ...devices.pio, ...changes } });
 
 // What the outside drives on each port
-function outsideA(devices) {
+function outsideA(devices: Devices): number {
   if (devices.config === 0) return devices.switches;
   if (devices.config === 1) return printerBusy(devices) ? 1 : 0;
   return 0;
 }
 
-const portValue = (latch, direction, outside) => (latch & ~direction & 0xff) | (outside & direction);
+const portValue = (latch: number, direction: number, outside: number): number => (latch & ~direction & 0xff) | (outside & direction);
 
 // The value a port shows outside (output bits; input bits read as 0)
-export const pioOutputB = (devices) => devices.pio.pb & ~devices.pio.cb & 0xff;
-export const pioOutputA = (devices) => devices.pio.pa & ~devices.pio.ca & 0xff;
+export const pioOutputB = (devices: Devices): number => devices.pio.pb & ~devices.pio.cb & 0xff;
+export const pioOutputA = (devices: Devices): number => devices.pio.pa & ~devices.pio.ca & 0xff;
 
-export const pio = {
+export const pio: Device<Devices> = {
   name: 'pio',
   ports: [PIO_BASE, PIO_BASE + 1, PIO_BASE + 2, PIO_BASE + 3],
   read(devices, port) {

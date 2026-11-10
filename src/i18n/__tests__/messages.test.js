@@ -19,8 +19,8 @@ const errorOf = (source, options) => {
 // `message:` of the machine. `${...}` becomes 1.
 const MODEL = join(__dirname, '..', '..', 'model');
 const sources = [
-  ...readdirSync(MODEL).filter((f) => f.endsWith('.js')).map((f) => join(MODEL, f)),
-  ...readdirSync(join(MODEL, 'devices')).filter((f) => f.endsWith('.js')).map((f) => join(MODEL, 'devices', f)),
+  ...readdirSync(MODEL).filter((f) => /\.(js|ts)$/.test(f)).map((f) => join(MODEL, f)),
+  ...readdirSync(join(MODEL, 'devices')).filter((f) => /\.(js|ts)$/.test(f)).map((f) => join(MODEL, 'devices', f)),
 ].map((path) => ({ path, text: readFileSync(path, 'utf8') }));
 
 const literal = /(?:fail\(|new (?:CpuError|AsmError)\(|message: )\s*(['`])((?:\\.|(?!\1)[\s\S])*?)\1/g;

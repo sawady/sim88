@@ -1,7 +1,7 @@
 // SIM88 assembly grammar (MSX88 dialect)
 // =======================================
 //
-// The grammar parses ONE source line; src/model/parser.js splits the source
+// The grammar parses ONE source line; src/model/parser.ts splits the source
 // into lines, so every node knows its line and END can stop the parse.
 //
 // A line is:   [label:] [statement] [; comment]
