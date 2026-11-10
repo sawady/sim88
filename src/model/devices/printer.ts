@@ -4,6 +4,8 @@
 // It is driven through a Centronics interface: STROBE (data valid) and
 // BUSY (it cannot take data: the buffer is full).
 //
+// CR is ignored and only LF starts a new line, as on MSX88.
+//
 // It prints one character from the buffer every `interval` instructions
 // (PRINT_INTERVAL by default; the UI lets the user change it), so a fast
 // program has to wait for BUSY.
@@ -45,12 +47,11 @@ export function printerReceive(devices: Devices, byte: number): Devices {
 
 function print(printer: PrinterState, byte: number): PrinterState {
   let { paper, column } = printer;
-  if (byte === 13 || byte === 10) {
-    // CR, LF or CR LF: one new line
-    if (!(byte === 10 && printer.last === 13)) {
-      paper += '\n';
-      column = 0;
-    }
+  if (byte === 13) return printer; // MSX88 ignores CR (tests/fidelity: printer-crlf)
+  if (byte === 10) {
+    // only LF starts a new line
+    paper += '\n';
+    column = 0;
   } else {
     if (column === PRINTER_COLUMNS) {
       paper += '\n';
@@ -59,7 +60,7 @@ function print(printer: PrinterState, byte: number): PrinterState {
     paper += String.fromCharCode(byte);
     column += 1;
   }
-  return { ...printer, paper, column, last: byte };
+  return { ...printer, paper, column };
 }
 
 export function printerTick(devices: Devices): Devices {

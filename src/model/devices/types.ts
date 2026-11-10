@@ -31,7 +31,6 @@ export interface PrinterState {
   column: number;
   interval: number;
   countdown: number;
-  last?: number; // the last character printed (CR LF is one new line)
 }
 
 export interface CdmaState {

@@ -6,13 +6,5 @@
   "hand-printer-polling": {
     "kind": "pending",
     "reason": "MSX88 prints in real time, so BUSY is still 1 after the 4th character; SIM88 prints one character every N instructions (the printer speed setting)."
-  },
-  "printer-crlf": {
-    "kind": "pending",
-    "reason": "MSX88's printer ignores CR (only LF starts a new line); SIM88 treats CR, LF and CR LF as one new line. Waiting for a decision."
-  },
-  "printer-cdma-block": {
-    "kind": "pending",
-    "reason": "In block mode to the printer MSX88 only gets the first 4 characters onto the paper (the buffer); SIM88 waits for DREQ and prints them all. Waiting for a decision."
   }
 }

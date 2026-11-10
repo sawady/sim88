@@ -207,8 +207,8 @@ Taken by Federico Sawady on 2026-11-02.
   The oracle reads the paper (F9, F5; `;; paper: yes` in a program) with a font learned at run
   time, and `tests/fidelity/golden` keeps it as `run.paper`. The new programs check the HAND by
   interrupts, the printer through the PIO and the STROBE edge, the CDMA to the printer, the
-  20 columns, CR/LF and the scrolling of the paper. `printer-crlf` and `printer-cdma-block` differ:
-  two real differences, listed as pending (open questions 20 and 21); the model was not changed.
+  20 columns, CR/LF and the scrolling of the paper. They found two differences, and SIM88 now
+  follows MSX88 in both (Federico, 2026-11-10; questions 20 and 21).
 - [x] **49. Setting "ALU: as MSX88 / as 8086"** · Deps: 47
   The four places where MSX88 differs from the 8086 (INC/DEC and C, ADC/SBB with C = 1, NOT and
   the flags, `PUSH SP`) follow the setting `aluMode`: `msx88` (default) or `8086`. `alu.js`
@@ -266,6 +266,11 @@ Resolved with the oracle on 2026-11-02:
     is not busy, so after the EOI the next character is requested (`printer-hand-int`).
 15. **Configuration 1 printer**: STROBE is PA1 and a character is taken on its rising edge
     (`printer-pio`, `printer-pio-edge`).
+20. **CR on the printer** is ignored and only LF starts a new line (`printer-crlf`). SIM88 copies
+    it (decided by Federico on 2026-11-10).
+21. **CDMA in block mode to the printer**: only the first 4 characters reach the paper, the size
+    of the buffer, and the rest is lost (`printer-cdma-block`); on demand everything is printed
+    (`printer-cdma-demand`). SIM88 copies it (decided by Federico on 2026-11-10).
 
 Still open:
 
@@ -273,12 +278,6 @@ Still open:
     settings of Options › Frequencies (the printer by instructions). `hand-printer-polling`
     differs because of that.
 19. **8086 short forms and BP/SI/DI written as bytes**: not known whether MSX88 runs them.
-20. **CR on the printer**: MSX88 ignores it and only LF starts a new line; SIM88 treats CR, LF and
-    CR LF as one new line (`printer-crlf`). To decide: following MSX88 is a one line change, but the
-    model has been kept as it is until Federico says so.
-21. **CDMA in block mode to the printer**: on MSX88 only the first 4 characters reach the paper
-    (the buffer), so the rest is lost; SIM88 waits for DREQ and prints them all
-    (`printer-cdma-block`). On demand, both print everything (`printer-cdma-demand`). To decide.
 
 ## Log
 

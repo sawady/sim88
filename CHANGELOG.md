@@ -10,6 +10,9 @@ tagged releases yet. The planned work and its status live in [PROGRESS.md](PROGR
 
 ### Changed (to match MSX88, with the oracle's evidence)
 
+- The printer ignores CR: only LF starts a new line.
+- The CDMA in block mode to the printer sends the whole block at once: only the first 4 characters
+  (the printer's buffer) reach the paper.
 - The machine starts with I = 1 and with the monitor's vectors of INT 0/3/6/7 in memory.
 - INT 0/3/6/7 push the flags and IP and return through the monitor's IRET, as MSX88 does; a
   program that replaces one of those vectors gets its own routine.

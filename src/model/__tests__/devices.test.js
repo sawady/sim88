@@ -17,7 +17,8 @@ import {
 import { initialDevices, pendingInterrupt, acknowledgeInterrupt, requestInterrupt } from '../devices';
 import { pic } from '../devices/pic';
 import { pio, pioOutputB } from '../devices/pio';
-import { PRINT_INTERVAL } from '../devices/printer';
+import { PRINT_INTERVAL, printerReceive, printerTick } from '../devices/printer';
+import { cdma } from '../devices/cdma';
 
 const machineFor = (source, config = 0) =>
   start(loadProgram(createMachine({ config }), assemble(source)));
@@ -498,6 +499,23 @@ describe('CDMA (configuration 3)', () => {
     expect(m.devices.cdma.cont).toBe(0);
   });
 
+  test.each([
+    ['DREQ on', 0x80, 'ABCD', 0],
+    ['DREQ off: it waits', 0, '', 20],
+  ])('a block to the printer goes at once and only 4 characters fit (%s)', (_name, status, paper, cont) => {
+    let d = initialDevices(3);
+    const mem = new Uint8Array(0x10000);
+    mem.set([...'ABCDEFGHIJKLMNOPQRST'].map((c) => c.charCodeAt(0)), 0x1000);
+    const memory = { read: (a) => mem[a], write: (a, b) => (mem[a] = b) };
+    d = { ...d, hand: { ...d.hand, status } };
+    d = { ...d, cdma: { ...d.cdma, rf: 0x1000, cont: 20, ctrl: 0b1100, running: true, tc: false } };
+    d = cdma.tick(d, memory);
+    expect(d.cdma.cont).toBe(cont);
+    expect(String.fromCharCode(...d.printer.buffer)).toBe(paper);
+    expect(d.cdma.tc).toBe(cont === 0);
+    expect((d.pic.irr & 0b1000) !== 0).toBe(cont === 0);
+  });
+
   test('memory to the printer on demand of the HAND', () => {
     const m = runUntil(
       machineFor(
@@ -533,6 +551,15 @@ describe('CDMA (configuration 3)', () => {
 });
 
 describe('printer', () => {
+  test('ignores CR: only LF starts a new line', () => {
+    let d = initialDevices(2);
+    for (const byte of [65, 13, 66, 10, 67, 10, 10, 68]) {
+      d = printerReceive(d, byte);
+      while (d.printer.buffer.length) d = printerTick(d);
+    }
+    expect(d.printer.paper).toBe('AB\nC\n\nD');
+  });
+
   test('wraps at 20 columns and handles CR LF', () => {
     const m = runUntil(
       machineFor(

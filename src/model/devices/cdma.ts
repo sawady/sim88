@@ -15,11 +15,16 @@
 // Memory to memory in block mode moves the whole block at once: on MSX88 the
 // instruction after the start already reads TC = 1 and CONT = 0
 // (tests/fidelity: cdma-mem-mem, cdma-start-by-read). On demand, and with
-// the peripheral, it moves one byte per instruction.
+// the peripheral, it moves one byte per instruction (except a block to the
+// printer: see below).
 //
-// The peripheral is the HAND (and its printer): its INT line is DREQ, so a
-// transfer to the printer waits while the printer is busy. When CONT gets to
-// 0, TC requests INT3 from the PIC.
+// The peripheral is the HAND (and its printer): its INT line is DREQ, so on
+// demand a transfer to the printer waits while the printer is busy. In block
+// mode to the printer, once DREQ starts it, the whole block goes at once
+// without looking at DREQ: what does not fit in the printer's buffer is lost,
+// so only the first 4 characters reach the paper, as on MSX88
+// (tests/fidelity: printer-cdma-block). When CONT gets to 0, TC requests INT3
+// from the PIC.
 
 import type { BusMemory, Device } from '../io';
 import type { CdmaState, Devices } from './types';
@@ -89,9 +94,10 @@ export const cdma: Device<Devices> = {
     if (!state.running || state.paused || state.cont === 0) return devices;
     const memoryToMemory = (state.ctrl & 2) !== 0;
     const block = (state.ctrl & 8) !== 0;
-    if (memoryToMemory && block) {
+    const toPeripheral = (state.ctrl & 4) !== 0;
+    if (block && (memoryToMemory || (toPeripheral && handInterruptLine(devices)))) {
       let next = devices;
-      while (next.cdma.running) next = transferByte(next, memory);
+      while (next.cdma.running) next = transferByte(next, memory, true);
       return next;
     }
     return transferByte(devices, memory);
@@ -99,7 +105,7 @@ export const cdma: Device<Devices> = {
 };
 
 // Moves one byte.
-function transferByte(devices: Devices, memory: BusMemory): Devices {
+function transferByte(devices: Devices, memory: BusMemory, ignoreDreq = false): Devices {
   const state = devices.cdma;
   const memoryToMemory = (state.ctrl & 2) !== 0;
   const toPeripheral = (state.ctrl & 4) !== 0;
@@ -108,7 +114,7 @@ function transferByte(devices: Devices, memory: BusMemory): Devices {
     memory.write(state.rd, memory.read(state.rf));
     next = withCdma(next, { rf: (state.rf + 1) & 0xffff, rd: (state.rd + 1) & 0xffff });
   } else {
-    if (!handInterruptLine(devices)) return devices; // DREQ inactive: wait
+    if (!ignoreDreq && !handInterruptLine(devices)) return devices; // DREQ inactive: wait
     if (toPeripheral) {
       const byte = memory.read(state.rf);
       next = printerReceive({ ...next, hand: { ...next.hand, data: byte } }, byte);
