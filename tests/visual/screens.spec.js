@@ -49,6 +49,52 @@ test('English interface, switches and LEDs', async ({ page }) => {
   await expect(page).toHaveScreenshot('english.png');
 });
 
+test.describe('phone', () => {
+  test.use({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, hasTouch: true, isMobile: true });
+
+  test('screen', async ({ page }) => {
+    await open(page, { lang: 'es', theme: 'borland' });
+    await page.locator('.statusbar button[title^="F7"]').tap();
+    await expect(page).toHaveScreenshot('phone.png');
+  });
+
+  test('a menu opens with a tap, and another one replaces it', async ({ page }) => {
+    await open(page, { lang: 'es', theme: 'borland' });
+    await page.getByRole('menuitem', { name: /Ejecutar/ }).first().tap();
+    await expect(page.getByRole('menu')).toContainText('Micro-paso');
+    await page.getByRole('menuitem', { name: /Opciones/ }).first().tap();
+    await expect(page.getByRole('menu')).toContainText('Frecuencias');
+    await expect(page).toHaveScreenshot('phone-menu.png');
+  });
+
+  test('what is tapped is big enough for a finger, and the page does not scroll sideways', async ({ page }) => {
+    await open(page, { lang: 'es', theme: 'borland' });
+    const min = 44;
+    for (const selector of ['.statusbar button', '.switch', '.inline-btn']) {
+      const boxes = await page.locator(selector).evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
+      expect(boxes.length, selector).toBeGreaterThan(0);
+      for (const height of boxes) expect(height, selector).toBeGreaterThanOrEqual(min);
+    }
+    const { scrollWidth, innerWidth } = await page.evaluate(() => ({
+      scrollWidth: document.documentElement.scrollWidth,
+      innerWidth: window.innerWidth,
+    }));
+    expect(scrollWidth).toBeLessThanOrEqual(innerWidth);
+  });
+
+  test('the field under the screen types for INT 6', async ({ page }) => {
+    await open(page, { lang: 'en', theme: 'borland' });
+    await page.getByRole('menuitem', { name: /Examples/ }).first().tap();
+    await page.getByRole('menuitem', { name: /Screen and keyboard/ }).tap();
+    await page.locator('.statusbar button[title^="F5"]').tap();
+    await page.waitForFunction(() => document.querySelector('.screen-output.waiting'));
+    await page.getByLabel('Tap to type').pressSequentially('x');
+    await expect(page.locator('.screen-output')).toContainText('Type a letter:');
+    // the program runs at the default speed, 500 ms per phase
+    await expect(page.locator('.screen-output')).toContainText('x', { timeout: 30000 });
+  });
+});
+
 test('menu', async ({ page }) => {
   await open(page, { lang: 'es', theme: 'borland' });
   await openMenu(page, /Ejecutar/);

@@ -109,3 +109,24 @@
   white-space: pre;
   color: var(--win-fg);
 }
+
+/* Touch screens: controls big enough for a finger. */
+.stacked .device {
+  align-items: center;
+}
+
+.stacked .inline-btn {
+  height: calc(var(--ch) * 3);
+  padding: 0 var(--cw);
+}
+
+.stacked .led {
+  width: calc(var(--cw) * 4);
+  text-align: center;
+}
+
+.stacked .switch {
+  width: calc(var(--cw) * 3);
+  height: calc(var(--ch) * 3);
+  text-align: center;
+}

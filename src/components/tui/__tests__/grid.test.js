@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { chooseFontSize, layout, measure, MIN_COLS, MIN_ROWS, WINDOW_IDS } from '../grid';
+import { chooseFontSize, layout, measure, MIN_COLS, MIN_ROWS, STACK_BOTTOM, STACK_TOP, WINDOW_IDS } from '../grid';
 
 // Screens: CSS size and device pixel ratio.
 const screens = {
@@ -70,11 +70,11 @@ describe('layout', () => {
   test('small screens stack the windows and scroll', () => {
     const { mode, windows, rows } = layout(48, 47);
     expect(mode).toBe('stacked');
-    let y = 0;
+    let y = STACK_TOP - 1; // the windows start below the taller menu bar
     for (const id of WINDOW_IDS) {
       expect(windows[id].y).toBeGreaterThan(y);
       y = windows[id].y + windows[id].h;
     }
-    expect(rows).toBeGreaterThan(y);
+    expect(rows).toBeGreaterThanOrEqual(y + STACK_BOTTOM); // the last window clears the keys
   });
 });

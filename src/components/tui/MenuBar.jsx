@@ -158,7 +158,7 @@ const MenuBar = forwardRef(function MenuBar({ menus, title, onOpenChange }, ref)
 
   return (
     <div className="menubar" ref={bar}>
-      <div role="menubar" aria-label="SIM88" style={{ display: 'flex' }}>
+      <div role="menubar" aria-label="SIM88" className="menubar-items">
         {menus.map((menu, i) => (
           <button
             key={menu.id}
@@ -174,7 +174,9 @@ const MenuBar = forwardRef(function MenuBar({ menus, title, onOpenChange }, ref)
               if (open === i) close();
               else openMenu(i);
             }}
-            onMouseEnter={() => open !== null && open !== i && openMenu(i)}
+            // only a real mouse: after a tap, the mouse events that browsers
+            // send would open the menu here and close it again in onMouseDown
+            onPointerEnter={(ev) => ev.pointerType === 'mouse' && open !== null && open !== i && openMenu(i)}
           >
             <Hot text={menu.label} />
           </button>
@@ -186,7 +188,7 @@ const MenuBar = forwardRef(function MenuBar({ menus, title, onOpenChange }, ref)
           className="frame menu"
           role="menu"
           aria-label={menus[open].label.replace('~', '')}
-          style={{ left, top: 'var(--ch)' }}
+          style={{ left, top: 'var(--bar-h)' }}
           onKeyDown={onMenuKeyDown}
         >
           <FrameBorders double={false} />

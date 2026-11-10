@@ -39,6 +39,11 @@ const CPU_W = 38;
 const MEMORY_W = 18;
 const GAP = 2; // columns between windows: their shadow is 2 columns wide
 
+// Small screens are for touch: the menu bar and the keys at the bottom are
+// taller (see tui.css), and the windows must clear them.
+export const STACK_TOP = 3; // rows of the menu bar
+export const STACK_BOTTOM = 8; // rows of the keys and the state, plus a line if the state wraps
+
 // Places the windows: { mode, rows, windows: { id: { x, y, w, h } } }. Row 0
 // is the menu bar and the last one the status bar. Windows leave room for
 // their shadows (2 columns to the right, 1 row below).
@@ -64,14 +69,14 @@ export function layout(cols, rows) {
   }
   // Small screens: one window under the other, the page scrolls.
   const w = cols - GAP;
-  const heights = { editor: 18, cpu: 17, memory: 12, screen: 8, peripherals: 22 };
+  const heights = { editor: 18, cpu: 17, memory: 14, screen: 11, peripherals: 28 };
   const windows = {};
-  let y = 1;
+  let y = STACK_TOP;
   for (const id of WINDOW_IDS) {
     windows[id] = { x: 0, y, w, h: heights[id] };
     y += heights[id] + 1;
   }
-  return { mode: 'stacked', rows: Math.max(rows, y + 1), windows };
+  return { mode: 'stacked', rows: Math.max(rows, y + STACK_BOTTOM), windows };
 }
 
 export const GridContext = createContext({ fs: 16, cw: 8, ch: 16, cols: 80, rows: 25 });

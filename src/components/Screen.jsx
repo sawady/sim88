@@ -33,18 +33,47 @@ export default function Screen() {
     dispatch(typeKey(code));
   };
 
+  // The field for phones (see Screen.css). Their keyboards don't say which
+  // key was pressed, only what was written, except for Enter and Backspace.
+  const onSoftKeyDown = (ev) => {
+    if (ev.key !== 'Enter' && ev.key !== 'Backspace') return;
+    ev.preventDefault();
+    dispatch(typeKey(ev.key === 'Enter' ? 13 : 8));
+  };
+  const onSoftInput = (ev) => {
+    for (const char of ev.target.value) {
+      if (char.charCodeAt(0) <= 255) dispatch(typeKey(char.charCodeAt(0)));
+    }
+    ev.target.value = '';
+  };
+
   return (
-    <pre
-      ref={screen}
-      className={waitingInput ? 'screen-output waiting' : 'screen-output'}
-      tabIndex={0}
-      aria-label={t('screen.label')}
-      onKeyDown={onKeyDown}
-    >
-      {output}
-      <span className="cursor" aria-hidden="true">
-        _
-      </span>
-    </pre>
+    <div className="screen-panel">
+      <pre
+        ref={screen}
+        className={waitingInput ? 'screen-output waiting' : 'screen-output'}
+        tabIndex={0}
+        aria-label={t('screen.label')}
+        onKeyDown={onKeyDown}
+      >
+        {output}
+        <span className="cursor" aria-hidden="true">
+          _
+        </span>
+      </pre>
+      <input
+        className="field screen-keyboard"
+        type="text"
+        placeholder={t('screen.tapToType')}
+        aria-label={t('screen.tapToType')}
+        autoComplete="off"
+        autoCapitalize="off"
+        autoCorrect="off"
+        spellCheck={false}
+        enterKeyHint="send"
+        onKeyDown={onSoftKeyDown}
+        onInput={onSoftInput}
+      />
+    </div>
   );
 }

@@ -28,6 +28,8 @@ tagged releases yet. The planned work and its status live in [PROGRESS.md](PROGR
 
 ### Added
 
+- A layout for phones: big buttons for the function keys, touch sized controls and a field for
+  the phone's keyboard when INT 6 waits for a key.
 - Visual checks of the interface in CI (Playwright), with the README's screenshots as references.
 - The example programs come in English too (`src/examples/en`), following the language of the
   interface.

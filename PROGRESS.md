@@ -187,9 +187,11 @@ Taken by Federico Sawady on 2026-11-02.
   CRT effect, the English interface, a menu and a dialog. The references are
   `docs/screenshots/`, so the README cannot go stale. CI and `npm run test:visual:docker` use the
   same image, so the comparison is exact.
-- [ ] **46. A layout for phones** · Deps: 41
-  Small screens stack the windows and scroll; a touch friendly layout (bigger keys, the function
-  key bar as buttons) would help.
+- [x] **46. A layout for phones** · Deps: 41
+  Small screens stack the windows and scroll, with a taller menu bar and the function keys as big
+  buttons fixed at the bottom (Back instead of Help). Switches, dialog buttons and menu items are
+  big enough for a finger, and a field under the screen brings up the phone's keyboard for INT 6.
+  Checked in `tests/visual` (`phone.png`, `phone-menu.png`, tap target sizes, typing).
 - [x] **47. Fidelity checked against the original MSX88** · Deps: 18–31
   `tools/oracle` runs MSX88 V-3.1, ASM88 and LINK88 (from `MSX88Portable.zip`, downloaded and
   checked by hash, never committed) in QEMU + FreeDOS inside Docker, drives MSX88 with keys and

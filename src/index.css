@@ -17,6 +17,7 @@
   --fs: 16px;
   --cw: 8px;
   --ch: 16px;
+  --bar-h: var(--ch); /* height of the menu bar */
   --px: 1px; /* one pixel of the font */
   --font: 'IBM VGA 8x16', 'Courier New', monospace;
 }
@@ -48,6 +49,7 @@ body {
 
 body.stacked {
   overflow-y: auto;
+  --bar-h: calc(var(--ch) * 3);
 }
 
 button,

@@ -348,10 +348,14 @@ export default function App() {
     { key: 'F5', label: t(`keys.${runLabel}`), action: actions.runPauseResume },
     { key: 'F6', label: t('keys.microStep'), action: actions.stepPhase },
     { key: 'F7', label: t('keys.step'), action: actions.stepInstruction },
+    ...(mode === 'stacked' ? [{ key: 'Shift+F7', label: t('keys.back'), action: actions.stepBack }] : []),
     { key: 'F10', label: t('keys.interrupt'), action: actions.pressF10 },
     { key: 'Esc', label: t('keys.stop'), action: actions.stop },
   ];
-  const keys = halted ? allKeys.filter(({ key }) => key === 'F10' || key === 'Esc') : allKeys;
+  // On a phone, Help gives its place to Back: it only lists keyboard shortcuts.
+  const keys = halted
+    ? allKeys.filter(({ key }) => key === 'F10' || key === 'Esc')
+    : allKeys.filter(({ key }) => key !== 'F1' || mode !== 'stacked');
   const stateText = (
     halted
       ? [t('state.halted'), machineState === MACHINE_STATES.PAUSED && t('state.PAUSED')]

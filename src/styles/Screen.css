@@ -1,6 +1,13 @@
-.screen-output {
-  margin: 0;
+.screen-panel {
+  display: flex;
+  flex-direction: column;
   height: 100%;
+}
+
+.screen-output {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
   overflow-y: auto;
   overflow-x: hidden;
   white-space: pre-wrap;
@@ -29,4 +36,25 @@
   .screen-output.waiting .cursor {
     animation: none;
   }
+}
+
+/* Phones have no physical keyboard: tapping this field brings up theirs. */
+.screen-panel .screen-keyboard {
+  display: none;
+}
+
+.stacked .screen-panel .screen-keyboard {
+  display: block;
+  flex: none;
+  width: 100%;
+  height: calc(var(--ch) * 3);
+}
+
+.stacked .screen-output {
+  outline: none;
+}
+
+.screen-keyboard::placeholder {
+  color: inherit;
+  opacity: 1;
 }

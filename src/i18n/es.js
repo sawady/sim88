@@ -42,6 +42,7 @@ export default {
   'keys.resume': 'Reanudar',
   'keys.microStep': 'Micro-paso',
   'keys.step': 'Paso',
+  'keys.back': 'Atrás',
   'keys.interrupt': 'Interrupción',
   'keys.stop': 'Detener',
   'keys.menu': 'Menú',
@@ -97,6 +98,7 @@ export default {
 
   'screen.waiting': 'Esperando una tecla…',
   'screen.label': 'Pantalla: escriba acá cuando INT 6 espera una tecla',
+  'screen.tapToType': 'Tocar para escribir',
 
   'dev.config': 'Conexionado {n}: {name}',
   'dev.config0': 'PIO: microconmutadores y LEDs',

@@ -179,7 +179,12 @@
 
 .menubar {
   top: 0;
+  height: var(--bar-h);
   padding-left: var(--cw);
+}
+
+.menubar-items {
+  display: flex;
 }
 
 .statusbar {
@@ -500,4 +505,88 @@
     left: 0;
     top: 0;
   }
+}
+
+/* --------------------------------------------------------- touch screens */
+
+/* Small screens have no function keys and no mouse: the keys become buttons
+   of three rows (48 px at the usual size), and so does everything else that
+   is tapped. */
+.stacked button {
+  touch-action: manipulation;
+}
+
+.stacked .menubar {
+  padding-left: 0;
+}
+
+.stacked .menubar-items {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.stacked .menubar-item {
+  flex: none;
+}
+
+.stacked .menu {
+  left: 0 !important;
+  right: calc(var(--cw) * 2);
+  max-height: calc(100vh - var(--bar-h) - var(--ch));
+  overflow-y: auto;
+}
+
+.stacked .menu-item {
+  align-items: center;
+  height: calc(var(--ch) * 3);
+}
+
+.stacked .menu-item .shortcut {
+  display: none;
+}
+
+.stacked .statusbar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--cw) * 14), 1fr));
+  height: auto;
+  gap: var(--px);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.stacked .statusbar button {
+  height: calc(var(--ch) * 3);
+  padding: 0;
+  overflow: hidden;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+}
+
+.stacked .statusbar button:focus-visible {
+  background: var(--btn-focus-bg);
+  color: var(--btn-focus-fg);
+}
+
+/* The name of the key says nothing without a keyboard. */
+.stacked .statusbar .hot {
+  display: none;
+}
+
+.stacked .statusbar .state {
+  grid-column: 1 / -1;
+  order: -1;
+  margin: 0;
+  text-align: center;
+  white-space: normal;
+}
+
+.stacked .btn {
+  padding: var(--ch) calc(var(--cw) * 2);
+}
+
+.stacked .choice {
+  padding-block: calc(var(--ch) / 2);
+}
+
+.stacked .field {
+  height: calc(var(--ch) * 2);
 }

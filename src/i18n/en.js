@@ -40,6 +40,7 @@ export default {
   'keys.resume': 'Resume',
   'keys.microStep': 'Micro-step',
   'keys.step': 'Step',
+  'keys.back': 'Back',
   'keys.interrupt': 'Interrupt',
   'keys.stop': 'Stop',
   'keys.menu': 'Menu',
@@ -95,6 +96,7 @@ export default {
 
   'screen.waiting': 'Waiting for a key…',
   'screen.label': 'Screen: type here when INT 6 waits for a key',
+  'screen.tapToType': 'Tap to type',
 
   'dev.config': 'Configuration {n}: {name}',
   'dev.config0': 'PIO: switches and LEDs',
