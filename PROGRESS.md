@@ -178,8 +178,10 @@ Taken by Federico Sawady on 2026-11-02.
 - [x] **43. Configurable timer and printer speed**
   Options › Frequencies: timer at 1 Hz by default (0.5, 1, 2, 5, 10 or 0.1–50 Hz) and printer at
   one character every 8 instructions by default (1–1000).
-- [ ] **44. Example programs in English** · `gfi` · Deps: 36
-  The examples' comments and strings are in Spanish; the English UI could load English versions.
+- [x] **44. Example programs in English** · `gfi` · Deps: 36
+  `src/examples/en/` has an English version of every example (comments, strings and labels), with
+  the same lines and instructions. The Examples menu and the first visit use the language of the
+  interface, and an example nobody has edited follows it when the language changes.
 - [ ] **45. Visual checks of the themes in CI** · Deps: 42
   Screenshots with Playwright against `vite preview` (today they are taken by hand).
 - [ ] **46. A layout for phones** · Deps: 41

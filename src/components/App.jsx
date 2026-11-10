@@ -23,7 +23,7 @@ import {
 } from './Dialogs';
 
 import { MACHINE_STATES } from '../model/constants';
-import { EXAMPLES } from '../examples';
+import { EXAMPLES, findExampleBySource } from '../examples';
 import { useT, translateMessage } from '../i18n';
 import {
   DEFAULT_FILE_NAME,
@@ -143,7 +143,7 @@ export default function App() {
     },
     toggleStrict: () => dispatch(setStrict(!strict)),
     loadExample: (example) => {
-      const unsaved = text.trim() && !EXAMPLES.some((e) => e.source === text);
+      const unsaved = text.trim() && !findExampleBySource(text);
       const title = t(`example.${example.id}`);
       if (!unsaved) dispatch(loadExample(example.id));
       else {

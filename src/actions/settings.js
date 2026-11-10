@@ -7,6 +7,7 @@ import { MACHINE_STATES } from '../model/constants';
 import { PRINT_INTERVAL } from '../model/devices/printer';
 import { DEFAULT_ALU_MODE } from '../model/alu';
 import { restartClock } from './machine';
+import { translateExample } from './editor';
 
 export const LANGUAGES = ['es', 'en'];
 export const THEMES = ['borland', 'msx88', 'green', 'amber', 'contrast'];
@@ -95,6 +96,9 @@ export const setSettings = (changes) => (dispatch, getState) => {
   }
   if ('aluMode' in clean) {
     dispatch({ type: SET_ALU_MODE, mode: clean.aluMode });
+  }
+  if ('lang' in clean) {
+    dispatch(translateExample());
   }
   if ('timerHz' in clean && machine.state === MACHINE_STATES.RUNNING) {
     dispatch(restartClock());

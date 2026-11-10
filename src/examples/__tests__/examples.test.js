@@ -20,6 +20,14 @@ const phases = (machine, n) => {
   return m;
 };
 
+// The tests below run every example as it is in each language.
+const inLanguage = (lang, e) => ({ ...e, source: e.versions[lang].source });
+
+const TEXTS = {
+  es: { prompt: 'Escriba una letra: ', timer: 'Pasaron 5 segundos. ', pio: 'ARQUITECTURA', hand: 'HOLA MUNDO', dma: 'COPIADO POR DMA' },
+  en: { prompt: 'Type a letter: ', timer: '5 seconds went by. ', pio: 'ARCHITECTURE', hand: 'HELLO WORLD', dma: 'COPIED WITH DMA' },
+};
+
 describe('examples', () => {
   test('there is one per topic, with a title and a configuration', () => {
     expect(EXAMPLES.length).toBeGreaterThanOrEqual(9);
@@ -31,64 +39,82 @@ describe('examples', () => {
     expect(example('08').config).toBe(2);
   });
 
-  test.each(EXAMPLES.map((e) => [e.file, e]))('%s assembles in MSX88 strict mode', (_file, e) => {
-    expect(() => assemble(e.source, { strict: true })).not.toThrow();
+  test.each(EXAMPLES.map((e) => [e.file, e]))('%s has an English version with the same shape', (_file, e) => {
+    const { en, es } = e.versions;
+    expect(en, 'missing src/examples/en version').toBeDefined();
+    expect(en.source.split('\n').length).toBe(es.source.split('\n').length);
+    const config = (src) => src.match(/^;\s*(?:conexionado|configuration):\s*(\d)/im)?.[1];
+    expect(config(en.source)).toBe(config(es.source));
+    // the same instructions, whatever the names
+    const lines = (src) => [...assemble(src, { strict: true }).lines];
+    expect(lines(en.source)).toEqual(lines(es.source));
+    // English sources are in English
+    expect(en.source).not.toMatch(/[áéíóúñ¿]/i);
   });
 
-  test('sum of a table', () => {
-    const m = run(machineFor(example('01')));
-    expect(m.message).toMatch(/HLT/);
-    expect(m.cpu.mem[0x1006]).toBe(15);
+  test.each(EXAMPLES.flatMap((e) => Object.values(e.versions)))('$file assembles in MSX88 strict mode', ({ source }) => {
+    expect(() => assemble(source, { strict: true })).not.toThrow();
   });
 
-  test('subroutines', () => {
-    const m = run(machineFor(example('02')));
-    expect(m.cpu.mem[0x1002]).toBe(12);
-    expect(m.cpu.mem[0x1003] | (m.cpu.mem[0x1004] << 8)).toBe(1234);
-    expect(m.cpu.regs.SP).toBe(0x8000);
-  });
+  describe.each(['es', 'en'])('running, in %s', (lang) => {
+    const example = (id) => inLanguage(lang, EXAMPLES.find((e) => e.id.startsWith(id)));
+    const text = TEXTS[lang];
 
-  test('screen and keyboard', () => {
-    let m = run(machineFor(example('03')));
-    expect(m.waitingInput).toBe(true);
-    m = run(typeKey(m, 'x'.charCodeAt(0)));
-    expect(m.output).toBe('Escriba una letra: \nx\n'); // one line per INT 7, as MSX88
-  });
+    test('sum of a table', () => {
+      const m = run(machineFor(example('01')));
+      expect(m.message).toMatch(/HLT/);
+      expect(m.cpu.mem[0x1006]).toBe(15);
+    });
 
-  test('F10 interrupts', () => {
-    let m = phases(machineFor(example('04')), 200);
-    m = phases(pressF10(m), 50);
-    expect(readReg(m.cpu, 'DX')).toBe(1);
-  });
+    test('subroutines', () => {
+      const m = run(machineFor(example('02')));
+      expect(m.cpu.mem[0x1002]).toBe(12);
+      expect(m.cpu.mem[0x1003] | (m.cpu.mem[0x1004] << 8)).toBe(1234);
+      expect(m.cpu.regs.SP).toBe(0x8000);
+    });
 
-  test('timer', () => {
-    let m = phases(machineFor(example('05')), 200);
-    for (let i = 0; i < 5; i++) m = phases(timerPulse(m), 20);
-    m = phases(m, 400);
-    expect(m.output).toBe('Pasaron 5 segundos. \n');
-  });
+    test('screen and keyboard', () => {
+      let m = run(machineFor(example('03')));
+      expect(m.waitingInput).toBe(true);
+      m = run(typeKey(m, 'x'.charCodeAt(0)));
+      expect(m.output).toBe(`${text.prompt}\nx\n`); // one line per INT 7, as MSX88
+    });
 
-  test('switches and LEDs', () => {
-    let m = phases(machineFor(example('06')), 100);
-    m = phases(toggleSwitch(toggleSwitch(m, 1), 6), 50);
-    expect(pioOutputB(m.devices)).toBe(0b0100_0010);
-  });
+    test('F10 interrupts', () => {
+      let m = phases(machineFor(example('04')), 200);
+      m = phases(pressF10(m), 50);
+      expect(readReg(m.cpu, 'DX')).toBe(1);
+    });
 
-  test('printer through the PIO', () => {
-    const m = phases(run(machineFor(example('07'))), 0);
-    expect(m.message).toMatch(/INT 0/);
-    // the last characters may still be in the printer's buffer
-    expect(m.devices.printer.paper + String.fromCharCode(...m.devices.printer.buffer)).toBe('ARQUITECTURA');
-  });
+    test('timer', () => {
+      let m = phases(machineFor(example('05')), 200);
+      for (let i = 0; i < 5; i++) m = phases(timerPulse(m), 20);
+      m = phases(m, 400);
+      expect(m.output).toBe(`${text.timer}\n`);
+    });
 
-  test('printer through the HAND, by interrupts', () => {
-    const m = run(machineFor(example('08')));
-    expect(m.message).toMatch(/INT 0/);
-    expect(m.devices.printer.paper + String.fromCharCode(...m.devices.printer.buffer)).toBe('HOLA MUNDO');
-  });
+    test('switches and LEDs', () => {
+      let m = phases(machineFor(example('06')), 100);
+      m = phases(toggleSwitch(toggleSwitch(m, 1), 6), 50);
+      expect(pioOutputB(m.devices)).toBe(0b0100_0010);
+    });
 
-  test('DMA', () => {
-    const m = run(machineFor(example('09')));
-    expect(m.output).toBe('COPIADO POR DMA\n');
+    test('printer through the PIO', () => {
+      const m = phases(run(machineFor(example('07'))), 0);
+      expect(m.message).toMatch(/INT 0/);
+      // the last characters may still be in the printer's buffer
+      expect(m.devices.printer.paper + String.fromCharCode(...m.devices.printer.buffer)).toBe(text.pio);
+    });
+
+    test('printer through the HAND, by interrupts', () => {
+      const m = run(machineFor(example('08')));
+      expect(m.message).toMatch(/INT 0/);
+      expect(m.devices.printer.paper + String.fromCharCode(...m.devices.printer.buffer)).toBe(text.hand);
+    });
+
+    test('DMA', () => {
+      const m = run(machineFor(example('09')));
+      expect(m.output).toBe(`${text.dma}\n`);
+    });
   });
 });

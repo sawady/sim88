@@ -1,9 +1,8 @@
-import { EXAMPLES, DEFAULT_EXAMPLE } from '../examples';
+import { EXAMPLES, DEFAULT_EXAMPLE, exampleVersion, findExampleBySource } from '../examples';
 import { setConfig } from './machine';
 import { storage } from '../storage';
 
 export const DEFAULT_FILE_NAME = 'newfile.asm';
-export const DEFAULT_PROGRAM = DEFAULT_EXAMPLE.source;
 
 const PROGRAM_KEY = 'sim88.program';
 const FILE_KEY = 'sim88.file';
@@ -44,13 +43,28 @@ export const newFile = () => (dispatch) => {
   dispatch(changeFilePath(undefined));
 };
 
-// Loads an example (and the MSX88 configuration it needs).
-export const loadExample = (id) => (dispatch) => {
+// Loads an example, in the language of the interface (and the MSX88
+// configuration it needs).
+export const loadExample = (id) => (dispatch, getState) => {
   const example = EXAMPLES.find((e) => e.id === id);
   if (!example) return;
-  dispatch(changeFilePath(example.file));
-  dispatch(changeText(example.source));
+  const { file, source } = exampleVersion(example, getState().settings.lang);
+  dispatch(changeFilePath(file));
+  dispatch(changeText(source));
   dispatch(setConfig(example.config));
+};
+
+// An example nobody has edited follows the language of the interface. The
+// versions of an example have the same lines, so a running program keeps
+// its highlighted line.
+export const translateExample = () => (dispatch, getState) => {
+  const { editor, settings } = getState();
+  const example = findExampleBySource(editor.text);
+  if (!example) return;
+  const { file, source } = exampleVersion(example, settings.lang);
+  if (source === editor.text) return;
+  dispatch(changeFilePath(file));
+  dispatch(changeText(source));
 };
 
 // At startup: the program being edited last time, or the default example.
@@ -59,6 +73,7 @@ export const loadInitialProgram = () => (dispatch) => {
   if (saved !== null) {
     dispatch(changeFilePath(storage.get(FILE_KEY) || DEFAULT_FILE_NAME));
     dispatch(changeText(saved));
+    dispatch(translateExample());
   } else {
     dispatch(loadExample(DEFAULT_EXAMPLE.id));
   }

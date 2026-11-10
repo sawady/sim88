@@ -63,8 +63,9 @@ What works today:
 - Execution animated phase by phase (fetch, decode, IP, operands, execute) at adjustable
   speed, or step by step: one instruction, one phase, or **one instruction back**.
 
-The **Examples** menu has a program for each topic (from a table sum to the DMA controller), and
-the program being edited is kept in the browser between visits.
+The **Examples** menu has a program for each topic (from a table sum to the DMA controller), in
+Spanish or English following the language of the interface, and the program being edited is kept
+in the browser between visits.
 
 **Options** also has:
 
