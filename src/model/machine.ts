@@ -5,7 +5,7 @@
 // Every function takes a machine and returns a new one; nothing is mutated.
 // Before each instruction the machine keeps a snapshot of itself in
 // `history`, which is what stepBack() restores. Snapshots are cheap because
-// memory is copied only when an instruction writes it (see cpu.js).
+// memory is copied only when an instruction writes it (see cpu.ts).
 
 import { createCpu, execute, getFlag, hardwareInterrupt, initialMemory } from './cpu';
 import { ALU_MODES, DEFAULT_ALU_MODE } from './alu';
@@ -32,9 +32,59 @@ import {
   DECODER,
 } from './constants';
 
+import type { AluMode } from './alu';
+import type { Program } from './assembler';
+import type { Cpu, CpuResult } from './cpu';
+import type { Instruction } from './decoder';
+import type { BusMemory, Bus } from './io';
+import type { Devices } from './devices/types';
+import type { MachineState } from './constants';
+
 export const HISTORY_LIMIT = 1000;
 
-const display = () => ({
+// The result of an instruction between the operands phase, which runs it, and
+// the execute phase, which commits it.
+export interface Pending extends CpuResult {
+  devices: Devices;
+  input: number[];
+  accessed: Set<string>;
+}
+
+interface Display {
+  IR: number;
+  decoder: string;
+  instruction: Instruction | null;
+  pending: Pending | null;
+  alu: { OP1: number; OP2: number; RES: number };
+  activeComponents: string[];
+  activeMemory: number[];
+  phase: number;
+  currentLine: number | null;
+  cpuHalted: boolean;
+}
+
+export interface Machine extends Display {
+  cpu: Cpu;
+  aluMode: AluMode;
+  bus: Bus<Devices>;
+  devices: Devices;
+  input: number[];
+  waitingInput: boolean;
+  state: MachineState;
+  velocity: number;
+  history: Snapshot[];
+  program: Program | null;
+  output: string;
+  message: string | null;
+  error: string | null;
+  holdPhase?: boolean; // the phase has to run again, or was not part of the instruction
+}
+
+export type Snapshot = Omit<Machine, 'history' | 'velocity' | 'state' | 'aluMode'>;
+
+type Phase = (machine: Machine) => Machine;
+
+const display = (): Display => ({
   IR: 0,
   decoder: DEFAULT_DECODER_VALUE,
   instruction: null,
@@ -47,10 +97,14 @@ const display = () => ({
   cpuHalted: false, // after HLT, waiting for an interrupt
 });
 
-// `config` is the MSX88 configuration (0-3, see devices/index.js). Tests can
-// pass their own `bus` (see io.js). `aluMode` is 'msx88' (as the original) or
-// '8086' (see alu.js and cpu.js).
-export const createMachine = ({ config = 0, bus = createSystem(config), aluMode = DEFAULT_ALU_MODE } = {}) => ({
+// `config` is the MSX88 configuration (0-3, see devices/index.ts). Tests can
+// pass their own `bus` (see io.ts). `aluMode` is 'msx88' (as the original) or
+// '8086' (see alu.ts and cpu.ts).
+export const createMachine = ({
+  config = 0,
+  bus = createSystem(config) as Bus<Devices>,
+  aluMode = DEFAULT_ALU_MODE,
+} = {}): Machine => ({
   cpu: createCpu(),
   ...display(),
   aluMode,
@@ -67,9 +121,9 @@ export const createMachine = ({ config = 0, bus = createSystem(config), aluMode 
   error: null,
 });
 
-// Loads an assembled program (see assembler.js) into a fresh memory. The
+// Loads an assembled program (see assembler.ts) into a fresh memory. The
 // switches keep their position and the printer its speed.
-export function loadProgram(machine, program) {
+export function loadProgram(machine: Machine, program: Program): Machine {
   const mem = initialMemory();
   for (const [address, byte] of program.memory) mem[address] = byte;
   let devices = machine.bus.initialState();
@@ -92,12 +146,12 @@ export function loadProgram(machine, program) {
 }
 
 // The ALU mode is a setting, not part of the run: step back keeps it.
-const snapshot = (machine) => {
+const snapshot = (machine: Machine): Snapshot => {
   const { history, velocity, state, aluMode, ...rest } = machine;
   return rest;
 };
 
-const remember = (machine) => {
+const remember = (machine: Machine): Snapshot[] => {
   const history = [...machine.history, snapshot(machine)];
   if (history.length > HISTORY_LIMIT) history.shift();
   return history;
@@ -105,11 +159,11 @@ const remember = (machine) => {
 
 // One step of time for the peripherals (after every instruction, and while
 // the CPU is halted). The CDMA may write memory.
-function tickDevices(machine) {
+function tickDevices(machine: Machine): { devices: Devices; mem: Uint8Array; writes: number[] } {
   let mem = machine.cpu.mem;
   let copied = false;
-  const writes = [];
-  const memory = {
+  const writes: number[] = [];
+  const memory: BusMemory = {
     read: (address) => mem[address & 0xffff],
     write: (address, byte) => {
       if (!copied) {
@@ -125,7 +179,7 @@ function tickDevices(machine) {
 }
 
 // The PIC line the CPU accepts now, or null (I flag set and a request pending).
-function acceptedInterrupt(machine) {
+function acceptedInterrupt(machine: Machine): number | null {
   if (!machine.devices.pic || !getFlag(machine.cpu, 'I')) return null;
   return pendingInterrupt(machine.devices);
 }
@@ -134,7 +188,7 @@ function acceptedInterrupt(machine) {
 
 // Before fetching, the CPU accepts a pending hardware interrupt: it pushes
 // the flags and IP and jumps to the routine of the vector the PIC gives.
-function serviceInterrupt(machine, line) {
+function serviceInterrupt(machine: Machine, line: number): Machine {
   const { devices, vector } = acknowledgeInterrupt(machine.devices, line);
   const { cpu, events } = hardwareInterrupt(machine.cpu, vector);
   return {
@@ -152,7 +206,7 @@ function serviceInterrupt(machine, line) {
   };
 }
 
-function fetch(machine) {
+function fetch(machine: Machine): Machine {
   const line = acceptedInterrupt(machine);
   if (line !== null) return serviceInterrupt(machine, line);
   if (machine.cpuHalted) {
@@ -173,7 +227,7 @@ function fetch(machine) {
   };
 }
 
-function decodeInstruction(machine) {
+function decodeInstruction(machine: Machine): Machine {
   const instruction = decode(machine.cpu.mem, machine.cpu.ip);
   return {
     ...machine,
@@ -185,8 +239,9 @@ function decodeInstruction(machine) {
 
 // IP moves past the whole instruction (the bytes after the opcode are read
 // as part of this step).
-function incrementIP(machine) {
-  const { cpu, instruction } = machine;
+function incrementIP(machine: Machine): Machine {
+  const { cpu } = machine;
+  const instruction = machine.instruction!;
   const activeMemory = instruction.bytes.map((_, i) => (cpu.ip + i) & 0xffff);
   return {
     ...machine,
@@ -196,24 +251,24 @@ function incrementIP(machine) {
   };
 }
 
-const deviceComponents = (accessed) => [...accessed].map((name) => name.toUpperCase());
+const deviceComponents = (accessed: Set<string>): string[] => [...accessed].map((name) => name.toUpperCase());
 
 // Reads the operands: the instruction is executed here, and the next phase
 // commits its result, so the UI can show operands and result separately.
-function fetchOperands(machine) {
-  let result;
+function fetchOperands(machine: Machine): Machine {
+  let executed: CpuResult;
   const io = busIO(machine.bus, machine.devices, machine.input);
   try {
-    result = execute(machine.cpu, machine.instruction, io, { aluMode: machine.aluMode });
+    executed = execute(machine.cpu, machine.instruction!, io, { aluMode: machine.aluMode });
   } catch (e) {
-    return halt(machine, { error: e.message });
+    return halt(machine, { error: (e as Error).message });
   }
-  const { events } = result;
+  const { events } = executed;
   if (events.needsInput) {
     // INT 6 with no key typed: this phase runs again until there is one.
     return { ...machine, waitingInput: true, activeComponents: [], holdPhase: true };
   }
-  result = { ...result, devices: io.devices, input: io.input, accessed: io.accessed };
+  const result: Pending = { ...executed, devices: io.devices, input: io.input, accessed: io.accessed };
   const alu = events.alu
     ? { ...machine.alu, OP1: events.alu.op1, OP2: events.alu.op2 ?? 0 }
     : machine.alu;
@@ -227,8 +282,8 @@ function fetchOperands(machine) {
   };
 }
 
-function executeInstruction(machine) {
-  const { cpu, events, devices, input, accessed } = machine.pending;
+function executeInstruction(machine: Machine): Machine {
+  const { cpu, events, devices, input, accessed } = machine.pending!;
   const alu = events.alu ? { ...machine.alu, RES: events.alu.result } : machine.alu;
   // Every INT 7 writes one line, as MSX88's screen does.
   const output = events.output.reduce((text, line) => `${text}${cp437(line)}\n`, machine.output);
@@ -267,9 +322,12 @@ function executeInstruction(machine) {
   return next;
 }
 
-export const EXECUTION_CYCLE = [fetch, decodeInstruction, incrementIP, fetchOperands, executeInstruction];
+export const EXECUTION_CYCLE: Phase[] = [fetch, decodeInstruction, incrementIP, fetchOperands, executeInstruction];
 
-const halt = (machine, { message = null, error = null }) => ({
+const halt = (
+  machine: Machine,
+  { message = null, error = null }: { message?: string | null; error?: string | null }
+): Machine => ({
   ...machine,
   state: MACHINE_STATES.STOPPED,
   activeComponents: [],
@@ -281,7 +339,7 @@ const halt = (machine, { message = null, error = null }) => ({
 // Runs the next phase of the cycle. A phase that has to wait (INT 6 without
 // a key, a halted CPU) or that is not an instruction (accepting an
 // interrupt) does not advance to the next one.
-export function stepPhase(machine) {
+export function stepPhase(machine: Machine): Machine {
   const { holdPhase, ...next } = EXECUTION_CYCLE[machine.phase](machine);
   if (holdPhase) return next;
   if (next.state === MACHINE_STATES.STOPPED && machine.state !== MACHINE_STATES.STOPPED) {
@@ -292,14 +350,14 @@ export function stepPhase(machine) {
 
 // Runs the remaining phases of the current instruction (or up to INT 6
 // waiting for a key, or an interrupt being accepted).
-export function stepInstruction(machine) {
+export function stepInstruction(machine: Machine): Machine {
   let m = stepPhase(machine);
   while (m.phase !== 0 && m.state !== MACHINE_STATES.STOPPED && !m.waitingInput) m = stepPhase(m);
   return m;
 }
 
 // Goes back to the state before the current (or previous) instruction.
-export function stepBack(machine) {
+export function stepBack(machine: Machine): Machine {
   if (machine.history.length === 0) return machine;
   const history = machine.history.slice(0, -1);
   const previous = machine.history[machine.history.length - 1];
@@ -318,51 +376,55 @@ export function stepBack(machine) {
 // between the operands and the execute phases, when the result of the
 // instruction is already computed in `pending`: they apply to both, or the
 // commit would lose them.
-const fromOutside = (machine, field, f) => ({
+const fromOutside = <K extends 'input' | 'devices'>(
+  machine: Machine,
+  field: K,
+  f: (value: Machine[K]) => Machine[K]
+): Machine => ({
   ...machine,
   [field]: f(machine[field]),
-  pending: machine.pending && { ...machine.pending, [field]: f(machine.pending[field]) },
+  pending: machine.pending && { ...machine.pending, [field]: f(machine.pending[field] as Machine[K]) },
 });
 
 // A key typed on the keyboard, for INT 6.
-export const typeKey = (machine, code) => ({
+export const typeKey = (machine: Machine, code: number): Machine => ({
   ...fromOutside(machine, 'input', (input) => [...input, code & 0xff]),
   waitingInput: false,
 });
 
 // F10: interrupt request on INT0 of the PIC.
-export const pressF10 = (machine) =>
+export const pressF10 = (machine: Machine): Machine =>
   machine.devices.pic ? fromOutside(machine, 'devices', (d) => requestInterrupt(d, 0)) : machine;
 
 // One pulse of the timer's 1 Hz clock.
-export const timerPulse = (machine) =>
+export const timerPulse = (machine: Machine): Machine =>
   machine.devices.timer ? fromOutside(machine, 'devices', pulse) : machine;
 
 // Speed of the printer: one character every `interval` instructions.
-export const setPrintInterval = (machine, interval) =>
+export const setPrintInterval = (machine: Machine, interval: number): Machine =>
   machine.devices.printer
     ? fromOutside(machine, 'devices', (d) => withPrintInterval(d, interval))
     : machine;
 
 // How the ALU behaves where MSX88 and the 8086 differ: 'msx88' or '8086'.
 // It applies from the next instruction on.
-export const setAluMode = (machine, aluMode) => (ALU_MODES[aluMode] ? { ...machine, aluMode } : machine);
+export const setAluMode = (machine: Machine, aluMode: AluMode): Machine => (ALU_MODES[aluMode] ? { ...machine, aluMode } : machine);
 
 // Flips switch n (0-7) of the switch bar (configuration 0).
-export const toggleSwitch = (machine, n) =>
+export const toggleSwitch = (machine: Machine, n: number): Machine =>
   'switches' in machine.devices
     ? fromOutside(machine, 'devices', (d) => ({ ...d, switches: d.switches ^ (1 << n) }))
     : machine;
 
 // --------------------------------------------------------------- controls
 
-export const start = (machine) => ({ ...machine, state: MACHINE_STATES.RUNNING });
+export const start = (machine: Machine): Machine => ({ ...machine, state: MACHINE_STATES.RUNNING });
 
-export const resume = (machine) => ({ ...machine, state: MACHINE_STATES.RUNNING });
+export const resume = (machine: Machine): Machine => ({ ...machine, state: MACHINE_STATES.RUNNING });
 
-export const pause = (machine) => ({ ...machine, state: MACHINE_STATES.PAUSED });
+export const pause = (machine: Machine): Machine => ({ ...machine, state: MACHINE_STATES.PAUSED });
 
-export const stop = (machine) => ({
+export const stop = (machine: Machine): Machine => ({
   ...machine,
   state: MACHINE_STATES.STOPPED,
   activeComponents: [],
@@ -372,12 +434,12 @@ export const stop = (machine) => ({
   decoder: DEFAULT_DECODER_VALUE,
 });
 
-export const decreaseVelocity = (machine) => ({
+export const decreaseVelocity = (machine: Machine): Machine => ({
   ...machine,
   velocity: Math.round(Math.min(MIN_VELOCITY, machine.velocity * 1.5)),
 });
 
-export const increaseVelocity = (machine) => ({
+export const increaseVelocity = (machine: Machine): Machine => ({
   ...machine,
   velocity: Math.round(Math.max(MAX_VELOCITY, machine.velocity * 0.5)),
 });

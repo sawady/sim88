@@ -28,7 +28,8 @@ Guidelines:
 
 - Every behavior change comes with a test. Known bugs are written as `test.fails` (the expected
   behavior) and missing features as `test.todo`; fixing one means turning it into a normal test.
-- Keep the model (`src/model`) free of React and Redux.
+- Keep the model (`src/model`) free of React and Redux. It is TypeScript, `strict`: `npm run
+  typecheck` must pass.
 - When behavior must match MSX88, note your source (course guide, manual, sample program) in the
   PR description.
 - Code, comments and docs in English. Every UI text goes through `src/i18n` (`es.js` and `en.js`

@@ -163,8 +163,11 @@ Taken by Federico Sawady on 2026-11-02.
 - [x] **39. UI tests with Testing Library** · `gfi`
   A smoke test renders the App with the store and runs a program with fake timers.
   (`src/components/__tests__/App.test.jsx`, jsdom; Ace is replaced by a textarea.)
-- [ ] **40. Incremental TypeScript migration** · Deps: 16
-  `allowJs` + `checkJs` on `src/model` first, then file by file.
+- [x] **40. Incremental TypeScript migration** · Deps: 16
+  All of `src/model` is TypeScript, `strict`, checked by `npm run typecheck` (tsc) in CI: only
+  types were added, the model behaves the same (the fidelity corpus and every test pass
+  unchanged). The tests of the model, the Redux code and the React components are still
+  JavaScript: they can move later, file by file, the same way.
 - [x] **41. Text mode interface, in the style of the MS-DOS tools of the time**
   IBM VGA 8x16 font (Ultimate Oldschool PC Font Pack, CC BY-SA 4.0, downloaded at install by
   `scripts/fetch-font.mjs`), a character grid scaled by whole factors, menu bar with pull-down

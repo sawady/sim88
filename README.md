@@ -165,15 +165,15 @@ windows (editor, CPU, memory, screen, peripherals).
 
 ```
 src/grammar.pegjs        grammar of one source line (compiled with peggy at build/test time)
-src/model/parser.js      splits the source into lines and parses them
-src/model/assembler.js   two-pass assembler: symbols, ORG, data, encoding
-src/model/isa.js         instruction table shared by the assembler and the decoder
-src/model/decoder.js     8086 decoder (opcode table + ModRM)
-src/model/alu.js         pure 8/16 bit ALU with flags
-src/model/cpu.js         CPU state (64 KB Uint8Array) and instruction execution
-src/model/io.js          I/O bus (IN/OUT) and the device interface
+src/model/parser.ts      splits the source into lines and parses them
+src/model/assembler.ts   two-pass assembler: symbols, ORG, data, encoding
+src/model/isa.ts         instruction table shared by the assembler and the decoder
+src/model/decoder.ts     8086 decoder (opcode table + ModRM)
+src/model/alu.ts         pure 8/16 bit ALU with flags
+src/model/cpu.ts         CPU state (64 KB Uint8Array) and instruction execution
+src/model/io.ts          I/O bus (IN/OUT) and the device interface
 src/model/devices/       MSX88 peripherals (PIC, timer, PIO, HAND, printer, CDMA) and configurations
-src/model/machine.js     the fetch-decode-execute cycle as the UI shows it, history for step back
+src/model/machine.ts     the fetch-decode-execute cycle as the UI shows it, history for step back
 src/model/__tests__/     model tests
 src/actions, reducers    Redux glue (settings.js: language, theme, frequencies)
 src/components/          React UI; tui/ has the text mode parts (grid, windows, menus, dialogs)

@@ -28,6 +28,7 @@ tagged releases yet. The planned work and its status live in [PROGRESS.md](PROGR
 
 ### Added
 
+- `src/model` is TypeScript (strict), checked in CI with `npm run typecheck`.
 - The MSX88 oracle reads the printer's paper; the corpus now covers the HAND by interrupts, the
   printer through the PIO, the CDMA to the printer, the 20 columns and CR/LF.
 - A layout for phones: big buttons for the function keys, touch sized controls and a field for

@@ -12,9 +12,44 @@
 // }
 
 import { ALU_MODES, DEFAULT_ALU_MODE } from './alu';
+import type { AluFlags, AluMode, AluOperations, Size } from './alu';
 import { decode } from './decoder';
+import type { ImmOperand, Instruction, MemOperand, Operand, RelOperand } from './decoder';
 import { REG8 } from './isa';
 import { asmHex, hex16 } from './format';
+import type { CpuIO } from './io';
+
+export interface Cpu {
+  mem: Uint8Array;
+  regs: Record<string, number>;
+  ip: number;
+  flags: number;
+}
+
+export type FlagName = keyof typeof FLAG_BITS;
+
+// What happened during an instruction, for the UI.
+export interface CpuEvents {
+  halted: string | null; // 'HLT' | 'INT 0'
+  breakpoint: boolean;
+  // flags is false when no flag was written
+  alu: { op1: number; op2: number | null; result: number; size: Size | undefined; flags?: boolean } | null;
+  registers: Set<string>; // registers read or written
+  memoryReads: number[];
+  memoryWrites: number[];
+  output: number[][]; // lines written to the console (INT 7), as arrays of bytes
+  needsInput: boolean; // INT 6 found no key: the instruction must be retried
+  ports: { port: number; value: number; direction: 'in' | 'out' }[];
+}
+
+export interface CpuResult {
+  cpu: Cpu;
+  events: CpuEvents;
+}
+
+export interface CpuOptions {
+  aluMode: AluMode;
+}
 
 export const MEMORY_SIZE = 0x10000;
 export const CODE_START = 0x2000;
@@ -33,9 +68,9 @@ export const INITIAL_FLAGS = 1 << FLAG_BITS.I;
 // 1A 00 CF 00 at 18h and 1E 00 CF 00 at 1Ch, and zeros everywhere else.
 export const SYSTEM_VECTORS = [0, 3, 6, 7];
 const IRET_OPCODE = 0xcf;
-const systemVectorTarget = (n) => 4 * n + 2;
+const systemVectorTarget = (n: number): number => 4 * n + 2;
 
-export function initialMemory() {
+export function initialMemory(): Uint8Array {
   const mem = new Uint8Array(MEMORY_SIZE);
   for (const n of SYSTEM_VECTORS) {
     mem[4 * n] = systemVectorTarget(n);
@@ -45,14 +80,16 @@ export function initialMemory() {
 }
 
 export class CpuError extends Error {
-  constructor(message, address) {
+  address: number;
+
+  constructor(message: string, address: number) {
     super(message);
     this.name = 'CpuError';
     this.address = address;
   }
 }
 
-export function createCpu({ mem = initialMemory(), ip = CODE_START } = {}) {
+export function createCpu({ mem = initialMemory(), ip = CODE_START } = {}): Cpu {
   return {
     mem,
     regs: { AX: 0, BX: 0, CX: 0, DX: 0, SP: STACK_TOP, BP: 0, SI: 0, DI: 0 },
@@ -61,9 +98,9 @@ export function createCpu({ mem = initialMemory(), ip = CODE_START } = {}) {
   };
 }
 
-export const getFlag = (cpu, name) => ((cpu.flags >> FLAG_BITS[name]) & 1) === 1;
+export const getFlag = (cpu: Cpu, name: FlagName): boolean => ((cpu.flags >> FLAG_BITS[name]) & 1) === 1;
 
-export function readReg(cpu, name) {
+export function readReg(cpu: Cpu, name: string): number {
   if (REG8.includes(name)) {
     const value = cpu.regs[`${name[0]}X`];
     return name[1] === 'L' ? value & 0xff : value >> 8;
@@ -71,25 +108,37 @@ export function readReg(cpu, name) {
   return cpu.regs[name];
 }
 
-export const readByte = (mem, address) => mem[address & 0xffff];
-export const readWord = (mem, address) => mem[address & 0xffff] | (mem[(address + 1) & 0xffff] << 8);
+export const readByte = (mem: Uint8Array, address: number): number => mem[address & 0xffff];
+export const readWord = (mem: Uint8Array, address: number): number => mem[address & 0xffff] | (mem[(address + 1) & 0xffff] << 8);
 
 // What the CPU sees outside itself: the I/O bus (IN/OUT) and the keyboard
-// (INT 6). The machine provides a real one (see machine.js and io.js).
-export const NO_IO = {
+// (INT 6). The machine provides a real one (see machine.ts and io.ts).
+export const NO_IO: CpuIO = {
   in: () => 0,
   out: () => {},
   readChar: () => undefined,
 };
 
 // Options of the CPU. aluMode: 'msx88' copies the four places where MSX88
-// differs from the 8086 (INC/DEC, ADC/SBB and NOT flags, in alu.js, and
+// differs from the 8086 (INC/DEC, ADC/SBB and NOT flags, in alu.ts, and
 // PUSH SP); '8086' does what a real 8086 does.
-export const DEFAULT_OPTIONS = { aluMode: DEFAULT_ALU_MODE };
+export const DEFAULT_OPTIONS: CpuOptions = { aluMode: DEFAULT_ALU_MODE };
 
 // Mutable scratch copy of the state while one instruction executes.
 class Execution {
-  constructor(cpu, instruction, io, options = DEFAULT_OPTIONS) {
+  cpu: Cpu;
+  instruction: Instruction | null;
+  io: CpuIO;
+  alu: AluOperations;
+  as8086: boolean;
+  regs: Record<string, number>;
+  ip: number;
+  flags: number;
+  mem: Uint8Array;
+  memCopied: boolean;
+  events: CpuEvents;
+
+  constructor(cpu: Cpu, instruction: Instruction | null, io: CpuIO, options: CpuOptions = DEFAULT_OPTIONS) {
     this.cpu = cpu;
     this.instruction = instruction;
     this.io = io;
@@ -115,7 +164,7 @@ class Execution {
   }
 
   // registers
-  reg(name) {
+  reg(name: string): number {
     this.events.registers.add(REG8.includes(name) ? `${name[0]}X` : name);
     if (REG8.includes(name)) {
       const value = this.regs[`${name[0]}X`];
@@ -124,7 +173,7 @@ class Execution {
     return this.regs[name];
   }
 
-  setReg(name, value) {
+  setReg(name: string, value: number): void {
     if (REG8.includes(name)) {
       const full = `${name[0]}X`;
       this.events.registers.add(full);
@@ -137,14 +186,14 @@ class Execution {
   }
 
   // memory
-  readMem(address, size) {
+  readMem(address: number, size: Size): number {
     const a = address & 0xffff;
     this.events.memoryReads.push(a);
     if (size === 16) this.events.memoryReads.push((a + 1) & 0xffff);
     return size === 8 ? readByte(this.mem, a) : readWord(this.mem, a);
   }
 
-  writeMem(address, size, value) {
+  writeMem(address: number, size: Size, value: number): void {
     if (!this.memCopied) {
       this.mem = this.mem.slice();
       this.memCopied = true;
@@ -158,12 +207,12 @@ class Execution {
     }
   }
 
-  effectiveAddress(operand) {
+  effectiveAddress(operand: MemOperand): number {
     return operand.base.reduce((sum, name) => sum + this.reg(name), operand.disp) & 0xffff;
   }
 
   // operands
-  read(operand) {
+  read(operand: Operand): number {
     switch (operand.type) {
       case 'reg':
         return this.reg(operand.name);
@@ -174,11 +223,11 @@ class Execution {
       case 'rel':
         return operand.target;
       default:
-        throw new Error(`Cannot read operand ${operand.type}`);
+        throw new Error(`Cannot read operand ${(operand as Operand).type}`);
     }
   }
 
-  write(operand, value) {
+  write(operand: Operand, value: number): void {
     switch (operand.type) {
       case 'reg':
         return this.setReg(operand.name, value);
@@ -190,30 +239,30 @@ class Execution {
   }
 
   // flags
-  flag(name) {
+  flag(name: FlagName): boolean {
     return ((this.flags >> FLAG_BITS[name]) & 1) === 1;
   }
 
-  setFlags(values) {
+  setFlags(values: AluFlags | Partial<Record<FlagName, boolean>>): void {
     for (const [name, on] of Object.entries(values)) {
-      const bit = 1 << FLAG_BITS[name];
+      const bit = 1 << FLAG_BITS[name as FlagName];
       this.flags = on ? this.flags | bit : this.flags & ~bit;
     }
   }
 
   // stack
-  push(value) {
+  push(value: number): void {
     this.setReg('SP', this.reg('SP') - 2);
     this.writeMem(this.regs.SP, 16, value);
   }
 
-  pop() {
+  pop(): number {
     const value = this.readMem(this.regs.SP, 16);
     this.setReg('SP', this.regs.SP + 2);
     return value;
   }
 
-  result() {
+  result(): CpuResult {
     return {
       cpu: { mem: this.mem, regs: this.regs, ip: this.ip, flags: this.flags },
       events: this.events,
@@ -221,7 +270,9 @@ class Execution {
   }
 }
 
-const CONDITIONS = {
+type Flag = (name: FlagName) => boolean;
+
+const CONDITIONS: Record<string, (f: Flag) => boolean> = {
   JO: (f) => f('O'),
   JNO: (f) => !f('O'),
   JC: (f) => f('C'),
@@ -248,7 +299,7 @@ const CONDITIONS = {
 // A program that replaces one of those vectors gets its own routine and no
 // monitor service (tests/fidelity: int-vector-0-replaced). Hardware
 // interrupts with those types only run the IRET (pic-hw-type-0, -7).
-const SYSTEM_INTERRUPTS = {
+const SYSTEM_INTERRUPTS: Record<number, (x: Execution) => void> = {
   0: (x) => {
     x.events.halted = 'INT 0';
   },
@@ -269,7 +320,7 @@ const SYSTEM_INTERRUPTS = {
     // the console (an empty one if AL = 0).
     const count = x.reg('AL');
     const start = x.reg('BX');
-    const line = [];
+    const line: number[] = [];
     for (let i = 0; i < count; i++) line.push(x.readMem(start + i, 8));
     x.events.output.push(line);
   },
@@ -278,19 +329,19 @@ const SYSTEM_INTERRUPTS = {
 // Interrupt entry, for INT n and for the PIC: push the flags and IP, clear I
 // and T, and jump to the routine in the vector table (4 bytes per vector; the
 // first word is the address of the routine: MSX88 has no segments).
-function enterInterrupt(x, n) {
+function enterInterrupt(x: Execution, n: number): void {
   x.push(x.flags);
   x.setFlags({ I: false, T: false });
   x.push(x.ip);
   x.ip = x.readMem(n * 4, 16);
 }
 
-function returnFromInterrupt(x) {
+function returnFromInterrupt(x: Execution): void {
   x.ip = x.pop();
   x.flags = x.pop();
 }
 
-function softwareInterrupt(x, n) {
+function softwareInterrupt(x: Execution, n: number): void {
   enterInterrupt(x, n);
   if (SYSTEM_INTERRUPTS[n] && x.ip === systemVectorTarget(n) && x.readMem(x.ip, 8) === IRET_OPCODE) {
     SYSTEM_INTERRUPTS[n](x);
@@ -300,19 +351,22 @@ function softwareInterrupt(x, n) {
 
 // A hardware interrupt accepted between instructions (vector = the type the
 // PIC gives).
-export function hardwareInterrupt(cpu, vector) {
+export function hardwareInterrupt(cpu: Cpu, vector: number): CpuResult {
   const x = new Execution(cpu, null, NO_IO);
   enterInterrupt(x, vector);
   return x.result();
 }
 
-const EXECUTORS = {
+// `size` is undefined for the instructions that have no operand size.
+type Executor = (x: Execution, operands: Operand[], size: Size) => void;
+
+const EXECUTORS: Record<string, Executor> = {
   MOV: (x, [dst, src]) => x.write(dst, x.read(src)),
 
   ...Object.fromEntries(
     Object.keys(ALU_MODES[DEFAULT_ALU_MODE].BINARY).map((mnemonic) => [
       mnemonic,
-      (x, [dst, src], size) => {
+      (x: Execution, [dst, src]: Operand[], size: Size) => {
         const a = x.read(dst);
         const b = x.read(src);
         const { result, flags } = x.alu.BINARY[mnemonic](size, a, b, x.flag('C'));
@@ -326,7 +380,7 @@ const EXECUTORS = {
   ...Object.fromEntries(
     Object.keys(ALU_MODES[DEFAULT_ALU_MODE].UNARY).map((mnemonic) => [
       mnemonic,
-      (x, [operand], size) => {
+      (x: Execution, [operand]: Operand[], size: Size) => {
         const a = x.read(operand);
         const { result, flags } = x.alu.UNARY[mnemonic](size, a);
         x.setFlags(flags);
@@ -350,26 +404,26 @@ const EXECUTORS = {
   },
 
   JMP: (x, [target]) => {
-    x.ip = target.target;
+    x.ip = (target as RelOperand).target;
   },
   ...Object.fromEntries(
     Object.entries(CONDITIONS).map(([mnemonic, condition]) => [
       mnemonic,
-      (x, [target]) => {
-        if (condition((name) => x.flag(name))) x.ip = target.target;
+      (x: Execution, [target]: Operand[]) => {
+        if (condition((name) => x.flag(name))) x.ip = (target as RelOperand).target;
       },
     ])
   ),
   CALL: (x, [target]) => {
     x.push(x.ip);
-    x.ip = target.target;
+    x.ip = (target as RelOperand).target;
   },
   RET: (x, [release]) => {
     x.ip = x.pop();
-    if (release) x.setReg('SP', x.regs.SP + release.value);
+    if (release) x.setReg('SP', x.regs.SP + (release as ImmOperand).value);
   },
 
-  INT: (x, [number]) => softwareInterrupt(x, number.value),
+  INT: (x, [number]) => softwareInterrupt(x, (number as ImmOperand).value),
   IRET: (x) => returnFromInterrupt(x),
   IN: (x, [dst, port], size) => {
     const address = port.type === 'imm' ? port.value : x.reg('DX');
@@ -399,7 +453,12 @@ export const IMPLEMENTED = Object.keys(EXECUTORS);
 
 // Executes one decoded instruction. IP must already point to the next one
 // (the machine increments it after decoding, as the real cycle does).
-export function execute(cpu, instruction, io = NO_IO, options = DEFAULT_OPTIONS) {
+export function execute(
+  cpu: Cpu,
+  instruction: Instruction,
+  io: CpuIO = NO_IO,
+  options: CpuOptions = DEFAULT_OPTIONS
+): CpuResult {
   const x = new Execution(cpu, instruction, io, options);
   const run = instruction.mnemonic && EXECUTORS[instruction.mnemonic];
   if (!instruction.mnemonic) {
@@ -414,12 +473,12 @@ export function execute(cpu, instruction, io = NO_IO, options = DEFAULT_OPTIONS)
       instruction.address
     );
   }
-  run(x, instruction.operands, instruction.size);
+  run(x, instruction.operands, instruction.size as Size);
   return x.result();
 }
 
 // Fetch, decode and execute one instruction.
-export function step(cpu, io = NO_IO, options = DEFAULT_OPTIONS) {
+export function step(cpu: Cpu, io: CpuIO = NO_IO, options: CpuOptions = DEFAULT_OPTIONS) {
   const instruction = decode(cpu.mem, cpu.ip);
   const advanced = { ...cpu, ip: (cpu.ip + instruction.length) & 0xffff };
   return { instruction, ...execute(advanced, instruction, io, options) };

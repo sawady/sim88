@@ -119,8 +119,8 @@ against. The setting **Options › ALU** (`aluMode` in the settings, `'msx88'` o
 | `NOT` | 8 bits: Z = P = 1, C O S A = 0; 16 bits: all six 0 | changes no flag (also what the MSX88 manual says) | `alu-not-flags`, `alu-logic` |
 | `PUSH SP` | pushes 0000h | pushes SP after the decrement (SP − 2); the 80286 and later push it before | `stack-push-sp`, `stack` |
 
-In code: `src/model/alu.js` exports both sets of operations (`ALU_MODES`), and
-`execute()` / `step()` in `src/model/cpu.js` take `{ aluMode }`; the machine
+In code: `src/model/alu.ts` exports both sets of operations (`ALU_MODES`), and
+`execute()` / `step()` in `src/model/cpu.ts` take `{ aluMode }`; the machine
 keeps the mode as a setting (stepping back does not undo it).
 
 ## By area

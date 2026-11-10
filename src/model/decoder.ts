@@ -15,32 +15,76 @@
 //   { type: 'rel', target }                     absolute target of a jump
 
 import { OPCODES, REG8, REG16, RM_BASES, hasModRM } from './isa';
+import type { Row } from './isa';
 import { asmHex, toSigned } from './format';
+import type { Size } from './alu';
 
-const byteAt = (mem, address) => mem[address & 0xffff];
+export interface RegOperand {
+  type: 'reg';
+  size: Size;
+  name: string;
+}
+export interface MemOperand {
+  type: 'mem';
+  size: Size;
+  base: string[];
+  disp: number;
+}
+export interface ImmOperand {
+  type: 'imm';
+  size: Size;
+  value: number;
+}
+export interface RelOperand {
+  type: 'rel';
+  target: number;
+}
+export type Operand = RegOperand | MemOperand | ImmOperand | RelOperand;
 
-const sizeOf = (code) => (code.endsWith('b') ? 8 : 16);
+export interface Instruction {
+  address: number;
+  length: number;
+  bytes: number[];
+  opcode: number;
+  mnemonic: string | null;
+  operands: Operand[];
+  size?: Size;
+  text: string;
+}
 
-const register = (size, index) => ({
+type Mem = ArrayLike<number>;
+interface ModRM {
+  mod: number;
+  reg: number;
+  rm: number;
+}
+
+const byteAt = (mem: Mem, address: number): number => mem[address & 0xffff];
+
+const sizeOf = (code: string): Size => (code.endsWith('b') ? 8 : 16);
+
+const register = (size: Size, index: number): RegOperand => ({
   type: 'reg',
   size,
   name: size === 8 ? REG8[index] : REG16[index],
 });
 
-export function decode(mem, address) {
+export function decode(mem: Mem, address: number): Instruction {
   let cursor = address;
   const next = () => byteAt(mem, cursor++);
   const nextWord = () => next() | (next() << 8);
 
   const opcode = next();
-  let entry = OPCODES[opcode];
-  let modrm = null;
+  const found = OPCODES[opcode];
+  let entry: Row | null = null;
+  let modrm: ModRM | null = null;
 
-  if (entry && entry.group) {
+  if (found && 'group' in found) {
     modrm = parseModRM(next());
-    entry = entry.group[modrm.reg];
-  } else if (entry && hasModRM(entry)) {
-    modrm = parseModRM(next());
+    entry = found.group[modrm.reg];
+  } else if (found) {
+    entry = found;
+    if (hasModRM(found)) modrm = parseModRM(next());
   }
 
   // The SX88 reaches memory only directly (mod 00, r/m 110) or through BX
@@ -60,7 +104,7 @@ export function decode(mem, address) {
   }
 
   // The displacement follows ModRM and comes before any immediate.
-  let memOperand = null;
+  let memOperand: { base: string[]; disp: number } | null = null;
   if (modrm && modrm.mod !== 3) {
     let disp = 0;
     let base = RM_BASES[modrm.rm];
@@ -75,16 +119,16 @@ export function decode(mem, address) {
     memOperand = { base, disp };
   }
 
-  const operands = entry.operands.map((code) => {
+  const operands = entry.operands.map((code): Operand => {
     switch (code) {
       case 'Eb':
       case 'Ew':
         return memOperand
           ? { type: 'mem', size: sizeOf(code), ...memOperand }
-          : register(sizeOf(code), modrm.rm);
+          : register(sizeOf(code), modrm!.rm);
       case 'Gb':
       case 'Gw':
-        return register(sizeOf(code), modrm.reg);
+        return register(sizeOf(code), modrm!.reg);
       case 'Zb':
       case 'Zw':
         return register(sizeOf(code), opcode & 7);
@@ -122,8 +166,8 @@ export function decode(mem, address) {
 
   // Operand size: from the first operand that has one (IN/OUT use the
   // accumulator, which is never the port).
-  const sized = operands.find((o) => o.type === 'reg' || o.type === 'mem');
-  const size = entry.mnemonic === 'OUT' ? operands[1].size : sized ? sized.size : undefined;
+  const sized = operands.find((o): o is RegOperand | MemOperand => o.type === 'reg' || o.type === 'mem');
+  const size = entry.mnemonic === 'OUT' ? (operands[1] as RegOperand).size : sized ? sized.size : undefined;
 
   return finish(mem, address, cursor - address, {
     opcode,
@@ -134,17 +178,22 @@ export function decode(mem, address) {
   });
 }
 
-function parseModRM(byte) {
+function parseModRM(byte: number): ModRM {
   return { mod: byte >> 6, reg: (byte >> 3) & 7, rm: byte & 7 };
 }
 
-function finish(mem, address, length, instruction) {
-  const bytes = [];
+function finish(
+  mem: Mem,
+  address: number,
+  length: number,
+  instruction: Omit<Instruction, 'address' | 'length' | 'bytes'>
+): Instruction {
+  const bytes: number[] = [];
   for (let i = 0; i < length; i++) bytes.push(byteAt(mem, address + i));
   return { address, length, bytes, ...instruction };
 }
 
-export function formatOperand(operand, { withSize = false } = {}) {
+export function formatOperand(operand: Operand, { withSize = false } = {}): string {
   switch (operand.type) {
     case 'reg':
       return operand.name;
@@ -171,7 +220,7 @@ export function formatOperand(operand, { withSize = false } = {}) {
   }
 }
 
-export function formatInstruction(mnemonic, operands) {
+export function formatInstruction(mnemonic: string, operands: Operand[]): string {
   // A memory operand needs its size spelled out when no register gives it away.
   const needsSize = !operands.some((o) => o.type === 'reg');
   const text = operands.map((o) => formatOperand(o, { withSize: needsSize })).join(', ');
