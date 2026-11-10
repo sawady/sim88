@@ -187,6 +187,8 @@ def build_image(programs, work):
     batch = ['@echo off', 'cd \\M']
     units = [(p['dos'], p['source']) for p in programs]
     units += [(f'CAL{i}', calibration_source(chars)) for i, chars in enumerate(CALIBRATION)]
+    if any(p['meta'].get('paper') == 'yes' for p in programs):
+        units.append(('CALP', paper_calibration_source()))
     for dos, source in units:
         for ext, content in (
             ('ASM', to_crlf(source)),
@@ -242,6 +244,8 @@ class Machine:
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         self.m = Monitor(sock)
         self.glyphs = {}
+        self.paper_glyphs = {}
+        self.paper_same_glyph = {}
         self.ambiguous = {}
         self.idle_bar = None
         self.memory_base = None
@@ -357,6 +361,27 @@ class Machine:
 
     def window(self):
         return screen.read_window(self.shot(), self.glyphs)
+
+    def press_view(self, name):
+        """A key that changes the view (F9, F5) and waits for it to be drawn."""
+        before = self.shot().pixels
+        self.m.key(name, 200)
+        if not self.wait(lambda: self.shot().pixels != before, 6, interval=0.1):
+            raise RuntimeError(f'{name} did not change the screen')
+        if not self.settle(10):
+            raise RuntimeError(f'MSX88 busy after {name}')
+
+    def paper_view(self):
+        """A screenshot of the paper: F9 shows the peripherals, F5 the paper."""
+        self.press_view('f9')
+        self.press_view('f5')
+        image = self.shot()
+        self.press_view('f5')
+        self.press_view('f9')
+        return image
+
+    def paper(self):
+        return screen.read_paper(self.paper_view(), self.paper_glyphs)
 
     # -- state
     def locate_memory(self, ram, expected):
@@ -500,6 +525,56 @@ def calibrate_font(machine):
     return glyphs
 
 
+# The paper has a font of its own. Its glyphs are learned the same way: a
+# program prints these characters (they wrap at 20 columns), at about 2.5
+# seconds each. The programs that read the paper only use these characters.
+PAPER_CALIBRATION = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+PAPER_CALIBRATION_SECONDS = 110
+
+
+def paper_calibration_source():
+    return (
+        'ORG 1000H\r\n'
+        f'T DB "{PAPER_CALIBRATION}"\r\n'
+        'ORG 2000H\r\n'
+        'MOV BX, OFFSET T\r\n'
+        f'MOV CL, {len(PAPER_CALIBRATION)}\r\n'
+        'L: IN AL, 41H\r\n'
+        'AND AL, 1\r\n'
+        'JNZ L\r\n'
+        'MOV AL, [BX]\r\n'
+        'OUT 40H, AL\r\n'
+        'INC BX\r\n'
+        'DEC CL\r\n'
+        'JNZ L\r\n'
+        'HLT\r\n'
+        'END\r\n'
+    )
+
+
+def calibrate_paper(machine):
+    machine.start_msx88()
+    machine.command('C 2')
+    machine.command('L CALP')
+    machine.command('+')
+    machine.command('B')
+    machine.go(PAPER_CALIBRATION_SECONDS)
+    machine.m.key('esc', 100)
+    machine.settle(15)
+    image = machine.paper_view()
+    shapes = [shape for line in range(screen.PAPER_LINES) for _, _, shape in screen.paper_glyphs(image, line)]
+    if len(shapes) != len(PAPER_CALIBRATION):
+        raise RuntimeError(f'paper calibration: {len(shapes)} glyphs for {len(PAPER_CALIBRATION)} characters')
+    glyphs = {}
+    for ch, shape in zip(PAPER_CALIBRATION, shapes):
+        if shape in glyphs:
+            machine.paper_same_glyph[ch] = glyphs[shape]
+            continue
+        glyphs[shape] = ch
+    machine.paper_glyphs = glyphs
+    machine.quit_msx88()
+
+
 VECTORS = bytes.fromhex('0200cf00' '00000000' '00000000' '0e00cf00' '00000000' '00000000' '1a00cf00' '1e00cf00')
 
 
@@ -528,13 +603,16 @@ def run_program(machine, program):
     if any('Error en la ejecuci' in line for line in window):
         status = 'error'
     registers, flags, memory = machine.state()
-    return {
+    result = {
         'status': status,
         'window': window,
         'registers': {k: f'{v:04X}' for k, v in sorted(registers.items())},
         'flags': f'{flags:04X}',
         'memory': diff_runs(before, memory),
     }
+    if meta.get('paper') == 'yes':
+        result['paper'] = machine.paper()
+    return result
 
 
 def main():
@@ -590,6 +668,9 @@ def main():
         calibrate_font(machine)
         machine.quit_msx88()
         log(f'font: {len(machine.glyphs)} glyphs')
+        if any(p['meta'].get('paper') == 'yes' for p in programs):
+            calibrate_paper(machine)
+            log(f'paper font: {len(machine.paper_glyphs)} glyphs')
 
         for program in programs:
             if program['meta'].get('run', 'yes') == 'no':
@@ -622,7 +703,8 @@ def main():
     names = {p['dos'] for p in programs} | {'INICIAL'}
     out_files = extract(image, work, names)
     write_results(programs, results, out_files, args.out, initial)
-    json.dump({'same_glyph': machine.ambiguous}, open(os.path.join(args.out, '_font.json'), 'w'), indent=1)
+    json.dump({'same_glyph': machine.ambiguous, 'paper_same_glyph': machine.paper_same_glyph},
+              open(os.path.join(args.out, '_font.json'), 'w'), indent=1)
 
 
 def write_results(programs, results, files, out, initial):

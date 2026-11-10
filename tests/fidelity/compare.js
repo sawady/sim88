@@ -6,7 +6,8 @@
 //   assembler: errors, warnings, listing (address, bytes, line) from the .LST
 //   run:       status ('stopped' | 'timeout' | 'error'), registers, flags,
 //              memory (runs of bytes that differ from the initial memory) and
-//              the command window text after `G`.
+//              the command window text after `G`; `paper`, the lines of the
+//              printer's paper, for the programs with `;; paper: yes`.
 //
 // compareProgram() returns the list of differences (empty when SIM88 matches).
 
@@ -23,6 +24,7 @@ import {
   timerPulse,
   toggleSwitch,
 } from '../../src/model/machine';
+import { printerTick } from '../../src/model/devices/printer';
 import { MACHINE_STATES } from '../../src/model/constants';
 
 export const FIDELITY_DIR = path.resolve(__dirname);
@@ -216,6 +218,19 @@ export function consoleLines(output) {
     .map(normalizeGlyphs);
 }
 
+// The lines MSX88's paper window shows, as SIM88 would show them: the last
+// ones (tests/fidelity: printer-lines), once the printer has emptied its
+// buffer, as MSX88's has when the oracle reads the paper.
+export const PAPER_VISIBLE_LINES = 7;
+
+export function paperLines(devices) {
+  let d = devices;
+  while (d.printer.buffer.length) d = printerTick(d);
+  const lines = d.printer.paper.split('\n').map((line) => line.trimEnd());
+  while (lines.length && lines[lines.length - 1] === '') lines.pop();
+  return lines.slice(-PAPER_VISIBLE_LINES);
+}
+
 export function compareRun(program, meta, golden, initial) {
   const diffs = [];
   const expected = golden.run;
@@ -259,6 +274,13 @@ export function compareRun(program, meta, golden, initial) {
   const want = windowOutput(expected.window);
   if (JSON.stringify(out) !== JSON.stringify(want)) {
     diffs.push(`screen: MSX88 ${JSON.stringify(want)}, SIM88 ${JSON.stringify(out)}`);
+  }
+
+  if (expected.paper) {
+    const paper = paperLines(machine.devices);
+    if (JSON.stringify(paper) !== JSON.stringify(expected.paper)) {
+      diffs.push(`paper: MSX88 ${JSON.stringify(expected.paper)}, SIM88 ${JSON.stringify(paper)}`);
+    }
   }
   return diffs;
 }

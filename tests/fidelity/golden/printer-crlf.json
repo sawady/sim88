@@ -1,0 +1,201 @@
+{
+ "program": "printer-crlf.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "41",
+     "42",
+     "0D",
+     "43",
+     "44",
+     "0A"
+    ],
+    "line": 6
+   },
+   {
+    "address": "1006",
+    "bytes": [
+     "45",
+     "46",
+     "0D",
+     "0A",
+     "47",
+     "48"
+    ],
+    "line": 6
+   },
+   {
+    "address": "100C",
+    "bytes": [
+     "41"
+    ],
+    "line": 7
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "E4",
+     "41"
+    ],
+    "line": 9
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "80",
+     "E0",
+     "7F"
+    ],
+    "line": 10
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "E6",
+     "41"
+    ],
+    "line": 11
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "BB",
+     "00",
+     "10"
+    ],
+    "line": 12
+   },
+   {
+    "address": "200A",
+    "bytes": [
+     "B1",
+     "0C"
+    ],
+    "line": 13
+   },
+   {
+    "address": "200C",
+    "bytes": [
+     "E4",
+     "41"
+    ],
+    "line": 14
+   },
+   {
+    "address": "200E",
+    "bytes": [
+     "80",
+     "E0",
+     "01"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2011",
+    "bytes": [
+     "75",
+     "F9"
+    ],
+    "line": 16
+   },
+   {
+    "address": "2013",
+    "bytes": [
+     "8A",
+     "07"
+    ],
+    "line": 17
+   },
+   {
+    "address": "2015",
+    "bytes": [
+     "E6",
+     "40"
+    ],
+    "line": 18
+   },
+   {
+    "address": "2017",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 19
+   },
+   {
+    "address": "2019",
+    "bytes": [
+     "FE",
+     "C9"
+    ],
+    "line": 20
+   },
+   {
+    "address": "201B",
+    "bytes": [
+     "75",
+     "EF"
+    ],
+    "line": 21
+   },
+   {
+    "address": "201D",
+    "bytes": [
+     "F4"
+    ],
+    "line": 22
+   }
+  ],
+  "symbols": [
+   {
+    "name": "MSG",
+    "type": "Byte",
+    "value": "1000"
+   },
+   {
+    "name": "FIN",
+    "type": "Byte",
+    "value": "100C"
+   },
+   {
+    "name": "POLL",
+    "type": "Label",
+    "value": "200C"
+   }
+  ]
+ },
+ "run": {
+  "status": "timeout",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0048",
+   "BX": "100C",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "201E",
+   "SP": "8000"
+  },
+  "flags": "0244",
+  "memory": {
+   "1000": "41420D43440A45460D0A474841",
+   "2000": "E44180E07FE641BB0010B10CE44180E00175F98A07E640FFC3FEC975EFF4",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  },
+  "paper": [
+   "ABCD",
+   "EF",
+   "GH"
+  ]
+ }
+}

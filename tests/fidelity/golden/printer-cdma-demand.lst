@@ -1,0 +1,63 @@
+
+								p gina: 1 
+
+ Listado Fuente: printer-cdma-demand.lst
+ Programa Fuente en: printer-cdma-demand.asm
+ Fecha: -
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; config: 3
+			      2	;; paper: yes
+			      3	;; timeout: 26
+			      4	; The CDMA sends a block of memory, on demand, t
+				o the printer through the HAND (DREQ is
+			      5	; the HAND's INT line); TC asks for INT3 at the 
+				end.
+			      6	        ORG 80
+ 0050 00 30		      7	        DW FINDMA
+			      8	        ORG 1000H
+ 1000 41 20 50 45 44 49	      9	MSG     DB "A PEDIDO"
+ 1006 44 4F
+ 1008 41		     10	FIN     DB ?
+			     11	        ORG 3000H
+ 3000 B2 01		     12	FINDMA: MOV DL, 1
+ 3002 B0 20		     13	        MOV AL, 20H
+ 3004 E6 20		     14	        OUT 20H, AL
+ 3006 CF		     15	        IRET
+			     16	        ORG 2000H
+ 2000 FA		     17	        CLI
+ 2001 B0 F7		     18	        MOV AL, 11110111B
+ 2003 E6 21		     19	        OUT 21H, AL
+ 2005 B0 14		     20	        MOV AL, 20
+ 2007 E6 27		     21	        OUT 27H, AL
+ 2009 B8 00 10		     22	        MOV AX, OFFSET MSG
+ 200C E6 50		     23	        OUT 50H, AL
+ 200E 8A C4		     24	        MOV AL, AH
+ 2010 E6 51		     25	        OUT 51H, AL
+ 2012 B0 08		     26	        MOV AL, OFFSET FIN - OFFSET MSG
+ 2014 E6 52		     27	        OUT 52H, AL
+ 2016 B0 00		     28	        MOV AL, 0
+ 2018 E6 53		     29	        OUT 53H, AL
+ 201A B0 04		     30	        MOV AL, 00000100B
+ 201C E6 56		     31	        OUT 56H, AL
+ 201E E4 41		     32	        IN AL, 41H
+ 2020 80 C8 80		     33	        OR AL, 80H
+ 2023 E6 41		     34	        OUT 41H, AL
+ 2025 B2 00		     35	        MOV DL, 0
+ 2027 FB		     36	        STI
+ 2028 E6 57		     37	        OUT 57H, AL
+ 202A 80 FA 01		     38	ESPERA: CMP DL, 1
+ 202D 75 FB		     39	        JNZ ESPERA
+ 202F F4		     40	        HLT
+			     41	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ MSG     	Byte		1000h
+ FIN     	Byte		1008h
+ FINDMA  	Label		3000h
+ ESPERA  	Label		202Ah

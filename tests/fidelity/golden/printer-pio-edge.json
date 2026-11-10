@@ -1,0 +1,164 @@
+{
+ "program": "printer-pio-edge.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "2000",
+    "bytes": [
+     "B0",
+     "FD"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "E6",
+     "32"
+    ],
+    "line": 9
+   },
+   {
+    "address": "2004",
+    "bytes": [
+     "B0",
+     "00"
+    ],
+    "line": 10
+   },
+   {
+    "address": "2006",
+    "bytes": [
+     "E6",
+     "33"
+    ],
+    "line": 11
+   },
+   {
+    "address": "2008",
+    "bytes": [
+     "E6",
+     "30"
+    ],
+    "line": 12
+   },
+   {
+    "address": "200A",
+    "bytes": [
+     "B0",
+     "41"
+    ],
+    "line": 13
+   },
+   {
+    "address": "200C",
+    "bytes": [
+     "E6",
+     "31"
+    ],
+    "line": 14
+   },
+   {
+    "address": "200E",
+    "bytes": [
+     "B0",
+     "02"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2010",
+    "bytes": [
+     "E6",
+     "30"
+    ],
+    "line": 16
+   },
+   {
+    "address": "2012",
+    "bytes": [
+     "B0",
+     "42"
+    ],
+    "line": 17
+   },
+   {
+    "address": "2014",
+    "bytes": [
+     "E6",
+     "31"
+    ],
+    "line": 18
+   },
+   {
+    "address": "2016",
+    "bytes": [
+     "B0",
+     "00"
+    ],
+    "line": 19
+   },
+   {
+    "address": "2018",
+    "bytes": [
+     "E6",
+     "30"
+    ],
+    "line": 20
+   },
+   {
+    "address": "201A",
+    "bytes": [
+     "B0",
+     "43"
+    ],
+    "line": 21
+   },
+   {
+    "address": "201C",
+    "bytes": [
+     "E6",
+     "31"
+    ],
+    "line": 22
+   },
+   {
+    "address": "201E",
+    "bytes": [
+     "F4"
+    ],
+    "line": 23
+   }
+  ],
+  "symbols": []
+ },
+ "run": {
+  "status": "timeout",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0043",
+   "BX": "0000",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "201F",
+   "SP": "8000"
+  },
+  "flags": "0200",
+  "memory": {
+   "2000": "B0FDE632B000E633E630B041E631B002E630B042E631B000E630B043E631F4",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  },
+  "paper": [
+   "A"
+  ]
+ }
+}

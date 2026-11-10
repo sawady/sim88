@@ -1,0 +1,40 @@
+
+								p gina: 1 
+
+ Listado Fuente: printer-pio-edge.lst
+ Programa Fuente en: printer-pio-edge.asm
+ Fecha: -
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; config: 1
+			      2	;; paper: yes
+			      3	;; timeout: 6
+			      4	; Which edge of STROBE takes the character: PB c
+				hanges while STROBE is 1, and
+			      5	; again after it falls. The paper shows "A" for 
+				the rising edge, "B" for the
+			      6	; falling one.
+			      7	        ORG 2000H
+ 2000 B0 FD		      8	        MOV AL, 11111101B
+ 2002 E6 32		      9	        OUT 32H, AL
+ 2004 B0 00		     10	        MOV AL, 0
+ 2006 E6 33		     11	        OUT 33H, AL
+ 2008 E6 30		     12	        OUT 30H, AL
+ 200A B0 41		     13	        MOV AL, 41H
+ 200C E6 31		     14	        OUT 31H, AL
+ 200E B0 02		     15	        MOV AL, 2
+ 2010 E6 30		     16	        OUT 30H, AL
+ 2012 B0 42		     17	        MOV AL, 42H
+ 2014 E6 31		     18	        OUT 31H, AL
+ 2016 B0 00		     19	        MOV AL, 0
+ 2018 E6 30		     20	        OUT 30H, AL
+ 201A B0 43		     21	        MOV AL, 43H
+ 201C E6 31		     22	        OUT 31H, AL
+ 201E F4		     23	        HLT
+			     24	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:

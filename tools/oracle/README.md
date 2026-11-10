@@ -75,6 +75,7 @@ Comment lines starting with `;;` at the top of a program:
 | `;; keys: 1.5:shift-a 2:f10` | while it runs: wait (seconds), press (QEMU key names) |
 | `;; timeout: 8` | seconds before stopping it with ESC (default 15) |
 | `;; sim88: f10@2000 pulse/500` | the same events for SIM88, in instructions (see `tests/fidelity/compare.js`) |
+| `;; paper: yes` | read the printer's paper after the run (F9, F5) into `run.paper`; only `A`-`Z`, `0`-`9` and spaces can be read |
 | `;; ignore: IP` | registers not compared (where a never ending loop was stopped) |
 | `;; compare: no` | an experiment: it runs on MSX88 but is not compared (`exp-*`, timing) |
 
@@ -89,6 +90,10 @@ Comment lines starting with `;;` at the top of a program:
   `error`: MSX88 reported an execution error), the registers, the FLAGS word,
   the memory that changed (runs of hex bytes, relative to
   `_initial-memory.json`) and the 5 lines of the command window.
+
+`run.paper`, when the program asks for it, has the lines of the paper. The
+paper has its own font, so a calibration program prints the characters the
+programs use (it adds about two minutes to a run with any such program).
 
 `_font.json` lists characters that share a glyph in MSX88's font (`O` and
 `0`): the screen text cannot tell them apart.

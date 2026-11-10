@@ -13,6 +13,19 @@ LINE_PITCH = 10
 WINDOW_LINES = 5
 WINDOW_COLS = 60
 
+# The printer's paper (F9 shows the peripherals, F5 the paper): white text in
+# a proportional stroked font, on a dithered background. Lines are 14 pixels
+# apart; after a new line past the seventh, the paper scrolls and shows the
+# last seven (tests/fidelity: printer-lines).
+PAPER_X = 444
+PAPER_RIGHT = 612
+PAPER_Y = 289
+PAPER_PITCH = 14
+PAPER_LINES = 8
+PAPER_CELL_ROWS = 9
+PAPER_SPACE = 8  # about the width of a space
+WHITE = b'\xff\xff\xff'
+
 
 class Image:
     """A PPM (P6) image as written by QEMU's `screendump`."""
@@ -73,6 +86,49 @@ def read_line(image, glyphs, line, cols=WINDOW_COLS, x=WINDOW_X, y=None):
         else:
             out.append(glyphs.get(bitmap, '�'))
     return ''.join(out).rstrip()
+
+
+def paper_glyphs(image, line):
+    """The glyphs of a line of the paper, left to right, as (x, width, columns):
+    a glyph is a run of columns with white pixels (the columns are bitmasks of
+    the rows, so a glyph is its shape, wherever it is)."""
+    y0 = PAPER_Y + line * PAPER_PITCH
+    columns = []
+    for x in range(PAPER_X - 2, PAPER_RIGHT):
+        mask = 0
+        for dy in range(PAPER_CELL_ROWS):
+            if image.pixel(x, y0 + dy) == WHITE:
+                mask |= 1 << dy
+        columns.append((x, mask))
+    glyphs = []
+    run = []
+    for x, mask in columns + [(PAPER_RIGHT, 0)]:
+        if mask:
+            run.append((x, mask))
+        elif run:
+            glyphs.append((run[0][0], len(run), tuple(m for _, m in run)))
+            run = []
+    return glyphs
+
+
+def read_paper_line(image, glyphs, line):
+    text = ''
+    next_x = PAPER_X
+    for x, width, shape in paper_glyphs(image, line):
+        gap = x - next_x
+        if gap >= PAPER_SPACE - 2:
+            text += ' ' * max(1, round(gap / PAPER_SPACE))
+        text += glyphs.get(shape, '\ufffd')
+        next_x = x + width + 2
+    return text
+
+
+def read_paper(image, glyphs):
+    """The lines of the paper, without the blank ones at the end."""
+    lines = [read_paper_line(image, glyphs, line) for line in range(PAPER_LINES)]
+    while lines and not lines[-1]:
+        lines.pop()
+    return lines
 
 
 def read_window(image, glyphs):

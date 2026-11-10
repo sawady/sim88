@@ -1,0 +1,75 @@
+
+								p gina: 1 
+
+ Listado Fuente: printer-hand-int.lst
+ Programa Fuente en: printer-hand-int.asm
+ Fecha: -
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; config: 2
+			      2	;; paper: yes
+			      3	;; timeout: 30
+			      4	; The printer through the HAND, by interrupts: t
+				he HAND asks for INT2 while
+			      5	; the printer can take a character (level trigge
+				red: the next request comes
+			      6	; after the EOI), and the program stops asking a
+				t the last character.
+			      7	        ORG 40
+ 0028 00 30		      8	        DW RUT
+			      9	        ORG 1000H
+ 1000 48 4F 4C 41 20 4D	     10	MSG     DB "HOLA MUNDO"
+ 1006 55 4E 44 4F
+ 100A 48		     11	FIN     DB ?
+			     12	        ORG 3000H
+ 3000 8A 07		     13	RUT:    MOV AL, [BX]
+ 3002 E6 40		     14	        OUT 40H, AL
+ 3004 FF C3		     15	        INC BX
+ 3006 81 FB 0A 10	     16	        CMP BX, OFFSET FIN
+ 300A 75 09		     17	        JNZ SIGUE
+ 300C E4 41		     18	        IN AL, 41H
+ 300E 80 E0 7F		     19	        AND AL, 7FH
+ 3011 E6 41		     20	        OUT 41H, AL
+ 3013 B1 01		     21	        MOV CL, 1
+ 3015 B0 20		     22	SIGUE:  MOV AL, 20H
+ 3017 E6 20		     23	        OUT 20H, AL
+ 3019 CF		     24	        IRET
+			     25	        ORG 2000H
+ 2000 FA		     26	        CLI
+ 2001 B0 FB		     27	        MOV AL, 11111011B
+ 2003 E6 21		     28	        OUT 21H, AL
+ 2005 B0 0A		     29	        MOV AL, 10
+ 2007 E6 26		     30	        OUT 26H, AL
+ 2009 BB 00 10		     31	        MOV BX, OFFSET MSG
+ 200C B1 00		     32	        MOV CL, 0
+ 200E E4 41		     33	        IN AL, 41H
+ 2010 80 C8 80		     34	        OR AL, 80H
+ 2013 E6 41		     35	        OUT 41H, AL
+ 2015 FB		     36	        STI
+ 2016 80 F9 01		     37	ESPERA: CMP CL, 1
+ 2019 75 FB		     38	        JNZ ESPERA
+			     39	        ; what the interrupts left in the stack 
+				depends on when they came
+ 201B BB FE 7F		     40	        MOV BX, 7FFEH
+ 201E C7 07 00 00	     41	        MOV WORD PTR [BX], 0
+ 2022 BB FC 7F		     42	        MOV BX, 7FFCH
+ 2025 C7 07 00 00	     43	        MOV WORD PTR [BX], 0
+ 2029 F4		     44	        HLT
+			     45	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+
+
+								p gina: 2 
+
+
+ MSG     	Byte		1000h
+ FIN     	Byte		100Ah
+ RUT     	Label		3000h
+ SIGUE   	Label		3015h
+ ESPERA  	Label		2016h

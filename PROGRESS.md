@@ -200,9 +200,12 @@ Taken by Federico Sawady on 2026-11-02.
   INT 0/3/6/7, PIO, PIC, timer, HAND, CDMA, assembler errors); their golden results are in
   `tests/fidelity/golden` and `src/model/__tests__/fidelity.test.js` compares SIM88 with them.
   Report: [docs/fidelity.md](docs/fidelity.md) (63 of 65 compared programs match).
-- [ ] **48. Read the printer's paper in the oracle** · Deps: 47
-  Compare what MSX88 prints (F5 shows the paper), the HAND by interrupts and the CDMA with the
-  printer; the PIO printer (configuration 1).
+- [x] **48. Read the printer's paper in the oracle** · Deps: 47
+  The oracle reads the paper (F9, F5; `;; paper: yes` in a program) with a font learned at run
+  time, and `tests/fidelity/golden` keeps it as `run.paper`. The new programs check the HAND by
+  interrupts, the printer through the PIO and the STROBE edge, the CDMA to the printer, the
+  20 columns, CR/LF and the scrolling of the paper. `printer-crlf` and `printer-cdma-block` differ:
+  two real differences, listed as pending (open questions 20 and 21); the model was not changed.
 - [x] **49. Setting "ALU: as MSX88 / as 8086"** · Deps: 47
   The four places where MSX88 differs from the 8086 (INC/DEC and C, ADC/SBB with C = 1, NOT and
   the flags, `PUSH SP`) follow the setting `aluMode`: `msx88` (default) or `8086`. `alu.js`
@@ -256,16 +259,23 @@ Resolved with the oracle on 2026-11-02:
 17. **INT 7** writes one line per call, shows CR and LF as symbols and wraps at 60 columns
     (`int7-*`).
 
+12. **HAND interrupts** are level triggered: the request stays while bit 7 is set and the printer
+    is not busy, so after the EOI the next character is requested (`printer-hand-int`).
+15. **Configuration 1 printer**: STROBE is PA1 and a character is taken on its rising edge
+    (`printer-pio`, `printer-pio-edge`).
+
 Still open:
 
-12. **HAND interrupts** are level triggered: the request stays while bit 7 is set and the printer
-    is not busy (so after the EOI the next character is requested). Not checked yet (task 48).
-15. **Configuration 1 printer**: STROBE is PA1 and a character is taken on its rising edge. Not
-    checked yet (task 48).
 18. **Printer and timer speed**: MSX88 runs them on the wall clock; SIM88 keeps them on the
     settings of Options › Frequencies (the printer by instructions). `hand-printer-polling`
     differs because of that.
 19. **8086 short forms and BP/SI/DI written as bytes**: not known whether MSX88 runs them.
+20. **CR on the printer**: MSX88 ignores it and only LF starts a new line; SIM88 treats CR, LF and
+    CR LF as one new line (`printer-crlf`). To decide: following MSX88 is a one line change, but the
+    model has been kept as it is until Federico says so.
+21. **CDMA in block mode to the printer**: on MSX88 only the first 4 characters reach the paper
+    (the buffer), so the rest is lost; SIM88 waits for DREQ and prints them all
+    (`printer-cdma-block`). On demand, both print everything (`printer-cdma-demand`). To decide.
 
 ## Log
 

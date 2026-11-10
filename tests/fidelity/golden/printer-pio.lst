@@ -1,0 +1,54 @@
+
+								p gina: 1 
+
+ Listado Fuente: printer-pio.lst
+ Programa Fuente en: printer-pio.asm
+ Fecha: -
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; config: 1
+			      2	;; paper: yes
+			      3	;; timeout: 36
+			      4	;; ignore: AX
+			      5	; The printer through the PIO: PA0 is BUSY, PA1 
+				STROBE, PB the data.
+			      6	        ORG 1000H
+ 1000 41 52 51 55 49 54	      7	MSG     DB "ARQUITECTURA"
+ 1006 45 43 54 55 52 41
+ 100C 41		      8	FIN     DB ?
+			      9	        ORG 2000H
+ 2000 B0 FD		     10	        MOV AL, 11111101B
+ 2002 E6 32		     11	        OUT 32H, AL
+ 2004 B0 00		     12	        MOV AL, 0
+ 2006 E6 33		     13	        OUT 33H, AL
+ 2008 E4 30		     14	        IN AL, 30H
+ 200A 80 E0 FD		     15	        AND AL, 11111101B
+ 200D E6 30		     16	        OUT 30H, AL
+ 200F BB 00 10		     17	        MOV BX, OFFSET MSG
+ 2012 B1 0C		     18	        MOV CL, OFFSET FIN - OFFSET MSG
+ 2014 E4 30		     19	POLL:   IN AL, 30H
+ 2016 80 E0 01		     20	        AND AL, 1
+ 2019 75 F9		     21	        JNZ POLL
+ 201B 8A 07		     22	        MOV AL, [BX]
+ 201D E6 31		     23	        OUT 31H, AL
+ 201F E4 30		     24	        IN AL, 30H
+ 2021 80 C8 02		     25	        OR AL, 00000010B
+ 2024 E6 30		     26	        OUT 30H, AL
+ 2026 E4 30		     27	        IN AL, 30H
+ 2028 80 E0 FD		     28	        AND AL, 11111101B
+ 202B E6 30		     29	        OUT 30H, AL
+ 202D FF C3		     30	        INC BX
+ 202F FE C9		     31	        DEC CL
+ 2031 75 E1		     32	        JNZ POLL
+ 2033 F4		     33	        HLT
+			     34	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ MSG     	Byte		1000h
+ FIN     	Byte		100Ch
+ POLL    	Label		2014h

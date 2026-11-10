@@ -1,0 +1,47 @@
+
+								p gina: 1 
+
+ Listado Fuente: printer-lines.lst
+ Programa Fuente en: printer-lines.asm
+ Fecha: -
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; config: 2
+			      2	;; paper: yes
+			      3	;; timeout: 60
+			      4	; Ten lines: more than the 8 the paper window sh
+				ows.
+			      5	        ORG 1000H
+ 1000 31 0A 32 0A 33 0A	      6	MSG     DB "1", 10, "2", 10, "3", 10, "4", 10, "
+				5", 10
+ 1006 34 0A 35 0A
+ 100A 36 0A 37 0A 38 0A	      7	        DB "6", 10, "7", 10, "8", 10, "9", 10, "
+				A"
+ 1010 39 0A 41
+ 1013 36		      8	FIN     DB ?
+			      9	        ORG 2000H
+ 2000 E4 41		     10	        IN AL, 41H
+ 2002 80 E0 7F		     11	        AND AL, 7FH
+ 2005 E6 41		     12	        OUT 41H, AL
+ 2007 BB 00 10		     13	        MOV BX, OFFSET MSG
+ 200A B1 13		     14	        MOV CL, OFFSET FIN - OFFSET MSG
+ 200C E4 41		     15	POLL:   IN AL, 41H
+ 200E 80 E0 01		     16	        AND AL, 1
+ 2011 75 F9		     17	        JNZ POLL
+ 2013 8A 07		     18	        MOV AL, [BX]
+ 2015 E6 40		     19	        OUT 40H, AL
+ 2017 FF C3		     20	        INC BX
+ 2019 FE C9		     21	        DEC CL
+ 201B 75 EF		     22	        JNZ POLL
+ 201D F4		     23	        HLT
+			     24	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ MSG     	Byte		1000h
+ FIN     	Byte		1013h
+ POLL    	Label		200Ch

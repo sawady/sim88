@@ -1,0 +1,320 @@
+{
+ "program": "printer-cdma-demand.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "0050",
+    "bytes": [
+     "00",
+     "30"
+    ],
+    "line": 7
+   },
+   {
+    "address": "1000",
+    "bytes": [
+     "41",
+     "20",
+     "50",
+     "45",
+     "44",
+     "49"
+    ],
+    "line": 9
+   },
+   {
+    "address": "1006",
+    "bytes": [
+     "44",
+     "4F"
+    ],
+    "line": 9
+   },
+   {
+    "address": "1008",
+    "bytes": [
+     "41"
+    ],
+    "line": 10
+   },
+   {
+    "address": "3000",
+    "bytes": [
+     "B2",
+     "01"
+    ],
+    "line": 12
+   },
+   {
+    "address": "3002",
+    "bytes": [
+     "B0",
+     "20"
+    ],
+    "line": 13
+   },
+   {
+    "address": "3004",
+    "bytes": [
+     "E6",
+     "20"
+    ],
+    "line": 14
+   },
+   {
+    "address": "3006",
+    "bytes": [
+     "CF"
+    ],
+    "line": 15
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "FA"
+    ],
+    "line": 17
+   },
+   {
+    "address": "2001",
+    "bytes": [
+     "B0",
+     "F7"
+    ],
+    "line": 18
+   },
+   {
+    "address": "2003",
+    "bytes": [
+     "E6",
+     "21"
+    ],
+    "line": 19
+   },
+   {
+    "address": "2005",
+    "bytes": [
+     "B0",
+     "14"
+    ],
+    "line": 20
+   },
+   {
+    "address": "2007",
+    "bytes": [
+     "E6",
+     "27"
+    ],
+    "line": 21
+   },
+   {
+    "address": "2009",
+    "bytes": [
+     "B8",
+     "00",
+     "10"
+    ],
+    "line": 22
+   },
+   {
+    "address": "200C",
+    "bytes": [
+     "E6",
+     "50"
+    ],
+    "line": 23
+   },
+   {
+    "address": "200E",
+    "bytes": [
+     "8A",
+     "C4"
+    ],
+    "line": 24
+   },
+   {
+    "address": "2010",
+    "bytes": [
+     "E6",
+     "51"
+    ],
+    "line": 25
+   },
+   {
+    "address": "2012",
+    "bytes": [
+     "B0",
+     "08"
+    ],
+    "line": 26
+   },
+   {
+    "address": "2014",
+    "bytes": [
+     "E6",
+     "52"
+    ],
+    "line": 27
+   },
+   {
+    "address": "2016",
+    "bytes": [
+     "B0",
+     "00"
+    ],
+    "line": 28
+   },
+   {
+    "address": "2018",
+    "bytes": [
+     "E6",
+     "53"
+    ],
+    "line": 29
+   },
+   {
+    "address": "201A",
+    "bytes": [
+     "B0",
+     "04"
+    ],
+    "line": 30
+   },
+   {
+    "address": "201C",
+    "bytes": [
+     "E6",
+     "56"
+    ],
+    "line": 31
+   },
+   {
+    "address": "201E",
+    "bytes": [
+     "E4",
+     "41"
+    ],
+    "line": 32
+   },
+   {
+    "address": "2020",
+    "bytes": [
+     "80",
+     "C8",
+     "80"
+    ],
+    "line": 33
+   },
+   {
+    "address": "2023",
+    "bytes": [
+     "E6",
+     "41"
+    ],
+    "line": 34
+   },
+   {
+    "address": "2025",
+    "bytes": [
+     "B2",
+     "00"
+    ],
+    "line": 35
+   },
+   {
+    "address": "2027",
+    "bytes": [
+     "FB"
+    ],
+    "line": 36
+   },
+   {
+    "address": "2028",
+    "bytes": [
+     "E6",
+     "57"
+    ],
+    "line": 37
+   },
+   {
+    "address": "202A",
+    "bytes": [
+     "80",
+     "FA",
+     "01"
+    ],
+    "line": 38
+   },
+   {
+    "address": "202D",
+    "bytes": [
+     "75",
+     "FB"
+    ],
+    "line": 39
+   },
+   {
+    "address": "202F",
+    "bytes": [
+     "F4"
+    ],
+    "line": 40
+   }
+  ],
+  "symbols": [
+   {
+    "name": "MSG",
+    "type": "Byte",
+    "value": "1000"
+   },
+   {
+    "name": "FIN",
+    "type": "Byte",
+    "value": "1008"
+   },
+   {
+    "name": "FINDMA",
+    "type": "Label",
+    "value": "3000"
+   },
+   {
+    "name": "ESPERA",
+    "type": "Label",
+    "value": "202A"
+   }
+  ]
+ },
+ "run": {
+  "status": "timeout",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "1020",
+   "BX": "0000",
+   "CX": "0000",
+   "DX": "0001",
+   "IP": "2030",
+   "SP": "8000"
+  },
+  "flags": "0244",
+  "memory": {
+   "0051": "30",
+   "1000": "412050454449444F41",
+   "2000": "FAB0F7E621B014E627B80010E6508AC4E651B008E652B000E653B004E656E44180C880E641B200FBE65780FA0175FBF4",
+   "3000": "B201B020E620CF",
+   "7FFC": "2A209502",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  },
+  "paper": [
+   "A PEDIDO"
+  ]
+ }
+}

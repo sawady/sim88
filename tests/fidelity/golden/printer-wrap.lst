@@ -1,0 +1,46 @@
+
+								p gina: 1 
+
+ Listado Fuente: printer-wrap.lst
+ Programa Fuente en: printer-wrap.asm
+ Fecha: -
+
+ ÚDir.ÚCodigo maquina	 Linea¿	ÚCodigo en lenguaje ensamble
+
+			      1	;; config: 2
+			      2	;; paper: yes
+			      3	;; timeout: 75
+			      4	; More characters than the 20 columns of the pap
+				er.
+			      5	        ORG 1000H
+ 1000 41 42 43 44 45 46	      6	MSG     DB "ABCDEFGHIJKLMNOPQRSTUVWXY"
+ 1006 47 48 49 4A 4B 4C
+ 100C 4D 4E 4F 50 51 52
+ 1012 53 54 55 56 57 58
+ 1018 59
+ 1019 41		      7	FIN     DB ?
+			      8	        ORG 2000H
+ 2000 E4 41		      9	        IN AL, 41H
+ 2002 80 E0 7F		     10	        AND AL, 7FH
+ 2005 E6 41		     11	        OUT 41H, AL
+ 2007 BB 00 10		     12	        MOV BX, OFFSET MSG
+ 200A B1 19		     13	        MOV CL, OFFSET FIN - OFFSET MSG
+ 200C E4 41		     14	POLL:   IN AL, 41H
+ 200E 80 E0 01		     15	        AND AL, 1
+ 2011 75 F9		     16	        JNZ POLL
+ 2013 8A 07		     17	        MOV AL, [BX]
+ 2015 E6 40		     18	        OUT 40H, AL
+ 2017 FF C3		     19	        INC BX
+ 2019 FE C9		     20	        DEC CL
+ 201B 75 EF		     21	        JNZ POLL
+ 201D F4		     22	        HLT
+			     23	        END
+
+
+ S I M B O L O S:
+
+ Nombre:	Tipo:		Valor:
+
+ MSG     	Byte		1000h
+ FIN     	Byte		1019h
+ POLL    	Label		200Ch

@@ -1,5 +1,8 @@
 {
  "same_glyph": {
   "O": "0"
+ },
+ "paper_same_glyph": {
+  "0": "O"
  }
 }

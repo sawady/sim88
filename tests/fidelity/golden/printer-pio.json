@@ -1,0 +1,281 @@
+{
+ "program": "printer-pio.asm",
+ "assembler": {
+  "errors": 0,
+  "warnings": 0,
+  "messages": [],
+  "listing": [
+   {
+    "address": "1000",
+    "bytes": [
+     "41",
+     "52",
+     "51",
+     "55",
+     "49",
+     "54"
+    ],
+    "line": 7
+   },
+   {
+    "address": "1006",
+    "bytes": [
+     "45",
+     "43",
+     "54",
+     "55",
+     "52",
+     "41"
+    ],
+    "line": 7
+   },
+   {
+    "address": "100C",
+    "bytes": [
+     "41"
+    ],
+    "line": 8
+   },
+   {
+    "address": "2000",
+    "bytes": [
+     "B0",
+     "FD"
+    ],
+    "line": 10
+   },
+   {
+    "address": "2002",
+    "bytes": [
+     "E6",
+     "32"
+    ],
+    "line": 11
+   },
+   {
+    "address": "2004",
+    "bytes": [
+     "B0",
+     "00"
+    ],
+    "line": 12
+   },
+   {
+    "address": "2006",
+    "bytes": [
+     "E6",
+     "33"
+    ],
+    "line": 13
+   },
+   {
+    "address": "2008",
+    "bytes": [
+     "E4",
+     "30"
+    ],
+    "line": 14
+   },
+   {
+    "address": "200A",
+    "bytes": [
+     "80",
+     "E0",
+     "FD"
+    ],
+    "line": 15
+   },
+   {
+    "address": "200D",
+    "bytes": [
+     "E6",
+     "30"
+    ],
+    "line": 16
+   },
+   {
+    "address": "200F",
+    "bytes": [
+     "BB",
+     "00",
+     "10"
+    ],
+    "line": 17
+   },
+   {
+    "address": "2012",
+    "bytes": [
+     "B1",
+     "0C"
+    ],
+    "line": 18
+   },
+   {
+    "address": "2014",
+    "bytes": [
+     "E4",
+     "30"
+    ],
+    "line": 19
+   },
+   {
+    "address": "2016",
+    "bytes": [
+     "80",
+     "E0",
+     "01"
+    ],
+    "line": 20
+   },
+   {
+    "address": "2019",
+    "bytes": [
+     "75",
+     "F9"
+    ],
+    "line": 21
+   },
+   {
+    "address": "201B",
+    "bytes": [
+     "8A",
+     "07"
+    ],
+    "line": 22
+   },
+   {
+    "address": "201D",
+    "bytes": [
+     "E6",
+     "31"
+    ],
+    "line": 23
+   },
+   {
+    "address": "201F",
+    "bytes": [
+     "E4",
+     "30"
+    ],
+    "line": 24
+   },
+   {
+    "address": "2021",
+    "bytes": [
+     "80",
+     "C8",
+     "02"
+    ],
+    "line": 25
+   },
+   {
+    "address": "2024",
+    "bytes": [
+     "E6",
+     "30"
+    ],
+    "line": 26
+   },
+   {
+    "address": "2026",
+    "bytes": [
+     "E4",
+     "30"
+    ],
+    "line": 27
+   },
+   {
+    "address": "2028",
+    "bytes": [
+     "80",
+     "E0",
+     "FD"
+    ],
+    "line": 28
+   },
+   {
+    "address": "202B",
+    "bytes": [
+     "E6",
+     "30"
+    ],
+    "line": 29
+   },
+   {
+    "address": "202D",
+    "bytes": [
+     "FF",
+     "C3"
+    ],
+    "line": 30
+   },
+   {
+    "address": "202F",
+    "bytes": [
+     "FE",
+     "C9"
+    ],
+    "line": 31
+   },
+   {
+    "address": "2031",
+    "bytes": [
+     "75",
+     "E1"
+    ],
+    "line": 32
+   },
+   {
+    "address": "2033",
+    "bytes": [
+     "F4"
+    ],
+    "line": 33
+   }
+  ],
+  "symbols": [
+   {
+    "name": "MSG",
+    "type": "Byte",
+    "value": "1000"
+   },
+   {
+    "name": "FIN",
+    "type": "Byte",
+    "value": "100C"
+   },
+   {
+    "name": "POLL",
+    "type": "Label",
+    "value": "2014"
+   }
+  ]
+ },
+ "run": {
+  "status": "timeout",
+  "window": [
+   ">G",
+   ">_",
+   "",
+   "",
+   ""
+  ],
+  "registers": {
+   "AX": "0001",
+   "BX": "100C",
+   "CX": "0000",
+   "DX": "0000",
+   "IP": "2034",
+   "SP": "8000"
+  },
+  "flags": "0244",
+  "memory": {
+   "1000": "41525155495445435455524141",
+   "2000": "B0FDE632B000E633E43080E0FDE630BB0010B10CE43080E00175F98A07E631E43080C802E630E43080E0FDE630FFC3FEC975E1F4",
+   "DD18": "B65AC20EB20BC02A7AEF9073B65A"
+  },
+  "paper": [
+   "ARQUITECTURA"
+  ]
+ }
+}
